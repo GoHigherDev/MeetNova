@@ -1,0 +1,23 @@
+<powerpagecomponent powerpagecomponentid="3cc409b9-74a4-0240-abce-122180813969">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "31a39a4a-de25-43e4-ba76-7a12c06b30b6",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+    "ee5aa67c-cc84-ef11-ac20-6045bd6a5beb",
+    "f7b50f32-9e03-ef11-9f89-0022481bbf4e"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Candidates</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

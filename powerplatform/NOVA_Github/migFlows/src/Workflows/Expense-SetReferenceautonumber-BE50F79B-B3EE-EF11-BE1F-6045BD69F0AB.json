@@ -1,0 +1,105 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_timesheetcost",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "new_isexpense eq true"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "c3f28724-6662-4cd4-9248-58d41a960cd2"
+          }
+        }
+      },
+      "actions": {
+        "ListLastTimesheetcostReferenceRow": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheetcosts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheetcost\">\n    <attribute name=\"new_timesheetcostid\" />\n    <attribute name=\"new_expensereference\" />\n    <order attribute=\"new_expensereference\" descending=\"true\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_expensereference\" operator=\"not-null\" />\n      <condition attribute=\"new_managingaccountid\" operator=\"eq\" uitype=\"account\" value=\"@{triggerOutputs()?['body/_new_managingaccountid_value']}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c692e0ad-2810-4b4f-8ac4-ca30973f503b"
+          }
+        },
+        "ComposeNextReference": {
+          "type": "Compose",
+          "inputs": "@if(empty(string(first(outputs('ListLastTimesheetcostReferenceRow')?['body/value'])?['new_expensereference'])), 1000, add(int(first(outputs('ListLastTimesheetcostReferenceRow')?['body/value'])?['new_expensereference']), 1))",
+          "runAfter": {
+            "ListLastTimesheetcostReferenceRow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3adc488a-7a33-4609-9b8a-9263018e7be5"
+          }
+        },
+        "Update_a_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheetcosts",
+              "recordId": "@triggerOutputs()?['body/new_timesheetcostid']",
+              "item/new_expensereference": "@outputs('ComposeNextReference')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "ComposeNextReference": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

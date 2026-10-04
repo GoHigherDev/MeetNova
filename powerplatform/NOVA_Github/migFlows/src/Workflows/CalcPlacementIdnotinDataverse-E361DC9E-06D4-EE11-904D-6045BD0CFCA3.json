@@ -1,0 +1,336 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "54777695-6bb8-4bb5-94e6-fa4be02a3e98"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "BHPlacementIdsArray",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "number": {
+                  "title": "DaysinQuery",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter a number",
+                  "x-ms-content-hint": "NUMBER"
+                }
+              },
+              "required": [
+                "text",
+                "number"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "List_rows": {
+          "runAfter": {
+            "Initialize_MissingPlacementIds__variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f0dc9986-faa4-48e4-a56f-5942f5a41e6c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignments",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignment\">\n    <attribute name=\"new_externalreference\" />\n    <order attribute=\"new_externalreference\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"createdon\" operator=\"last-x-days\" value=\"@{triggerBody()['number']}\" />\n      <condition attribute=\"new_externalreference\" operator=\"not-null\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "Compose_5": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f55d2993-a378-4592-ab69-3cda94d33e47"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('Compose_5')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "Initialize_DataverseIntArray_variable": {
+          "runAfter": {
+            "Initialize_Placementids_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9a608f3c-e07f-4f4d-9e68-abba9cf6b72a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DataverseIntArray",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "For_each": {
+          "foreach": "@outputs('List_rows')?['body/value']",
+          "actions": {
+            "Append_to_array_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "338bc1e5-3d10-4756-9986-0431d1b0399d"
+              },
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "DataverseIntArray",
+                "value": "@items('For_each')?['new_externalreference']"
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "93182118-acb2-4a32-9e26-4f2a82f0a654"
+          },
+          "type": "Foreach"
+        },
+        "Initialize_MissingPlacementIds__variable": {
+          "runAfter": {
+            "Initialize_DataverseIntArray_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c7d7c897-f17c-43c3-9217-ec33f78e50a7"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MissingPlacementIds",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@variables('Placementids')",
+          "actions": {
+            "Condition": {
+              "actions": {
+                "Append_to_array_variable_1": {
+                  "runAfter": {
+                    "Compose": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "34c0e423-bef4-45c8-b787-b004af5a423f"
+                  },
+                  "type": "AppendToArrayVariable",
+                  "inputs": {
+                    "name": "MissingPlacementIds",
+                    "value": "@items('Apply_to_each')"
+                  }
+                },
+                "Compose": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "c7bfa0b8-999a-4113-b345-6e17275b7869"
+                  },
+                  "type": "Compose",
+                  "inputs": "@items('Apply_to_each')"
+                }
+              },
+              "runAfter": {
+                "Compose_1": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@ not(contains(\r\nvariables('DataverseIntArray'), item()))",
+                      "@true"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4ab8c72d-04ea-4338-9f56-061a520eb605"
+              },
+              "type": "If"
+            },
+            "Compose_1": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "efd825e9-a1f5-48cb-bde6-12ad18f690a1"
+              },
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each')"
+            }
+          },
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7f8625db-1674-4dfc-9794-e863109af86d"
+          },
+          "type": "Foreach"
+        },
+        "Initialize_Placementids_variable": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "924d76a3-47b4-4c45-ad52-5b03431a17e1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Placementids",
+                "type": "array",
+                "value": "@body('Parse_JSON')"
+              }
+            ]
+          }
+        },
+        "Compose_2": {
+          "runAfter": {
+            "For_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "443ff1b4-9579-414e-9c00-85fffa585437"
+          },
+          "type": "Compose",
+          "inputs": "@variables('DataverseIntArray')"
+        },
+        "Compose_3": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f166c0a1-c14b-488f-9371-a4a75f24c51e"
+          },
+          "type": "Compose",
+          "inputs": "@variables('MissingPlacementIds')"
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Compose_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e243a94b-ad4d-4fb3-a2d0-7ac4427f027c"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "missingplacementidarray": "@variables('MissingPlacementIds')"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "missingplacementidarray": {
+                  "title": "MissingPlacementIdArray",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Compose_4": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "df416f79-7631-4832-a7fb-558885a4fb35"
+          },
+          "type": "Compose",
+          "inputs": "f"
+        },
+        "Compose_5": {
+          "runAfter": {
+            "Compose_4": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a96251ff-1f96-47cd-83c0-68513c3702f3"
+          },
+          "type": "Compose",
+          "inputs": "@json(concat('[', triggerBody()?['text'], ']'))"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,27 @@
+<powerpagecomponent powerpagecomponentid="10fd0eb3-a1fc-4039-8444-1d0b23368ba4">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_appdocs",
+  "entityname": "Application Documents",
+  "parententitypermission": "e3c66dd8-d518-ee11-8f6d-6045bd0cfca3",
+  "parentrelationship": "new_appdocs_new_candidateregistrationid",
+  "read": true,
+  "scope": 756150003,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e",
+    "f7b50f32-9e03-ef11-9f89-0022481bbf4e"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Application Documents</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

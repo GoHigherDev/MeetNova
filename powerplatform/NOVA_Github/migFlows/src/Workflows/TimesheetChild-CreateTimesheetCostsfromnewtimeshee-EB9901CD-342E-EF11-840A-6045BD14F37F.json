@@ -1,0 +1,412 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text_1": {
+                  "title": "TimesheetId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "e4ed97e4-83be-4fbb-b111-cd5fa7344168"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "processed": {
+                  "title": "processed",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "processed": "@{true}"
+            }
+          },
+          "runAfter": {
+            "Condition_timesheetcosts_are_more_than_0": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d10228f0-da10-4253-83b2-fd25c831b7fc"
+          }
+        },
+        "Get_timesheet_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@triggerBody()['text_1']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f3d27349-c211-42e4-9eaa-4ceb5b9a273f"
+          }
+        },
+        "List_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheetcosts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheetcost\">\n    <attribute name=\"new_timesheetcostid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_timesheetid\" operator=\"eq\"  uitype=\"new_timesheet\" value=\"@{outputs('Get_timesheet_row_by_ID')?['body/new_timesheetid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_placement_owner_has_a_value": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4aa26306-8187-48a2-b4bb-7c29ab56fbc1"
+          }
+        },
+        "Condition_timesheetcosts_are_more_than_0": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('List_rows')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Condition_start_date_": {
+                "type": "If",
+                "expression": {
+                  "and": [
+                    {
+                      "not": {
+                        "equals": [
+                          "@body('Get_timesheet_row_by_ID')?['new_periodstart']",
+                          "@null"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": {
+                  "Set_start_date_variable": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "TempDate",
+                      "value": "@formatDateTime(body('Get_timesheet_row_by_ID')?['new_periodstart'], 'yyyy-MM-dd')"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "e3e95c36-863e-47b2-a59a-da7ba6dbca5b"
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {}
+                },
+                "metadata": {
+                  "operationMetadataId": "eb525f26-ef52-464e-904d-e38cb334064b"
+                }
+              },
+              "Condition_end_date": {
+                "type": "If",
+                "expression": {
+                  "and": [
+                    {
+                      "not": {
+                        "equals": [
+                          "@body('Get_timesheet_row_by_ID')?['new_periodend']",
+                          "@null"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": {
+                  "Set_end_date": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Week end Sunday",
+                      "value": "@formatDateTime(body('Get_timesheet_row_by_ID')?['new_periodend'], 'yyyy-MM-dd')"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "69d98ce6-865b-47ef-94d2-819ad8d0efef"
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {}
+                },
+                "runAfter": {
+                  "Condition_start_date_": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "2d4d7528-09e3-4218-8981-1a8d759c4617"
+                }
+              },
+              "Do_until": {
+                "type": "Until",
+                "expression": "@greater(formatDateTime(variables('TempDate'), 'yyyy-MM-dd'),formatDateTime(variables('Week end Sunday'), 'yyyy-MM-dd'))",
+                "limit": {
+                  "count": 32,
+                  "timeout": "PT1H"
+                },
+                "actions": {
+                  "Add_a_new_timesheet_costs_row": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_timesheetcosts",
+                        "item/new_name": "@formatDateTime(variables('TempDate'), 'dd/MM/yyyy')",
+                        "item/new_timesheetid@odata.bind": "/new_timesheets(@{triggerBody()['text_1']})",
+                        "item/new_assignmentid@odata.bind": "/new_assignments(@{outputs('Get_timesheet_row_by_ID')?['body/_new_assignmentid_value']})",
+                        "item/new_candidateid@odata.bind": "/contacts(@{outputs('Get_timesheet_row_by_ID')?['body/_new_candidateid_value']})",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_timesheet_row_by_ID')?['body/_transactioncurrencyid_value']})",
+                        "item/new_date": "@formatDateTime(variables('TempDate'),'yyyy-MM-ddTHH:mm:ssZ')"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "5dcaf7f7-bd21-4636-9629-eb2fe1034d09"
+                    }
+                  },
+                  "Compose": {
+                    "type": "Compose",
+                    "inputs": "@addDays(formatDateTime(variables('TempDate'),'MM/dd/yyyy'),1)",
+                    "runAfter": {
+                      "Add_a_new_timesheet_costs_row": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "41e7e842-a8eb-44c5-848a-5816c754fb02"
+                    }
+                  },
+                  "Set_variable_Tempdate-copy": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "TempDate",
+                      "value": "@{outputs('Compose')}"
+                    },
+                    "runAfter": {
+                      "Compose": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "881448d4-5ce1-4260-8cb2-80012a962429"
+                    }
+                  },
+                  "Compose_temp_date_iteration": {
+                    "type": "Compose",
+                    "inputs": "@formatDateTime(variables('TempDate'), 'MM/dd/yyyy')",
+                    "runAfter": {
+                      "Set_variable_Tempdate-copy": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "7bbc98af-8593-46e6-8429-76db6d63d3a3"
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Condition_end_date": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "35cc5ffe-ecba-4198-bd82-488169b30f38"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_TempDate_start_with_monday": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f0855974-43ab-4197-8cb2-104bc8c46371"
+          }
+        },
+        "Initialize_Week_end_Sunday": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week end Sunday",
+                "type": "string",
+                "value": "@formatDateTime(addDays(subtractFromTime(utcNow(), dayOfWeek(utcNow()), 'Day'), 7), 'MM/dd/yyyy')"
+              }
+            ]
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d924c9b1-62f9-47e6-a088-14fd0f51b8af"
+          }
+        },
+        "Initialize_variable_TempDate_start_with_monday": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TempDate",
+                "type": "string",
+                "value": "@addHours(formatDateTime(subtractFromTime(addDays(utcNow(), 1), dayOfWeek(utcNow()), 'Day'), 'yyyy-MM-dd'),8)"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Week_end_Sunday": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6260f275-2312-4811-9117-ef6811f86281"
+          }
+        },
+        "Condition_placement_owner_has_a_value": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_placement_row_by_ID')?['body/_new_placementownerid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Update_timesheet_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['text_1']",
+                  "item/new_approverid@odata.bind": "/contacts(@{outputs('Get_a_placement_row_by_ID')?['body/_new_placementownerid_value']})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "915ea142-86f0-4123-9b77-3ac3bd95ca56"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Get_a_placement_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8cc57f08-7b2a-4509-a4a7-810c4cd07c46"
+          }
+        },
+        "Get_a_placement_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@outputs('Get_timesheet_row_by_ID')?['body/_new_assignmentid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_timesheet_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ada488c8-6372-4a72-802c-cd3849657aac"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

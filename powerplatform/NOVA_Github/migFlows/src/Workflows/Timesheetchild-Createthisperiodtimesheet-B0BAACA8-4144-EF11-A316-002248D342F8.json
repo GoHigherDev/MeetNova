@@ -1,0 +1,242 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "placementid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "61bcf3ab-8ac6-42ae-b0e4-f3aa90e969cf"
+          }
+        }
+      },
+      "actions": {
+        "Initialize_Week_end_Sunday": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week end Sunday",
+                "type": "string",
+                "value": "@addDays(subtractFromTime(utcNow(), dayOfWeek(utcNow()), 'Day'), 7)"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_placement_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f2799a3d-d904-402e-b902-e40324ac328a"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                },
+                "timesheetid": {
+                  "title": "timesheetid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "success": "@true",
+              "timesheetid": "@body('Add_a_new_timesheet')?['new_timesheetid']"
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1204c2ee-8ed0-4b09-a309-723b2bc5c443"
+          }
+        },
+        "Initialize_Week_start_Monday": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week start monday",
+                "type": "string",
+                "value": "@addHours(formatDateTime(subtractFromTime(addDays(utcNow(), 1), dayOfWeek(utcNow()), 'Day'), 'yyyy-MM-dd'),8)\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Week_end_Sunday": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a60e762-71d2-403b-a3b1-1729c585ada8"
+          }
+        },
+        "Add_a_new_timesheet": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "item/new_name": "Week Ending of @{formatDateTime(variables('Week end Sunday'), 'dd/MM/yyyy')}",
+              "item/new_assignmentid@odata.bind": "/new_assignments(@{triggerBody()?['text']})",
+              "item/new_branchid@odata.bind": "@{if(equals(outputs('Get_a_placement_row_by_ID')?['body/_new_branchid_value'], null), '', concat('/new_branchs(', outputs('Get_a_placement_row_by_ID')?['body/_new_branchid_value'], ')'))}\n",
+              "item/new_candidateid@odata.bind": "/contacts(@{body('Get_a_placement_row_by_ID')?['_new_candidateid_value']})",
+              "item/new_clientid@odata.bind": "/accounts(@{body('Get_a_placement_row_by_ID')?['_new_clientid_value']})",
+              "item/new_consultantid@odata.bind": "/contacts(@{body('Get_a_placement_row_by_ID')?['_new_consultantid_value']})",
+              "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{body('Get_a_placement_row_by_ID')?['_transactioncurrencyid_value']})",
+              "item/new_istimesheetpreapproved": "@body('Get_a_placement_row_by_ID')?['new_istimesheetpreapproved']",
+              "item/new_managingaccountid@odata.bind": "/accounts(@{body('Get_a_placement_row_by_ID')?['_new_managingaccountid_value']})",
+              "item/new_periodend": "@variables('Week end Sunday')",
+              "item/new_periodstart": "@variables('Week start monday')",
+              "item/statuscode": 1,
+              "item/new_supplierid@odata.bind": "/accounts(@{body('Get_a_placement_row_by_ID')?['_new_supplierid_value']})"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "56bd859d-953b-4ba8-9256-5619ee4d3636"
+          }
+        },
+        "Get_a_placement_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerBody()?['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        },
+        "Run_a_Child_Flow": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "eb9901cd-342e-ef11-840a-6045bd14f37f"
+            },
+            "body": {
+              "text_1": "@outputs('Add_a_new_timesheet')?['body/new_timesheetid']"
+            }
+          },
+          "runAfter": {
+            "Add_a_new_timesheet": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_a_placement_row_by_ID')?['body/new_timesheettype']",
+                  1
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Set_variable_Monthly_end": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Week end Sunday",
+                "value": "@formatDateTime(addDays(addToTime(utcNow(), 1, 'Month'), 0), 'yyyy-MM-dd')\r\n"
+              }
+            },
+            "Set_variable_Monthly_start": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Week start monday",
+                "value": "@addHours(formatDateTime(subtractFromTime(addDays(utcNow(), 1), dayOfWeek(utcNow()), 'Day'), 'yyyy-MM-dd'),8)\n"
+              },
+              "runAfter": {
+                "Set_variable_Monthly_end": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_Week_start_Monday": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

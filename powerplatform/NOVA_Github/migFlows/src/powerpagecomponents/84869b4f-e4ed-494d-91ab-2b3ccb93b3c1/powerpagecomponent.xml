@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="84869b4f-e4ed-494d-91ab-2b3ccb93b3c1">
+  <content>{
+  "accountrelationship": "new_shift_managingaccountid",
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_shift",
+  "entityname": "Shifts",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150002,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shifts</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

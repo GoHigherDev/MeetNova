@@ -1,0 +1,308 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "ea74102c-1a84-4e97-87bc-5d01e821acf0"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000003",
+              "subscriptionRequest/name": "af5f6d68-7159-f011-bec1-6045bd69f0ab"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Pay_Amount": {
+          "runAfter": {
+            "Get_a_client_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "72451251-a25d-4e7a-85c6-9b8558a7fc58"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/new_pay']"
+        },
+        "Bill_Amount": {
+          "runAfter": {
+            "Pay_Amount": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a9d0f8a9-9ecc-46ea-b086-59f48d42a6ba"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/new_bill']"
+        },
+        "If_Pay_Amount_is_Greater_than_Bill_amount": {
+          "actions": {
+            "Set_is_Flag_Field_to_True": {
+              "runAfter": {
+                "Append_to_Flag_Reason_Bill_greater_than_pay": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "242c5de3-8f7b-41e1-b15a-386667d42238"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                  "item/new_flagreason": "@{variables('FlagReason')}\n",
+                  "item/new_isflag": true
+                },
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_Flag_Reason_Bill_greater_than_pay": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "a4f87880-1576-4e6e-8165-c0b8f694b8c6"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "FlagReason",
+                "value": "Pay rate exceeds bill rate. \n"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Flag_Reason": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "greater": [
+                  "@triggerOutputs()?['body/new_pay']",
+                  "@triggerOutputs()?['body/new_bill']"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "abb7a6f6-0e28-485f-b924-288c5740b93e"
+          },
+          "type": "If"
+        },
+        "Total_Units": {
+          "runAfter": {
+            "Bill_Amount": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a9d0f8a9-9ecc-46ea-b086-59f48d42a6ba"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/new_units']"
+        },
+        "Initialize_Flag_Reason": {
+          "runAfter": {
+            "Total_Units": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b4071ecb-a1aa-43b4-ad46-d2f3a15f4c28"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "FlagReason",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "If_Candidate_Exceeds_50_Hours_": {
+          "actions": {
+            "Set_is_Flag_Field_to_True_1": {
+              "runAfter": {
+                "Append_to_Flag_Reason_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e52a9a7c-bdc4-4ad4-8cb6-c2c8234b2c3e"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                  "item/new_flagreason": "@{variables('FlagReason')}\n",
+                  "item/new_isflag": true
+                },
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_Flag_Reason_1": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "3d51fa35-f2da-454c-8f3c-96c4315cab1f"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "FlagReason",
+                "value": "Worked hours exceed 50 hours. \n"
+              }
+            }
+          },
+          "runAfter": {
+            "If_Pay_Amount_is_Greater_than_Bill_amount": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "greater": [
+                  "@triggerOutputs()?['body/new_units']",
+                  50
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bcf3f4d8-1677-4b63-bb6c-020a7aa86134"
+          },
+          "type": "If"
+        },
+        "Get_a_client_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5b139765-824b-41e1-a34f-00e05c450a78"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "If_Client_have_Credit_Hold": {
+          "actions": {
+            "Set_is_Flag_Field_to_True_2": {
+              "runAfter": {
+                "Append_to_Flag_Reason_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "7a0c43de-ab9a-470e-9dcc-5f5ba533ae7a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                  "item/new_flagreason": "@{variables('FlagReason')}\n",
+                  "item/new_isflag": true
+                },
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_Flag_Reason_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "8287b85a-61d4-4a16-919d-36cd200e2250"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "FlagReason",
+                "value": "Client is on credit hold. \n"
+              }
+            }
+          },
+          "runAfter": {
+            "If_Candidate_Exceeds_50_Hours_": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@outputs('Get_a_client_row_by_ID')?['body/creditonhold']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "52e50a51-27a6-489d-bfdf-787b35f4864e"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

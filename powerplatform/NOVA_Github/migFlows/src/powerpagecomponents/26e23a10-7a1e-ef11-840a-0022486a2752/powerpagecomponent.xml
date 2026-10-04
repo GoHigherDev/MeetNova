@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="26e23a10-7a1e-ef11-840a-0022486a2752">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 10,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "8616597f-6adc-d0e9-6967-9d239e3e82df",
+  "parentweblinkid": "bddfbd8d-bd98-b001-14f1-42d5426c9853",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Availability</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

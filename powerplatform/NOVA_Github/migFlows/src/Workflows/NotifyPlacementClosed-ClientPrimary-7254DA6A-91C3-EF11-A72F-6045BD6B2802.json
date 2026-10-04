@@ -1,0 +1,314 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_assignment",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statecode",
+              "subscriptionRequest/filterexpression": "statecode eq 1"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "a77d67fa-7f94-4c24-a745-00cfae6be041"
+          }
+        }
+      },
+      "actions": {
+        "Send_an_email_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_a_client_primary_contact_row_by_ID')?['body/emailaddress1']",
+              "emailMessage/Subject": "@{triggerOutputs()?['body/new_name']} Placement closed",
+              "emailMessage/Body": "<br><p class=\"editor-paragraph\">@{variables('Message')}</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365-1"
+            }
+          },
+          "runAfter": {
+            "Condition_if_message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8978ba3d-6a77-4fdf-acd9-cfa8ddf31658"
+          }
+        },
+        "Get_a_client_primary_contact_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@outputs('Get_a_client_row_by_ID')?['body/_primarycontactid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_client_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ab821d96-c233-4987-8600-6e228926c4ec"
+          }
+        },
+        "Get_a_client_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4db4b98a-a66b-4464-96a4-858381eb1a28"
+          }
+        },
+        "Get_a_candidate_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_a_client_primary_contact_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7382a660-ee07-4885-9940-1360b880db2b"
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {}
+        },
+        "Condition_if_global_notification_is_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_Enable": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "0148cfc8-aa88-f011-b4cb-6045bdfc0113"
+            }
+          },
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Enable')?['success']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_notification_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "0148cfc8-aa88-f011-b4cb-6045bdfc0113"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Message_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "Reason for Closure: @{triggerOutputs()?['body/new_reasonforclosure']} <br>\nPlacement number: @{triggerOutputs()?['body/new_name']} <br>\nClient Candidate: @{outputs('Get_a_candidate_row_by_ID')?['body/fullname']} <br>\n\n\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_candidate_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_message_not_empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Message_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

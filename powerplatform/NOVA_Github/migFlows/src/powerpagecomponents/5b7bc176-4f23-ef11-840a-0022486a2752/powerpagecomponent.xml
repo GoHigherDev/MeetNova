@@ -1,0 +1,47 @@
+<powerpagecomponent powerpagecomponentid="5b7bc176-4f23-ef11-840a-0022486a2752">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "account",
+  "entitypermissionsenabled": false,
+  "entitysourcetype": 756150001,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000001,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordidquerystringparametername": "id",
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "Client",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client Settings Edit - QP</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

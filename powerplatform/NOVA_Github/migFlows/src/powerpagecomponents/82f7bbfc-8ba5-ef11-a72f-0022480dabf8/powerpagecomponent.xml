@@ -1,0 +1,24 @@
+<powerpagecomponent powerpagecomponentid="82f7bbfc-8ba5-ef11-a72f-0022480dabf8">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_name",
+  "descriptionposition": 100000000,
+  "entityform": "8a1047de-0319-ee11-8f6d-6045bd0cfca3",
+  "entityformforcreate": "8a1047de-0319-ee11-8f6d-6045bd0cfca3",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "label": "[{\"LCID\":1025,\"Value\":\"اسم الوظيفة\"},{\"LCID\":1033,\"Value\":\"\"}]",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Edit new_name</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

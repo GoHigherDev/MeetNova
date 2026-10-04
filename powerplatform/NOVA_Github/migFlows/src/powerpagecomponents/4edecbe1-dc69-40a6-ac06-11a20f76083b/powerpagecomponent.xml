@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="4edecbe1-dc69-40a6-ac06-11a20f76083b">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_jobrolecandidate",
+  "entityname": "Job Role Candidate",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150000,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "d28abb12-2be5-ee11-904c-000d3a8714d9"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Role Candidate</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

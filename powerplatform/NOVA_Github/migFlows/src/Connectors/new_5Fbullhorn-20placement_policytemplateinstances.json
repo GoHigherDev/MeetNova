@@ -1,0 +1,1 @@
+[{"templateId":"setheader","title":"set authorisation","parameters":{"x-ms-apimTemplateParameter.name":"Authorization","x-ms-apimTemplateParameter.value":"@headers('Authorization')","x-ms-apimTemplateParameter.existsAction":"append","x-ms-apimTemplate-policySection":"Request","x-ms-apimTemplate-operationName":["Getresturlid","BHLoginID"]}}]

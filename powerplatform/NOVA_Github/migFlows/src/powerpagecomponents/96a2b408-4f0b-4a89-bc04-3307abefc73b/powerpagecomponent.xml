@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="96a2b408-4f0b-4a89-bc04-3307abefc73b">
+  <content>{
+  "append": false,
+  "appendto": false,
+  "create": false,
+  "delete": false,
+  "entitylogicalname": "mspp_webpage",
+  "entityname": "Web Page",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150000,
+  "write": false,
+  "adx_entitypermission_webrole": [
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e",
+    "f7b50f32-9e03-ef11-9f89-0022481bbf4e",
+    "fd7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+    "ff7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Web Page</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

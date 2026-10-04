@@ -1,0 +1,314 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "remittanceid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "candidateid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "c22f0ae0-4017-4a03-96a7-ee8170c8f366"
+          }
+        }
+      },
+      "actions": {
+        "Get_a_remittance_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_remittances",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "b3474b54-1583-4e64-92a0-5f95aebed93e"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "type": "boolean",
+                  "x-ms-content-hint": "BOOLEAN",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "success": "@true"
+            }
+          },
+          "runAfter": {
+            "Condition_that_tax_report_row_exists": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_-_get_tax_period": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "90bdfebd-42b6-ef11-a72f-6045bd6ab7b6"
+            },
+            "body": {
+              "text": "@outputs('Get_a_remittance_row_by_ID')?['body/_new_managingaccountid_value']",
+              "text_1": "@outputs('Get_a_remittance_row_by_ID')?['body/new_remittancedate']"
+            }
+          },
+          "runAfter": {
+            "Get_a_candidate_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "List_timesheets_rows_pay_total_by_candidate_by_remittance": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\" aggregate=\"true\">\n  <entity name=\"new_timesheet\">\n    <attribute name=\"new_remittanceid\" groupby=\"true\" alias=\"remittanceid\"/>\n    <attribute name=\"new_candidateid\" groupby=\"true\" alias=\"candidateid\"/>\n    <attribute name=\"new_pay\" aggregate=\"sum\" alias=\"total_pay\"/>\n    <filter type=\"and\">\n      <condition attribute=\"new_remittanceid\" operator=\"eq\" uitype=\"new_remittance\" value=\"@{outputs('Get_a_remittance_row_by_ID')?['body/new_remittanceid']}\" />\n      <condition attribute=\"new_candidateid\" operator=\"eq\"  uitype=\"contact\" value=\"@{triggerBody()?['text_1']}\" />\n    </filter>\n  </entity>\n</fetch>\n"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_PayTotal_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "List_tax_report_rows_by_candidate": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_remittancetaxreports",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittancetaxreport\">\n    <attribute name=\"new_remittancetaxreportid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_totalpaid\" />\n    <attribute name=\"new_taxperiodid\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_candidateid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerBody()?['text_1']}\" />\n      <condition attribute=\"new_managingaccountid\" operator=\"eq\"  uitype=\"account\" value=\"@{outputs('Get_a_remittance_row_by_ID')?['body/_new_managingaccountid_value']}\" />\n      <condition attribute=\"new_taxperiodid\" operator=\"eq\"  uitype=\"new_taxperiod\" value=\"@{body('Run_a_Child_Flow_-_get_tax_period')?['taxperiodid']}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_that_timesheets_row_pay_total_exists": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_that_tax_report_row_exists": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('List_tax_report_rows_by_candidate')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Condition_pay_total_does_not_match": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@first(outputs('List_tax_report_rows_by_candidate')?['body/value'])['new_totalpaid']",
+                        "@variables('PayTotal')"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Update_existing_tax_row_with_pay_total": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_remittancetaxreports",
+                      "recordId": "@first(outputs('List_tax_report_rows_by_candidate')?['body/value'])['new_remittancetaxreportid']",
+                      "item/new_totalpaid": "@variables('PayTotal')"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Add_a_new_tax_row": {
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "parameters": {
+                    "entityName": "new_remittancetaxreports",
+                    "item/new_name": "@outputs('Get_a_candidate_row_by_ID')?['body/fullname']",
+                    "item/new_candidateid@odata.bind": "@outputs('Get_a_candidate_row_by_ID')?['body/@odata.id']",
+                    "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_a_remittance_row_by_ID')?['body/_transactioncurrencyid_value']})",
+                    "item/new_managingaccountid@odata.bind": "/accounts(@{outputs('Get_a_remittance_row_by_ID')?['body/_new_managingaccountid_value']})",
+                    "item/new_placementid@odata.bind": "/new_assignments(@{outputs('Get_a_remittance_row_by_ID')?['body/_new_assignmentid_value']})",
+                    "item/new_supplierid@odata.bind": "/accounts(@{outputs('Get_a_remittance_row_by_ID')?['body/_new_supplierid_value']})",
+                    "item/new_taxperiodid@odata.bind": "/new_taxperiods(@{body('Run_a_Child_Flow_-_get_tax_period')?['taxperiodid']})",
+                    "item/new_totalpaid": "@variables('PayTotal')"
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "connectionName": "shared_commondataserviceforapps"
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_tax_report_rows_by_candidate": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_PayTotal_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PayTotal",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_-_get_tax_period": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_that_timesheets_row_pay_total_exists": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('List_timesheets_rows_pay_total_by_candidate_by_remittance')?['body/value'])\r\n",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Set_paytotal_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "PayTotal",
+                "value": "@first(outputs('List_timesheets_rows_pay_total_by_candidate_by_remittance')?['body/value'])['total_pay']"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "List_timesheets_rows_pay_total_by_candidate_by_remittance": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_candidate_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerBody()?['text_1']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_remittance_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

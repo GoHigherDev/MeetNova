@@ -1,0 +1,36 @@
+<powerpagecomponent powerpagecomponentid="687d956b-de0a-1716-ea17-290c1335399b">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 310px; word-break: break-word; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Emergency Contacts Details for Consultant' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 56,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "d98dc9f3-0326-ee11-9965-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "8f122714-b945-ee11-be6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "emergencycontactsdetails",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "7827f94a-c47c-26ed-32e7-247b63c9566f",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Emergency Contacts Details for Consultant"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Emergency Contacts Details for Consultant</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Emergency Contacts Details for Consultant&lt;div class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 310px; word-break: break-word; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Emergency Contacts Details for Consultant' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Emergency Contacts Details for Consultant</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

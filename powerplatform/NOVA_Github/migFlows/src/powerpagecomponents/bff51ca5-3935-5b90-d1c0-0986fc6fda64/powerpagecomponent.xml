@@ -1,0 +1,27 @@
+<powerpagecomponent powerpagecomponentid="bff51ca5-3935-5b90-d1c0-0986fc6fda64">
+  <content>{
+  "displayorder": 90,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "c1560282-ec42-ef11-a316-000d3ae9d8d0",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "resetpassword",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Reset Password"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Reset Password</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Reset PasswordReset Password</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

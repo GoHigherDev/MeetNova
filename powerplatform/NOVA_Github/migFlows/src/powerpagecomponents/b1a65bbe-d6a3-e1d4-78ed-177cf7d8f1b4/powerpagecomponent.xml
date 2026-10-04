@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="b1a65bbe-d6a3-e1d4-78ed-177cf7d8f1b4">
+  <content>{
+  "displayorder": 34,
+  "enablerating": false,
+  "enabletracking": false,
+  "entitylist": "414869e7-b890-4b65-8e8f-4d741d99d4dc",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "26509041-da98-ee11-be37-6045bd0cfca3",
+  "parentpageid": "3a9b2241-f6af-81d0-9012-5d7c32b6f37d",
+  "partialurl": "Clients",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Clients"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Clients</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>ClientsClients</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

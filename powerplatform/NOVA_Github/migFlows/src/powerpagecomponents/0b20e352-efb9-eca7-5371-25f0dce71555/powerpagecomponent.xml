@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="0b20e352-efb9-eca7-5371-25f0dce71555">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 45,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "64bd8674-8dc4-12c0-9e46-d76145ad7a58",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>EVA Demo</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

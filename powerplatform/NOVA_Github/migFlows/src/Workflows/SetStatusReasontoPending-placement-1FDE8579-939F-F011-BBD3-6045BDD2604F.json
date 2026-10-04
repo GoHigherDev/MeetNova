@@ -1,0 +1,432 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_11963"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_commondataserviceforapps-2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "e877fd0e-5fda-4163-a947-fe3e4d85af65"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_assignment",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_billfrequency,new_notesaremandatory,new_payfrequency,new_startdate, new_purchaseorderid,new_dayofmonthformonthlyinvoicegrouping, new_dayofmonthformonthlypaymentselfbill,new_istimesheetpreapproved,new_selfbillgrouping"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "List_approver_Rows": {
+          "runAfter": {
+            "List_Assignment_Rate_Rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "13dad8bd-4980-4ae2-b466-3623e81a99ae"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n<entity name=\"contact\">\n<order attribute=\"fullname\" descending=\"false\"/>\n<filter type=\"and\">\n<condition attribute=\"new_isanapprover\" operator=\"eq\" value=\"1\"/>\n</filter>\n<link-entity name=\"new_assignment_approves_contact\" from=\"contactid\" to=\"contactid\" visible=\"false\" intersect=\"true\">\n<link-entity name=\"new_assignment\" from=\"new_assignmentid\" to=\"new_assignmentid\" alias=\"ab\">\n<filter type=\"and\">\n<condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\"/>\n</filter>\n</link-entity>\n</link-entity>\n</entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "List_Assignment_Rate_Rows": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "13dad8bd-4980-4ae2-b466-3623e81a99ae"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-2",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_assignmentrate\">\n<attribute name=\"new_assignmentrateid\"/>\n<filter type=\"and\">\n<condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\"/>\n</filter>\n</entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "GetManagingAccountByID": {
+          "runAfter": {
+            "List_approver_Rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c66d24dd-8871-42a2-b8d7-1b10d66d2cc9"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_managingaccountid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "PlacementIsInFuture": {
+          "actions": {
+            "Append_to_string_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "4a609186-d545-4ae3-b7b2-17906d325f88"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PendingChecker",
+                "value": "P"
+              }
+            }
+          },
+          "runAfter": {
+            "InitializePendingChecker": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@triggerOutputs()?['body/new_startdate']",
+                  "@utcNow()"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "26f81e79-eca3-415e-a278-3f9570da7eef"
+          },
+          "type": "If"
+        },
+        "TimesheetMissingApprover": {
+          "actions": {
+            "Append_to_string_variable_1": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "cb3e2dd2-d920-433c-90b9-1f6fb7be75f7"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PendingChecker",
+                "value": "P"
+              }
+            }
+          },
+          "runAfter": {
+            "PlacementIsInFuture": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/new_istimesheetpreapproved']",
+                  "@false"
+                ]
+              },
+              {
+                "equals": [
+                  "@length(outputs('List_approver_Rows')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e4dafc5f-3c28-49a3-9f7c-ec179bac40ef"
+          },
+          "type": "If"
+        },
+        "InvoiceByPOMissingPO": {
+          "actions": {
+            "Append_to_string_variable_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "3ebc7aa0-d519-4381-8390-6e2c2fb30186"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PendingChecker",
+                "value": "P"
+              }
+            }
+          },
+          "runAfter": {
+            "TimesheetMissingApprover": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('GetClientByID')?['body/new_invoicegrouping']",
+                  100000001
+                ]
+              },
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/_new_purchaseorderid_value']",
+                  "@null"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0fade416-f0f0-43ac-bc52-29cf1a7ff2a4"
+          },
+          "type": "If"
+        },
+        "InvoiceByBranchMissingBranch": {
+          "actions": {
+            "Append_to_string_variable_3": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "dc48e598-e45f-469d-a258-5fc5c35f4b32"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PendingChecker",
+                "value": "P"
+              }
+            }
+          },
+          "runAfter": {
+            "InvoiceByPOMissingPO": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "SplitByBranchMissing": {
+                "actions": {
+                  "Append_to_string_variable_4": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "1f20b226-7519-450b-adf1-228d8b1ec885"
+                    },
+                    "type": "AppendToStringVariable",
+                    "inputs": {
+                      "name": "PendingChecker",
+                      "value": "P"
+                    }
+                  }
+                },
+                "runAfter": {},
+                "expression": {
+                  "and": [
+                    {
+                      "equals": [
+                        "@outputs('GetClientByID')?['body/new_splitinvoicesbybranch']",
+                        1
+                      ]
+                    },
+                    {
+                      "equals": [
+                        "@triggerOutputs()?['body/_new_branchid_value']",
+                        "@null"
+                      ]
+                    }
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "0cd72820-e82a-4818-81c3-e16581e6cca7"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('GetClientByID')?['body/new_invoicegrouping']",
+                  100000004
+                ]
+              },
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/_new_branchid_value']",
+                  "@null"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ae3135b6-0918-4ce5-96d6-a3e7a24eb7b1"
+          },
+          "type": "If"
+        },
+        "InitializePendingChecker": {
+          "runAfter": {
+            "GetClientByID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9fbb8d52-881e-48e0-a5eb-9e6a2fc965c0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PendingChecker",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "PendingOrActive": {
+          "actions": {
+            "update_status_reason_to_pending_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "27286063-04d4-4129-aa88-abe6dcb3f33e"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps-1",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@triggerOutputs()?['body/new_assignmentid']",
+                  "item/statuscode": 100000005
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "InvoiceByBranchMissingBranch": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "update_status_reason_to_active_2": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "81a9e68c-2dd5-4515-9a28-80300d509abc"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps-1",
+                    "operationId": "UpdateOnlyRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "new_assignments",
+                    "recordId": "@triggerOutputs()?['body/new_assignmentid']",
+                    "item/statuscode": 1
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "contains": [
+                  "@variables('PendingChecker')",
+                  "P"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b40e53c6-aefd-41fd-b0d5-e589fe4ff61a"
+          },
+          "type": "If"
+        },
+        "GetClientByID": {
+          "runAfter": {
+            "GetManagingAccountByID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "18560b49-c3ca-491d-8060-ac701b2be093"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

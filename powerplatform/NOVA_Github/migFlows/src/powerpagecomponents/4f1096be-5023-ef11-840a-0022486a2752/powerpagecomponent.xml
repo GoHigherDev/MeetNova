@@ -1,0 +1,31 @@
+<powerpagecomponent powerpagecomponentid="4f1096be-5023-ef11-840a-0022486a2752">
+  <content>{
+  "copy": "&lt;div id=\"ipym3\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div id=\"ihez9\" class=\"container\" style=\"padding: 0px; display: flex; flex-wrap: wrap;\"&gt;&lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word;\"&gt;{% entityform name: 'Client Settings - QP' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "enablerating": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": false,
+  "isroot": false,
+  "pagetemplateid": "18de0603-d719-ef11-9f89-0022486a2752",
+  "parentpageid": "b899eff8-eefa-4777-7890-1b4364e24f77",
+  "partialurl": "clientsettings-deleted",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "4e1096be-5023-ef11-840a-0022486a2752",
+  "sharedpageconfiguration": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client Settings-deleted</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>e2dbc71f-37e6-4ea1-9ca0-3e9eb80aeeac</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>&lt;div id="ipym3" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div id="ihez9" class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"&gt;&lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word;"&gt;{% entityform name: 'Client Settings - QP' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Client Settings-deleted</searchcontent>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,46 @@
+<powerpagecomponent powerpagecomponentid="a2f68f4e-870f-ef11-9f89-002248cbbbd1">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_appdocs",
+  "entitypermissionsenabled": false,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000000,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "\r\n$(document).ready(function () {\r\n    var expirydateField = document.getElementById('new_expirydate');\r\n    if (expirydateField) {\r\n        var parentTR = expirydateField.closest('tr');\r\n        if (parentTR) {\r\n            parentTR.style.display = 'none';\r\n        }\r\n    }\r\n    const rightToWorkSelect = document.getElementById(\"new_righttoworktypeid\");\r\n\r\n    const allOptions = Array.from(rightToWorkSelect.options);\r\n\r\n    function filterRightToWorkOptions(value) {\r\n        rightToWorkSelect.innerHTML = '';\r\n\r\n        if (value === \"1\") { // Yes\r\n            const allowedValues = [\r\n                \"6b8623fb-6e13-ef11-9899-002248cbe992\", // Birth Certificate\r\n                \"c156c2e1-6e13-ef11-9899-002248cbe992\"  // Passport\r\n            ];\r\n            const filtered = allOptions.filter(opt =&gt;\r\n                opt.value === \"\" || allowedValues.includes(opt.value)\r\n            );\r\n            filtered.forEach(opt =&gt; rightToWorkSelect.appendChild(opt));\r\n\r\n        } else {\r\n            const allowedValues = [\r\n                \"be578811-6f13-ef11-9899-002248cbe992\", // Residence Permit\r\n                \"c156c2e1-6e13-ef11-9899-002248cbe992\"  // Passport\r\n            ];\r\n            const filtered = allOptions.filter(opt =&gt;\r\n                opt.value === \"\" || allowedValues.includes(opt.value)\r\n            );\r\n            filtered.forEach(opt =&gt; rightToWorkSelect.appendChild(opt));\r\n\r\n            // allOptions.forEach(opt =&gt; rightToWorkSelect.appendChild(opt));\r\n        }\r\n    }\r\n\r\n    const isUKResident = window.parent.isUKResident;\r\n    console.log(\"isUKResident is: \", isUKResident);\r\n\r\n    filterRightToWorkOptions(isUKResident);\r\n});\r\n\r\n",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "righttowork",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>App Docs Insert - Right to Work QP</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

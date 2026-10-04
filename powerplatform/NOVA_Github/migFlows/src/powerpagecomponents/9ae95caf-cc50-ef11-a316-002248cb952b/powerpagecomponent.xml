@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="9ae95caf-cc50-ef11-a316-002248cb952b">
+  <content>{
+  "flowapiurl": "/_api/cloudflow/v1.0/trigger/a6f9c9af-c850-ef11-a316-002248cb952b",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/A4E41FF8BD9E858891F7FDC5028058EC-E0183C3B6C77F252/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "a4e41ff8-bd9e-8588-91f7-fdc5028058ec",
+  "processid": "a6f9c9af-c850-ef11-a316-002248cb952b",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Candidate Availability Insert</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="58bc4126-3990-cab3-6588-242cf0642961">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "dd435944-87cd-9e50-fc8e-b7f1c059d999",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "bbf8d46a-0e05-ee11-8f6d-6045bd12f8f9",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Remittance Edit</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="475e0a91-64d9-ef11-a731-002248cbefc2">
+  <content>{
+  "flowapiurl": "/_api/cloudflow/v1.0/trigger/88b9374a-64d9-ef11-a731-002248cbefc2",
+  "flowtriggerurl": "",
+  "metadata": "",
+  "processid": "88b9374a-64d9-ef11-a731-002248cbefc2",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "0e90c088-3441-ef11-a316-6045bd15aee8",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Populate BulkImport</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

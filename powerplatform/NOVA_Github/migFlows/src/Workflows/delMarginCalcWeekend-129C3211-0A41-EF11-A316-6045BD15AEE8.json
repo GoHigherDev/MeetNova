@@ -1,0 +1,286 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "managingaccountid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter f1ad3657-5172-ee11-a81c-6045bd0dd6f7your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "DateTimeAuthorised",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "2a4a8aa4-42df-4522-96e2-06b9eaaf728c"
+          }
+        }
+      },
+      "actions": {
+        "Initialize_Week_end_(eg_last_Sunday)": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week end Sunday",
+                "type": "string",
+                "value": "@formatDateTime(subtractFromTime(utcNow(), dayOfWeek(utcNow()), 'Day'), 'yyyy-MM-dd')"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_managing_account_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf737231-2c9a-4a94-a193-e6f7bf3af207"
+          }
+        },
+        "Get_managing_account_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerBody()?['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "59d07dfb-9829-4b36-b9d6-4a30d6289d30"
+          }
+        },
+        "Initialize_CutOffDate": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CutOffDate",
+                "type": "string",
+                "value": "@addDays(variables('Week end Sunday'),body('Get_managing_account_row_by_ID')?['new_cutoffdays'])"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Week_end_(eg_last_Sunday)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "349df03d-8873-4af3-8c5c-c28712f70f39"
+          }
+        },
+        "Initialize_CutOffTime": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CutOffTime",
+                "type": "string",
+                "value": "time"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_CutOffDate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6ada31d5-f024-4dfe-8041-e0cd00a7efe0"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "weekend": {
+                  "title": "WeekEnd",
+                  "type": "string",
+                  "format": "date",
+                  "x-ms-content-hint": "DATE",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "weekend": "@substring(variables('Week end Sunday'), 0, 10)"
+            }
+          },
+          "runAfter": {
+            "Scope": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Scope": {
+          "type": "Scope",
+          "actions": {
+            "Compose": {
+              "type": "Compose",
+              "inputs": "@body('Get_managing_account_row_by_ID')?['new_cutofftime']",
+              "metadata": {
+                "operationMetadataId": "694727d2-8d7f-438a-ac85-5df822d2515f"
+              }
+            },
+            "Compose_convert_Time_To_Minutes": {
+              "type": "Compose",
+              "inputs": "@add(\r\n    mul(\r\n        int(div(outputs('Compose'), 100)), \r\n        60\r\n    ), \r\n    mod(outputs('Compose'), 100)\r\n)",
+              "runAfter": {
+                "Compose": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "98e42472-a0e7-4f14-a9cc-bd9d41d0f6c6"
+              }
+            },
+            "Compose_add_Minutes_To_CutoffDate": {
+              "type": "Compose",
+              "inputs": "@addMinutes(variables('CutOffDate'),outputs('Compose_convert_Time_To_Minutes'))",
+              "runAfter": {
+                "Compose_convert_Time_To_Minutes": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2778dfd6-20f8-4a99-b09d-0e47d9c3ce24"
+              }
+            },
+            "Set_Cut_off_date_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "CutOffDate",
+                "value": "@{outputs('Compose_add_Minutes_To_CutoffDate')}"
+              },
+              "runAfter": {
+                "Compose_add_Minutes_To_CutoffDate": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c402f1f2-67b5-4dca-9da1-f1870fbae9fc"
+              }
+            },
+            "Condition_date_authorised_lt_cutoffdate-copy": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "lessOrEquals": [
+                      "@triggerBody()?['text_1']",
+                      "@variables('CutOffDate')"
+                    ]
+                  }
+                ]
+              },
+              "actions": {},
+              "else": {
+                "actions": {
+                  "Compose_next_weekend": {
+                    "type": "Compose",
+                    "inputs": "@addDays(variables('Week end Sunday'),7)",
+                    "metadata": {
+                      "operationMetadataId": "306a6377-e55e-4b8d-83f8-81ad29537bf5"
+                    }
+                  },
+                  "Set_weekend_date_variable_2": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Week end Sunday",
+                      "value": "@{outputs('Compose_next_weekend')}"
+                    },
+                    "runAfter": {
+                      "Compose_next_weekend": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "70cffb0a-b9db-49e7-8037-6b83b5787858"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Compose_test_the_actual_date_time_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "401968c5-2e07-4075-b5c5-16270076e108"
+              }
+            },
+            "Compose_test_the_actual_date_time_": {
+              "type": "Compose",
+              "inputs": "@variables('CutOffDate')",
+              "runAfter": {
+                "Set_Cut_off_date_variable": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_CutOffTime": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

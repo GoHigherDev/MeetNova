@@ -1,0 +1,751 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f6ecc"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_commondataserviceforapps-2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "38dc9f7f-14bd-408d-b049-8343d3d009c3"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_batch",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "new_sendinvoices eq true",
+              "subscriptionRequest/name": "5597642a-7f96-ee11-be37-6045bd0cfca3"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Apply_to_each": {
+          "foreach": "@outputs('List_invoices_rows_by_bulk_import_individual_emails')?['body/value']",
+          "actions": {
+            "get_a_client_row_by_ID": {
+              "runAfter": {
+                "ComposeIndividualInvoiceRef": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c7c89a20-e608-41a9-b10d-d358125f466b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "accounts",
+                  "recordId": "@items('Apply_to_each')?['_new_clientid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "get_a_primary_contact_row_by_ID": {
+              "runAfter": {
+                "get_a_client_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c3fe75a1-78ef-47b6-a427-746cdcece5ff"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "contacts",
+                  "recordId": "@outputs('get_a_client_row_by_ID')?['body/_primarycontactid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Update_a_row": {
+              "runAfter": {
+                "Send_an_email_(V2)": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c5f945cc-f545-45b0-baa4-6b872ed918ec"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@items('Apply_to_each')?['new_invoiceid']",
+                  "item/statecode": 1,
+                  "item/statuscode": 100000001
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "List_rowsExpensesAttachments": {
+              "runAfter": {
+                "Condition_that_invoice_contains_pdf": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5b5464be-cf78-4a80-950a-ea793f9e9640"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "annotations",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"annotation\">\n    <attribute name=\"subject\" />\n    <attribute name=\"notetext\" />\n\n    <attribute name=\"documentbody\" />\n    <attribute name=\"filename\" />\n    <attribute name=\"annotationid\" />\n    <attribute name=\"isdocument\" />\n    <attribute name=\"filesize\" />\n    <order attribute=\"subject\" descending=\"false\" />\n  <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"objectid\" link-type=\"inner\" alias=\"ad\">\n      <filter type=\"and\">\n       <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{items('Apply_to_each')?['new_invoiceid']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "List_rowsTimesheetsAttachments": {
+              "runAfter": {
+                "List_rowsExpensesAttachments": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5b5464be-cf78-4a80-950a-ea793f9e9640"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "annotations",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"annotation\">\n    <attribute name=\"subject\" />\n    <attribute name=\"notetext\" />\n\n    <attribute name=\"documentbody\" />\n    <attribute name=\"filename\" />\n    <attribute name=\"annotationid\" />\n    <attribute name=\"isdocument\" />\n    <attribute name=\"filesize\" />\n    <order attribute=\"subject\" descending=\"false\" />\n    <link-entity name=\"new_timesheetcost\" from=\"new_timesheetcostid\" to=\"objectid\" link-type=\"inner\" alias=\"ab\">\n      <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"new_timesheetid\" link-type=\"inner\" alias=\"ac\">\n        <filter type=\"and\">\n          <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{items('Apply_to_each')?['new_invoiceid']}\" />\n        </filter>\n      </link-entity>\n    </link-entity>\n  </entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Condition_that_invoice_contains_pdf": {
+              "actions": {
+                "Download_a_file_or_an_image": {
+                  "metadata": {
+                    "operationMetadataId": "de59df67-aefb-4aab-a9aa-7e5b85931915"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_invoices",
+                      "recordId": "@items('Apply_to_each')?['new_invoiceid']",
+                      "fileImageFieldName": "new_pdf"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetEntityFileImageFieldContent"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Append_to_array_variable": {
+                  "runAfter": {
+                    "Download_a_file_or_an_image": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "3beee4f9-9690-49f1-849c-83814c37e422"
+                  },
+                  "type": "AppendToArrayVariable",
+                  "inputs": {
+                    "name": "attachments",
+                    "value": {
+                      "Name": "@concat(outputs('ComposeIndividualInvoiceRef'),'.pdf')",
+                      "ContentBytes": "@body('Download_a_file_or_an_image')"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "get_a_primary_contact_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {}
+              },
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@if(empty(items('Apply_to_each')?['new_pdf']), 0, int(length(items('Apply_to_each')?['new_pdf'])))\n",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "43678e87-efea-4c55-9f4d-5e72db35a3d0"
+              },
+              "type": "If"
+            },
+            "Send_an_email_(V2)": {
+              "runAfter": {
+                "List_rowsTimesheetsAttachments": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c7f3fb0b-886a-4623-9a32-3d5d646f256f"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@body('get_a_primary_contact_row_by_ID')?['emailaddress1']",
+                  "emailMessage/Subject": "Invoice",
+                  "emailMessage/Body": "<p>Please find attached your invoice</p>",
+                  "emailMessage/Cc": "@body('get_a_client_row_by_ID')?['new_invoiceccemails']",
+                  "emailMessage/Attachments": "@variables('attachments')",
+                  "emailMessage/Importance": "Normal"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Reset_Set_array_variable": {
+              "metadata": {
+                "operationMetadataId": "cbcebfc9-feb8-461a-ae61-07443c70f87d"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "attachments",
+                "value": []
+              }
+            },
+            "ComposeIndividualInvoiceRef": {
+              "runAfter": {
+                "Reset_Set_array_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cf9cc6d1-e1ef-4dc0-957e-74b583c4d391"
+              },
+              "type": "Compose",
+              "inputs": "@item()?['new_invoiceref']"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7f3ed146-f767-4aaf-9992-c9cc80ebcc85"
+          },
+          "type": "Foreach",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "List_invoices_rows_by_bulk_import_individual_emails": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_invoices",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\\\\\\\\n  \n<entity name=\"new_invoice\">\\\\\\\\n    <attribute name=\"new_invoiceid\" />\\\\\\\\n    \n<attribute name=\"new_name\" />\\\\\\\\n    <attribute name=\"new_pdf\" />\\\\\\\\n    <attribute name=\"createdon\" />\\\\\\\\n    <attribute name=\"new_purchaseorderid\" />\\\\\\\\n    <attribute name=\"new_managingaccountid\" />\\\\\\\\n    <attribute name=\"new_invoiceref\" />\\\\\\\\n    \n<attribute name=\"new_invoicedate\" />\\\\\\\\n    <attribute name=\"new_clientid\" />\\\\\\\\n    <attribute name=\"new_contactid\" />\\\\\\\\n    <attribute name=\"new_assignmentid\" />\\\\\\\\n    <order attribute=\"new_name\" descending=\"false\" />\\\\\\\\n    \n\n<filter type=\"and\">\\\\\\\\n      \n<condition attribute=\"new_batchid\" operator=\"eq\" uitype=\"new_batch\" value=\"@{triggerOutputs()?['body/new_batchid']}\" />\\\\\\\\n   \n\n </filter>\\\\\\\\n  </entity>\\\\\\\\n\n\n    <link-entity name=\"account\" from=\"accountid\" to=\"new_clientid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000001\" />\n      </filter>\n    </link-entity>\n\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_array_attachments_variable": {
+          "runAfter": {
+            "List_invoices_rows_by_bulk_import_individual_emails": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b7dfff8a-f222-4521-8349-6530666a4a70"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "attachments",
+                "type": "array",
+                "value": null
+              }
+            ]
+          }
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Initialize_array_attachments_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "63429645-78bf-4aae-849f-91dcb466436b"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "image",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "List_invoices_rows_by_bulk_import_-_All_on_1_Email": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_invoices",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\\\\\\\\n  \n<entity name=\"new_invoice\">\\\\\\\\n    <attribute name=\"new_invoiceid\" />\\\\\\\\n    \n<attribute name=\"new_name\" />\\\\\\\\n    <attribute name=\"new_pdf\" />\\\\\\\\n    <attribute name=\"createdon\" />\\\\\\\\n    <attribute name=\"new_purchaseorderid\" />\\\\\\\\n    <attribute name=\"new_managingaccountid\" />\\\\\\\\n    <attribute name=\"new_invoiceref\" />\\\\\\\\n    \n<attribute name=\"new_invoicedate\" />\\\\\\\\n    <attribute name=\"new_clientid\" />\\\\\\\\n    <attribute name=\"new_contactid\" />\\\\\\\\n    <attribute name=\"new_assignmentid\" />\\\\\\\\n    <order attribute=\"new_name\" descending=\"false\" />\\\\\\\\n    \n\n<filter type=\"and\">\\\\\\\\n      \n<condition attribute=\"new_batchid\" operator=\"eq\" uitype=\"new_batch\" value=\"@{triggerOutputs()?['body/new_batchid']}\" />\\\\\\\\n   \n\n    </filter>\n    <link-entity name=\"account\" from=\"accountid\" to=\"new_clientid\" link-type=\"inner\" alias=\"ae\">\n      <filter type=\"and\">\n        <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000002\" />\n      </filter>\n    </link-entity>\n  </entity>\n\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_all_on_1_email": {
+          "actions": {
+            "Reset_Set_array_variable_1": {
+              "metadata": {
+                "operationMetadataId": "4e9f56ac-40a6-4b45-a6b1-f62f34a2cd90"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "attachments",
+                "value": []
+              }
+            },
+            "List_clients_with_1_per_PDF_-_All_on_1_Email": {
+              "runAfter": {
+                "Reset_Set_array_variable_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "accounts",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"account\">\n    <attribute name=\"name\" />\n    <attribute name=\"primarycontactid\" />\n    <attribute name=\"telephone1\" />\n    <attribute name=\"accountid\" />\n    <order attribute=\"name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000002\" />\n    </filter>\n    <link-entity name=\"new_invoice\" from=\"new_clientid\" to=\"accountid\" link-type=\"inner\" alias=\"ab\">\n      <filter type=\"and\">\n        <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{triggerBody()?['new_batchid']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "For_eachClient": {
+              "foreach": "@outputs('List_clients_with_1_per_PDF_-_All_on_1_Email')?['body/value']",
+              "actions": {
+                "get_a_primary_contact_row_by_ID_1": {
+                  "runAfter": {
+                    "Get_CLIENTrow_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c3fe75a1-78ef-47b6-a427-746cdcece5ff"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "contacts",
+                      "recordId": "@body('Get_CLIENTrow_by_ID')?['_primarycontactid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetItem"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "List_invoices_rows_by_bulk_import-by_client": {
+                  "runAfter": {
+                    "get_a_primary_contact_row_by_ID_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_invoices",
+                      "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\\\\\\\\n  \n<entity name=\"new_invoice\">\\\\\\\\n    <attribute name=\"new_invoiceid\" />\\\\\\\\n    \n<attribute name=\"new_name\" />\\\\\\\\n    <attribute name=\"new_pdf\" />\\\\\\\\n    <attribute name=\"createdon\" />\\\\\\\\n    <attribute name=\"new_purchaseorderid\" />\\\\\\\\n    <attribute name=\"new_managingaccountid\" />\\\\\\\\n    <attribute name=\"new_invoiceref\" />\\\\\\\\n    \n<attribute name=\"new_invoicedate\" />\\\\\\\\n    <attribute name=\"new_clientid\" />\\\\\\\\n    <attribute name=\"new_contactid\" />\\\\\\\\n    <attribute name=\"new_assignmentid\" />\\\\\\\\n    <order attribute=\"new_name\" descending=\"false\" />\\\\\\\\n    \n    <filter type=\"and\">\n      <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{triggerBody()?['new_batchid']}\" />\n      <condition attribute=\"new_clientid\" operator=\"eq\" uitype=\"account\" value=\"@{body('Get_CLIENTrow_by_ID')?['accountid']}\" />\n    </filter>\n    <link-entity name=\"account\" from=\"accountid\" to=\"new_clientid\" link-type=\"inner\" alias=\"af\">\n      <filter type=\"and\">\n        <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000002\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Apply_to_each2": {
+                  "foreach": "@outputs('List_invoices_rows_by_bulk_import-by_client')?['body/value']",
+                  "actions": {
+                    "Update_a_row_1": {
+                      "runAfter": {
+                        "List_rowsTimesheetsAttachments_1": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c5f945cc-f545-45b0-baa4-6b872ed918ec"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_invoices",
+                          "recordId": "@outputs('ComposeInvoice')",
+                          "item/statecode": 1,
+                          "item/statuscode": 100000001
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateRecord"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "List_rowsExpensesAttachments_1": {
+                      "runAfter": {
+                        "Condition_that_invoice_contains_pdf_1": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5b5464be-cf78-4a80-950a-ea793f9e9640"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "annotations",
+                          "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"annotation\">\n    <attribute name=\"subject\" />\n    <attribute name=\"notetext\" />\n\n    <attribute name=\"documentbody\" />\n    <attribute name=\"filename\" />\n    <attribute name=\"annotationid\" />\n    <attribute name=\"isdocument\" />\n    <attribute name=\"filesize\" />\n    <order attribute=\"subject\" descending=\"false\" />\n  <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"objectid\" link-type=\"inner\" alias=\"ad\">\n      <filter type=\"and\">\n       <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{outputs('ComposeInvoice')}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "ListRecords"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "List_rowsTimesheetsAttachments_1": {
+                      "runAfter": {
+                        "List_rowsExpensesAttachments_1": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5b5464be-cf78-4a80-950a-ea793f9e9640"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "annotations",
+                          "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"annotation\">\n    <attribute name=\"subject\" />\n    <attribute name=\"notetext\" />\n\n    <attribute name=\"documentbody\" />\n    <attribute name=\"filename\" />\n    <attribute name=\"annotationid\" />\n    <attribute name=\"isdocument\" />\n    <attribute name=\"filesize\" />\n    <order attribute=\"subject\" descending=\"false\" />\n    <link-entity name=\"new_timesheetcost\" from=\"new_timesheetcostid\" to=\"objectid\" link-type=\"inner\" alias=\"ab\">\n      <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"new_timesheetid\" link-type=\"inner\" alias=\"ac\">\n        <filter type=\"and\">\n          <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{outputs('ComposeInvoice')}\" />\n        </filter>\n      </link-entity>\n    </link-entity>\n  </entity>\n</fetch>"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "ListRecords"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Condition_that_invoice_contains_pdf_1": {
+                      "actions": {
+                        "Download_a_file_or_an_image_1": {
+                          "metadata": {
+                            "operationMetadataId": "de59df67-aefb-4aab-a9aa-7e5b85931915"
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "parameters": {
+                              "entityName": "new_invoices",
+                              "recordId": "@outputs('ComposeInvoice')",
+                              "fileImageFieldName": "new_pdf"
+                            },
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                              "connectionName": "shared_commondataserviceforapps",
+                              "operationId": "GetEntityFileImageFieldContent"
+                            },
+                            "authentication": "@parameters('$authentication')"
+                          }
+                        },
+                        "Append_to_array_variable_1": {
+                          "runAfter": {
+                            "Download_a_file_or_an_image_1": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "3beee4f9-9690-49f1-849c-83814c37e422"
+                          },
+                          "type": "AppendToArrayVariable",
+                          "inputs": {
+                            "name": "attachments",
+                            "value": {
+                              "Name": "@concat(outputs('ComposeInvoiceRef'),'.pdf')",
+                              "ContentBytes": "@body('Download_a_file_or_an_image_1')"
+                            }
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "ComposeInvoiceRef": [
+                          "Succeeded"
+                        ]
+                      },
+                      "else": {
+                        "actions": {}
+                      },
+                      "expression": {
+                        "and": [
+                          {
+                            "greater": [
+                              "@if(empty(items('Apply_to_each2')?['new_pdf']), 0, int(length(items('Apply_to_each2')?['new_pdf'])))",
+                              0
+                            ]
+                          }
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "43678e87-efea-4c55-9f4d-5e72db35a3d0"
+                      },
+                      "type": "If"
+                    },
+                    "ComposeInvoice": {
+                      "metadata": {
+                        "operationMetadataId": "4216b9cf-278f-4a15-8847-5c80b2815a5d"
+                      },
+                      "type": "Compose",
+                      "inputs": "@item()?['new_invoiceid']"
+                    },
+                    "ComposeInvoiceRef": {
+                      "runAfter": {
+                        "ComposeInvoice": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "ed0bf321-85e8-4d28-b2b1-1306b24767d3"
+                      },
+                      "type": "Compose",
+                      "inputs": "@item()?['new_invoiceref']"
+                    }
+                  },
+                  "runAfter": {
+                    "List_invoices_rows_by_bulk_import-by_client": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7f3ed146-f767-4aaf-9992-c9cc80ebcc85"
+                  },
+                  "type": "Foreach",
+                  "runtimeConfiguration": {
+                    "concurrency": {
+                      "repetitions": 1
+                    }
+                  }
+                },
+                "ComposeClientid": {
+                  "metadata": {
+                    "operationMetadataId": "7493130d-aacd-407a-b1b2-53d2a007dedc"
+                  },
+                  "type": "Compose",
+                  "inputs": "@item()?['accountid']"
+                },
+                "Get_CLIENTrow_by_ID": {
+                  "runAfter": {
+                    "ComposeClientid": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4806a69a-eefd-4278-bf85-34ff54f988ba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "accounts",
+                      "recordId": "@outputs('ComposeClientid')"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "shared_commondataserviceforapps-2",
+                      "operationId": "GetItem"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Send_an_email_(V2)_1": {
+                  "runAfter": {
+                    "Apply_to_each2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c7f3fb0b-886a-4623-9a32-3d5d646f256f"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "emailMessage/To": "@body('get_a_primary_contact_row_by_ID_1')?['emailaddress1']",
+                      "emailMessage/Subject": "Invoice",
+                      "emailMessage/Body": "<p>Please find attached your invoice</p>",
+                      "emailMessage/Cc": "@body('Get_CLIENTrow_by_ID')?['new_invoiceccemails']",
+                      "emailMessage/Attachments": "@variables('attachments')",
+                      "emailMessage/Importance": "Normal"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                      "connectionName": "shared_office365",
+                      "operationId": "SendEmailV2"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "List_clients_with_1_per_PDF_-_All_on_1_Email": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6ace48c4-24bd-4d23-a467-bf7350185297"
+              },
+              "type": "Foreach"
+            }
+          },
+          "runAfter": {
+            "List_invoices_rows_by_bulk_import_-_All_on_1_Email": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('List_invoices_rows_by_bulk_import_-_All_on_1_Email')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a701936b-ad63-468a-a2d4-82cf94797481"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

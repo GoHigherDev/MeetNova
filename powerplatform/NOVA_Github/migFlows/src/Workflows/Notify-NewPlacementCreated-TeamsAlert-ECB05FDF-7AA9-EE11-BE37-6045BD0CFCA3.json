@@ -1,0 +1,263 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_teams_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedteams_8e71d"
+        },
+        "api": {
+          "name": "shared_teams"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "20bb31b4-c527-471e-b01f-2fe5431a8676"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_assignment",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Post_message_in_a_chat_or_channel": {
+          "runAfter": {
+            "Create_HTML_table": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6ed16498-a325-4faf-a069-4a35e3b8e52a"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_teams_1",
+              "operationId": "PostMessageToConversation",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams"
+            },
+            "parameters": {
+              "poster": "Flow bot",
+              "location": "Group chat",
+              "body/recipient": "19:meeting_OTIwNzA0ZTEtZGZjNy00NDM4LWJmZGEtMTYyOTNmZjk4ZTk2@thread.v2",
+              "body/messageBody": "<p>New deal by @{outputs('Consultant_by_ID')?['body/fullname']}<br>\nSector&nbsp;@{outputs('Sector_by_ID')?['body/new_name']}<br>\nClient @{outputs('Client_by_ID')?['body/name']}<br>\n<br>\n@{body('Create_HTML_table')}</p>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Consultant_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "cc3b33ce-2b23-43a8-a214-0161b2317a43"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_consultantid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Sector_by_ID": {
+          "runAfter": {
+            "Consultant_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b301b692-e613-4dac-9d85-44ab45555967"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_sectors",
+              "recordId": "@triggerOutputs()?['body/_new_sectorid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Client_by_ID": {
+          "runAfter": {
+            "Sector_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "405bebda-4169-4b7b-802e-be2f9bfc48ab"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "List_rows_-_Assignment_Rates": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8e2802b5-960a-4b10-ae2d-50b6636a7626"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NewStarter",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "Create_HTML_table": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e4868727-13fd-418d-b8b1-be75f9521ca4"
+          },
+          "type": "Table",
+          "inputs": {
+            "from": "@variables('NewStarter')",
+            "format": "HTML"
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates')?['body/value']",
+          "actions": {
+            "Assignment_Rate_by_ID_": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "55395a04-e549-463a-92a5-22ceac4c0812"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Apply_to_each')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_array_variable": {
+              "runAfter": {
+                "Assignment_Rate_by_ID_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6a9ed7e2-8bba-4a14-b7eb-5b3ed9bb6d0b"
+              },
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "NewStarter",
+                "value": {
+                  "Rate": "@outputs('Assignment_Rate_by_ID_')?['body/new_name']",
+                  "Pay": "@outputs('Assignment_Rate_by_ID_')?['body/new_payrate']",
+                  "Bill": "@outputs('Assignment_Rate_by_ID_')?['body/new_billrate']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1cd2f99f-65e9-4c6f-86a8-8721aebd7a47"
+          },
+          "type": "Foreach"
+        },
+        "List_rows_-_Assignment_Rates": {
+          "runAfter": {
+            "Client_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0939846b-55c5-44a7-a25e-d5de05780151"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignmentrate\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_payrate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billrate\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

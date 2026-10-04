@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="a9bcc95f-03f0-ee11-904b-002248c78203">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": false,
+  "delete": false,
+  "entitylogicalname": "transactioncurrency",
+  "entityname": "Currency",
+  "read": true,
+  "scope": 756150000,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+    "fd7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+    "ff7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Currency</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

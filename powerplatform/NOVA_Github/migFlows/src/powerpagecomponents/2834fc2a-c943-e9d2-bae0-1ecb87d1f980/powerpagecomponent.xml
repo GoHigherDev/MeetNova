@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="2834fc2a-c943-e9d2-bae0-1ecb87d1f980">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "48c79c43-0c76-d4b5-459a-f3e4aaac2e0c",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "198c028f-e0d0-ee11-9079-6045bd0cfca3",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Rate Types</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,35 @@
+<powerpagecomponent powerpagecomponentid="e8ee1fee-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; text-align: left; min-height: auto; padding: 8px;\"&gt;\n  &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Job Applications (portal)' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "aa976802-4690-ef11-8a6a-6045bd698889",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "26859ad4-cb1d-f011-9989-6045bd69f0ab",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "jobapplications",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "876faf15-08d4-c67b-8c54-7fe5bd67540b",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "مقترحات الوظيفة"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Applications</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>مقترحات الوظيفة&lt;div class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; text-align: left; min-height: auto; padding: 8px;"&gt;
+  &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Job Applications (portal)' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Job Applications</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

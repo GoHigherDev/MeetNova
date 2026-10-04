@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="fcb43bb7-63f2-42fc-b6c6-0135d4ae44fa">
+  <content>{
+  "displayorder": 162,
+  "pageid": "6440509a-96c4-7ace-b7d0-8636917b172c",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="35db89a9-9669-1c17-77e0-25a3171588ad">
+  <content>{
+  "displayorder": 10,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "0a46a60f-1006-ef11-9f89-0022481bbf4e",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "c522c2b9-1c09-ef11-9f89-6045bd0d1c17",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "compliancerequest",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Compliance Request"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance Request</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Compliance RequestCompliance Request</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

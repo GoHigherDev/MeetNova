@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="d2dae7f6-0f5a-ef11-bfe3-002248cb952b">
+  <content>{
+  "flowapiurl": "/_api/cloudflow/v1.0/trigger/46452de0-0f5a-ef11-bfe3-002248cb952b",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/1508A26207A1870FD29259E36E64FABF-E0183C3B6C77F252/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "1508a262-07a1-870f-d292-59e36e64fabf",
+  "processid": "46452de0-0f5a-ef11-bfe3-002248cb952b",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Unique Email and Username</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

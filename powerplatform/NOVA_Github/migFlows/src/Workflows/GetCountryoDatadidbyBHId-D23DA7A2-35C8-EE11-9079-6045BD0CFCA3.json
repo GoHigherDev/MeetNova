@@ -1,0 +1,185 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "5f66d512-01a7-4177-aa1e-5dd8bfc6dec3"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "session",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "session",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "countryid",
+                  "title": "countryid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "List_rows": {
+          "runAfter": {
+            "HTTPCountry": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3a55c9da-442d-4ff5-afa1-06944fb03aa8"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_countries",
+              "$filter": "new_code eq '@{trim(first(xpath(xml(outputs('HTTPCountry')['body']), '//*[local-name()=\"code\"]/text()')))}'",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ce1e3e69-a53c-44a5-ac31-5fcfcf1ba66d"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "odataid": "@variables('Country Odataid')"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "odataid": {
+                  "title": "odataid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Initialize_Country_Odataid_variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "e9faff8f-a147-4b00-9747-91ded4bb5cfd"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Country Odataid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_rows')?['body/value']",
+          "actions": {
+            "Set_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "5b2dc951-23c9-4f8c-96e2-70a171427f7e"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Country Odataid",
+                "value": "@items('Apply_to_each')?['@odata.id']"
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "305d38e2-4624-4c13-8435-a959b46804c9"
+          },
+          "type": "Foreach"
+        },
+        "HTTPCountry": {
+          "runAfter": {
+            "Initialize_Country_Odataid_variable": [
+              "Succeeded"
+            ]
+          },
+          "limit": {
+            "timeout": "PT2M"
+          },
+          "metadata": {
+            "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+            "headers": {
+              "Content-Type": "text/xml; charset=utf-8",
+              "SOAPAction": ""
+            },
+            "body": "<soapenv:Envelope   \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>Country</entityName>\n       <id xsi:type=\"xs:int\">@{triggerBody()['text_1']}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

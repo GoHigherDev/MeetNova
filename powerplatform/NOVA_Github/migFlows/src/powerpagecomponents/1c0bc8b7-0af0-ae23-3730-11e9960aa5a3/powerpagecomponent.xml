@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="1c0bc8b7-0af0-ae23-3730-11e9960aa5a3">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "92154122-892f-3f09-698d-e021ad3c9e01",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Branches</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

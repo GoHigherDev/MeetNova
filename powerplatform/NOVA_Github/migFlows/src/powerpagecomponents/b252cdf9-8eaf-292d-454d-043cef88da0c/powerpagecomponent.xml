@@ -1,0 +1,45 @@
+<powerpagecomponent powerpagecomponentid="b252cdf9-8eaf-292d-454d-043cef88da0c">
+  <content>{
+  "copy": "&lt;div id=\"in8yb3\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div id=\"i5gapj\" class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;\n    &lt;div id=\"i3ge5j\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 0 0 60px 0;\"&gt;\n      &lt;h2 style=\"color: #087DAF; font-weight: 500; font-size: 24px;\"&gt;WELCOME TO THE QUICKSHIFTS PORTAL&lt;/h2&gt;\n      \n      &lt;p style=\"font-size: 16px; margin-bottom: 35px;\"&gt;        \n        &lt;i&gt;This portal allows you to submit the necessary details and supporting documents so we can finalize your onboarding verification process.&lt;/i&gt;\n      &lt;/p&gt;\n      {% entityform name: 'Candidate Registrations' %}\n    &lt;/div&gt;\n  &lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 33,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "1115c69c-e10e-ef11-9f89-002248cbbbd1",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "c38e7966-4804-f011-bae3-6045bd69f0ab",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "compliance",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "83d0d719-72bf-f1eb-3f14-beb91fb71a1d",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "My COMPLIANCE"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>e2dbc71f-37e6-4ea1-9ca0-3e9eb80aeeac</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>My COMPLIANCE&lt;div id="in8yb3" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div id="i5gapj" class="container" style="display: flex; flex-wrap: wrap;"&gt;
+    &lt;div id="i3ge5j" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 0 0 60px 0;"&gt;
+      &lt;h2 style="color: #087DAF; font-weight: 500; font-size: 24px;"&gt;WELCOME TO THE QUICKSHIFTS PORTAL&lt;/h2&gt;
+      
+      &lt;p style="font-size: 16px; margin-bottom: 35px;"&gt;        
+        &lt;i&gt;This portal allows you to submit the necessary details and supporting documents so we can finalize your onboarding verification process.&lt;/i&gt;
+      &lt;/p&gt;
+      {% entityform name: 'Candidate Registrations' %}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+Compliance</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

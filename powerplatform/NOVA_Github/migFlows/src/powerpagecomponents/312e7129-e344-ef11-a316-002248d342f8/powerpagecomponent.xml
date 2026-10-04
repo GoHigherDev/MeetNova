@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="312e7129-e344-ef11-a316-002248d342f8">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_approverid",
+  "controlstyle": 756150000,
+  "descriptionposition": 100000000,
+  "entityform": "faa23946-0c05-ee11-8f6d-6045bd12f8f9",
+  "entityformforcreate": "faa23946-0c05-ee11-8f6d-6045bd12f8f9",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "label": "[{\"LCID\":1025,\"Value\":\"المدقق\"},{\"LCID\":1033,\"Value\":\"\"}]",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheet (admin) new_approverid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

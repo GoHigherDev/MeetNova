@@ -1,0 +1,24 @@
+<powerpagecomponent powerpagecomponentid="7c850b25-3d03-ef11-9f89-0022481bbf4e">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_name",
+  "descriptionposition": 100000000,
+  "entityform": "258c6ee0-3b03-ef11-9f89-0022481bbf4e",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "fullname",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Emergency Contact Details new_name</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

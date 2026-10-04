@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="3338c863-3f09-4d51-82c4-15233189641c">
+  <content>{
+  "displayorder": 92,
+  "pageid": "d994355d-7d1f-6be3-4640-a9722f158e54",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Consultant Edit</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

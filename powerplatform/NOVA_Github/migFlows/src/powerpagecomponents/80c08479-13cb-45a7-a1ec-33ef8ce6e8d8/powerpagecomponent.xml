@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="80c08479-13cb-45a7-a1ec-33ef8ce6e8d8">
+  <content>{
+  "displayorder": 24,
+  "pageid": "83d0d719-72bf-f1eb-3f14-beb91fb71a1d",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

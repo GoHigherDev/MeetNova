@@ -1,0 +1,37 @@
+<powerpagecomponent powerpagecomponentid="5c26f214-65d2-737e-2897-3014b8b44f6f">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"min-height: auto; padding: 8px;\"&gt;\n    &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;\n      &lt;div class=\"col-md-12 columnBlockLayout\" style=\"padding: 16px; margin: 60px 0px; min-height: 200px;\"&gt;&lt;/div&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n  ",
+  "displayorder": 184,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "4c902aed-0f2c-f011-8c4d-6045bd69f0ab",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "EVA-Demo",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "64bd8674-8dc4-12c0-9e46-d76145ad7a58",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "EVA Demo"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>EVA Demo</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9179b7b5-28a2-ef11-8a69-6045bd69e577</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>EVA Demo&lt;div class="row sectionBlockLayout text-left" style="min-height: auto; padding: 8px;"&gt;
+    &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;
+      &lt;div class="col-md-12 columnBlockLayout" style="padding: 16px; margin: 60px 0px; min-height: 200px;"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  EVA Demo</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

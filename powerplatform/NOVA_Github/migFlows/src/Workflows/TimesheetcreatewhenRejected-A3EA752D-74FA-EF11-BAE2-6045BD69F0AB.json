@@ -1,0 +1,102 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000010"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "28429d4c-261e-40b7-96ae-c701cc5b0936"
+          }
+        }
+      },
+      "actions": {
+        "Add_a_new_timesheet_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "item/new_name": "new on reject",
+              "item/new_assignmentid@odata.bind": "new_assignments(@{triggerOutputs()?['body/_new_assignmentid_value']})",
+              "item/new_branchid@odata.bind": "@{if(equals(triggerOutputs()?['body/_new_branchid_value'], null), '', concat('/new_branchs(', triggerOutputs()?['body/_new_branchid_value'], ')'))}\n",
+              "item/new_candidateid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_candidateid_value']})",
+              "item/new_clientid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_clientid_value']})",
+              "item/new_consultantid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_consultantid_value']})",
+              "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerOutputs()?['body/_transactioncurrencyid_value']})",
+              "item/new_invoicingtype": "@triggerOutputs()?['body/new_invoicingtype']",
+              "item/new_istimesheetpreapproved": "@triggerOutputs()?['body/new_istimesheetpreapproved']",
+              "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingaccountid_value']})",
+              "item/new_periodend": "@triggerOutputs()?['body/new_periodend']",
+              "item/new_periodstart": "@triggerOutputs()?['body/new_periodstart']",
+              "item/statuscode": 1,
+              "item/new_supplierid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_supplierid_value']})"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1cf290dd-fd08-4bf8-abd4-2078566faf80"
+          }
+        },
+        "Run_a_Child_Flow": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "eb9901cd-342e-ef11-840a-6045bd14f37f"
+            },
+            "body": {
+              "text_1": "@outputs('Add_a_new_timesheet_row')?['body/new_timesheetid']"
+            }
+          },
+          "runAfter": {
+            "Add_a_new_timesheet_row": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

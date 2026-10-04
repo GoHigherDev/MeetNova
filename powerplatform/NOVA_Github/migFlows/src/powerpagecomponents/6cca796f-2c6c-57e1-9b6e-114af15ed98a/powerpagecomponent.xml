@@ -1,0 +1,37 @@
+<powerpagecomponent powerpagecomponentid="6cca796f-2c6c-57e1-9b6e-114af15ed98a">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"min-height: auto; padding: 8px;\"&gt;\n    &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;\n      &lt;div class=\"col-md-12 columnBlockLayout\" style=\"padding: 16px; margin: 60px 0px; min-height: 200px;\"&gt;&lt;/div&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n  ",
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "bdb55a18-cc0e-f011-998a-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "8a2ceb47-c50e-f011-998a-6045bd69f0ab",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "Privacy-and-Policy-clients",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "e087e486-0988-6cf7-07e5-ae866bcf804c",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Privacy and Policy clients"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Privacy and Policy clients</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Privacy and Policy clients&lt;div class="row sectionBlockLayout text-left" style="min-height: auto; padding: 8px;"&gt;
+    &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;
+      &lt;div class="col-md-12 columnBlockLayout" style="padding: 16px; margin: 60px 0px; min-height: 200px;"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  Privacy and Policy clients</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

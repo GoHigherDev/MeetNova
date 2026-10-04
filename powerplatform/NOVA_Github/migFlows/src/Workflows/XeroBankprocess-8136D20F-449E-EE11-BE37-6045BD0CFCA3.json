@@ -1,0 +1,1399 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "msdyn_Dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "519ee773-a0b0-456a-ad28-78991d5d3ab1"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "AcctTxLogIdGuid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "Authorisation",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "TenantId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Update_batch_row_to_processed_inactive": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "746c7b47-179c-4e97-9b14-357357825e54"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "true"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Initialize_variable_XeroTenant-Id": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "6ca2ac8e-1870-4992-9d5b-9f79c392de16"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "XeroTenant-Id",
+                "type": "string",
+                "value": "@triggerBody()['text_2']"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_Authorization": {
+          "runAfter": {
+            "Initialize_variable_XeroTenant-Id": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "afcfcdda-db50-4389-ba8e-7bf71cf04032"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Authorization",
+                "type": "string",
+                "value": "@triggerBody()['text_1']"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_InvoiceItems": {
+          "runAfter": {
+            "Initialize_XeroContactid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e02ca0a6-054f-44ad-ae72-7722b6090a92"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "InvoiceItems",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Get_AccountingLog_row_by_ID": {
+          "runAfter": {
+            "Initialize_variable_Customer_Json_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "26c259d1-1d74-498b-8a9f-1ad07733a84e"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_accountingtransactionlogs",
+              "recordId": "@triggerBody()['text']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Get_a_Batch_row_by_ID": {
+          "runAfter": {
+            "Get_AccountingLog_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bc9ddfc5-317e-4713-b090-e2e305d89ede"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_batchs",
+              "recordId": "@outputs('Get_AccountingLog_row_by_ID')?['body/_new_batchid_value']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "List_Invoices_rows": {
+          "runAfter": {
+            "Get_a_Batch_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "70d4196a-99ed-4275-b291-4fa90c7b45b4"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_invoices",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoice\">\n    <attribute name=\"new_invoiceid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_total_base\" />\n    <attribute name=\"new_total\" />\n    <attribute name=\"statuscode\" />\n    <attribute name=\"new_purchaseorderid\" />\n    <attribute name=\"new_invoiceref\" />\n    <attribute name=\"new_invoicedate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_clientid\" />\n    <attribute name=\"new_contactid\" />\n    <attribute name=\"new_batchid\" />\n    <attribute name=\"new_assignmentid\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{outputs('Get_a_Batch_row_by_ID')?['body/new_batchid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Initialize_variable_Customer_Json_": {
+          "runAfter": {
+            "Initialize_variable_Remittance_Items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "840e0872-aa33-44c7-a47b-70e9b15d2339"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Customer-Json",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each_Update_invoice_status_reason_to_processed_of_inactive_state": {
+          "foreach": "@outputs('List_Invoices_rows')?['body/value']",
+          "actions": {
+            "Update_a_row_invoice_to_inactive_Processed_": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "634b4329-8165-4475-ba0e-802cf704bf47"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "UpdateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@items('Apply_to_each_Update_invoice_status_reason_to_processed_of_inactive_state')?['new_invoiceid']",
+                  "item/statecode": 1,
+                  "item/statuscode": 100000001
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c69a0192-927d-4610-9aa3-30c764374b43"
+          },
+          "type": "Foreach"
+        },
+        "List_Remittances_rows": {
+          "runAfter": {
+            "List_Invoices_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "38070962-58d8-4695-a8aa-ef43c429e540"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_remittances",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_total\" />\n    <attribute name=\"new_supplierid\" />\n    <attribute name=\"statuscode\" />\n    <attribute name=\"statecode\" />\n    <attribute name=\"new_remittancedate\" />\n    <attribute name=\"new_purchaseorderid\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_candidateid\" />\n    <attribute name=\"new_batchid\" />\n    <attribute name=\"new_assignmentid\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{outputs('Get_a_Batch_row_by_ID')?['body/new_batchid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Apply_to_each_3": {
+              "foreach": "@outputs('List_Invoices_rows')?['body/value']",
+              "actions": {
+                "Get_client_account_row_by_ID_2": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "a39cc79d-4ba5-47d4-b44e-cb8127dba941"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "accounts",
+                      "recordId": "@items('Apply_to_each_3')?['_new_clientid_value']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Get_primary_contact_row_by_ID_2": {
+                  "runAfter": {
+                    "Get_client_account_row_by_ID_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "f56a1038-1616-4ad1-8be4-cada955a6147"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contacts",
+                      "recordId": "@outputs('Get_client_account_row_by_ID_2')?['body/_primarycontactid_value']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "HTTP_Invoices_2": {
+                  "runAfter": {
+                    "Condition_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "14711a99-87fc-4c6e-a299-227208ebd110"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://api.xero.com/api.xro/2.0/Invoices",
+                    "headers": {
+                      "Content-Type": "application/json",
+                      "Accept": "application/json",
+                      "Xero-Tenant-Id": "@variables('XeroTenant-Id')",
+                      "Authorization": "@variables('Authorization')"
+                    },
+                    "body": {
+                      "Invoices": [
+                        {
+                          "Type": "ACCREC",
+                          "Contact": {
+                            "ContactID": "@{variables('XeroContactid')}"
+                          },
+                          "DateString": "2009-09-08T00:00:00",
+                          "DueDateString": "2009-10-20T00:00:00",
+                          "InvoiceNumber": "@{outputs('Get_invoice_row_by_ID_2')?['body/new_invoiceref']}",
+                          "Reference": "@{outputs('Get_invoice_row_by_ID_2')?['body/new_invoiceref']}",
+                          "CurrencyCode": "@{outputs('Get_currency_row_by_ID_2')?['body/isocurrencycode']}",
+                          "Status": "SUBMITTED",
+                          "LineAmountTypes": "Inclusive",
+                          "SubTotal": "@{outputs('Get_invoice_row_by_ID_2')?['body/new_subtotal']}",
+                          "TotalTax": "@{outputs('Get_invoice_row_by_ID_2')?['body/new_totaltax']}",
+                          "Total": "@{outputs('Get_invoice_row_by_ID_2')?['body/new_total']}",
+                          "LineItems": [
+                            "@outputs('Compose_4')"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                "Get_invoice_row_by_ID_2": {
+                  "runAfter": {
+                    "Get_primary_contact_row_by_ID_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7a0a90f5-fbac-489d-aa26-9107f52d0842"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_invoices",
+                      "recordId": "@items('Apply_to_each_3')?['new_invoiceid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Get_currency_row_by_ID_2": {
+                  "runAfter": {
+                    "Get_invoice_row_by_ID_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "aad9f855-7502-41ed-ba37-88018b6c8594"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "transactioncurrencies",
+                      "recordId": "@outputs('Get_invoice_row_by_ID_2')?['body/_transactioncurrencyid_value']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Compose_invoicedate_2": {
+                  "runAfter": {
+                    "Compose_3": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "beff3649-bb68-4439-997b-ea73118f5056"
+                  },
+                  "type": "Compose",
+                  "inputs": "\\/Date(@{convertToUtc(outputs('Compose_3'), 'UTC')})\\/"
+                },
+                "Compose_3": {
+                  "runAfter": {
+                    "Get_currency_row_by_ID_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "41c5c82e-676b-48ce-b340-db835fdc970a"
+                  },
+                  "type": "Compose",
+                  "inputs": "@coalesce(outputs('Get_invoice_row_by_ID_2')?['body/new_invoicedate'], utcNow())"
+                },
+                "List_Items_rows_2": {
+                  "runAfter": {
+                    "Compose_invoicedate_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "40704367-a3e6-45a5-be0c-8b2d1cfca4a9"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_invoicedetails",
+                      "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoicedetail\">\n    <attribute name=\"new_invoicedetailid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"new_units\" />\n    <attribute name=\"new_total\" />\n    <attribute name=\"new_tax\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_description\" />\n    <attribute name=\"new_billunit\" />\n    <attribute name=\"new_billtotal\" />\n    <attribute name=\"new_billtaxtypeid\" />\n    <attribute name=\"new_bill\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{outputs('Get_invoice_row_by_ID_2')?['body/new_invoiceid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Apply_to_each_4": {
+                  "foreach": "@outputs('List_Items_rows_2')?['body/value']",
+                  "actions": {
+                    "Append_to_string_variable_2": {
+                      "runAfter": {
+                        "Compose_Item_2": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "991f04ac-569d-4c2a-b196-f4ad92364113"
+                      },
+                      "type": "AppendToStringVariable",
+                      "inputs": {
+                        "name": "InvoiceItems",
+                        "value": "@outputs('Compose_Item_2')"
+                      }
+                    },
+                    "Compose_Description_2": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "5d9caa54-8921-40d2-a590-40fb88982945"
+                      },
+                      "type": "Compose",
+                      "inputs": "@{items('Apply_to_each_4')?['_new_ratetypeid_value']}@{outputs('Get_primary_contact_row_by_ID_2')?['body/description']}"
+                    },
+                    "Compose_Item_2": {
+                      "runAfter": {
+                        "Compose_Description_2": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "ef1f0b22-386c-41d9-90d6-b5be186e5178"
+                      },
+                      "type": "Compose",
+                      "inputs": "{  \"Description\": \"@{outputs('Compose_Description_2')}\",        \"Quantity\": \"@{items('Apply_to_each_4')?['new_units']}\", \"UnitAmount\": \"@{items('Apply_to_each_4')?['new_bill']}\",          \"TaxType\": \"OUTPUT2\", \"TaxAmount\": \"@{items('Apply_to_each_4')?['new_tax']}\",          \"LineAmount\": \"@{items('Apply_to_each_4')?['new_billtotal']}\",     \"AccountCode\": \"200\"        },"
+                    }
+                  },
+                  "runAfter": {
+                    "List_Items_rows_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e5e5a90d-12db-4856-8d21-54c38fb93de4"
+                  },
+                  "type": "Foreach",
+                  "runtimeConfiguration": {
+                    "concurrency": {
+                      "repetitions": 1
+                    }
+                  }
+                },
+                "Compose_4": {
+                  "runAfter": {
+                    "Compose_items_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "933b9bb0-9c76-4582-a998-e5acf90b4663"
+                  },
+                  "type": "Compose",
+                  "inputs": "@if(equals(outputs('Compose_items_2'), ''), json('{\"Description\": \"EMPTY DETAILS\"}'), json(outputs('Compose_items_2')))"
+                },
+                "Compose_items_2": {
+                  "runAfter": {
+                    "Apply_to_each_4": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4089527f-9ec8-43cf-87a9-3bea15895bda"
+                  },
+                  "type": "Compose",
+                  "inputs": "@if(equals(variables('InvoiceItems'), ''), '', substring(variables('InvoiceItems'), 0, sub(length(variables('InvoiceItems')), 1)))"
+                },
+                "Condition_2": {
+                  "actions": {
+                    "HTTP_Contacts": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "14711a99-87fc-4c6e-a299-227208ebd110"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "method": "POST",
+                        "uri": "https://api.xero.com/api.xro/2.0/Contacts",
+                        "headers": {
+                          "Content-Type": "application/json",
+                          "Accept": "application/json",
+                          "Xero-Tenant-Id": "@variables('XeroTenant-Id')",
+                          "Authorization": "@variables('Authorization')"
+                        },
+                        "body": {
+                          "Contacts": [
+                            {
+                              "Name": "@{outputs('Get_client_account_row_by_ID_2')?['body/name']}",
+                              "CompanyNumber": "@{outputs('Get_client_account_row_by_ID_2')?['body/accountnumber']}",
+                              "ContactStatus": "ACTIVE",
+                              "FirstName": "@{outputs('Get_primary_contact_row_by_ID_2')?['body/firstname']}",
+                              "LastName": "@{outputs('Get_primary_contact_row_by_ID_2')?['body/lastname']}",
+                              "EmailAddress": "@{outputs('Get_client_account_row_by_ID_2')?['body/emailaddress1']}",
+                              "IsCustomer": "true",
+                              "Addresses": [
+                                {
+                                  "AddressType": "STREET",
+                                  "AddressLine1": "@{outputs('Get_primary_contact_row_by_ID_2')?['body/address1_line1']}",
+                                  "AddressLine2": "@{outputs('Get_primary_contact_row_by_ID_2')?['body/address1_line2']}",
+                                  "City": "@{outputs('Get_primary_contact_row_by_ID_2')?['body/address1_city']}",
+                                  "PostalCode": "@{outputs('Get_primary_contact_row_by_ID_2')?['body/address1_postalcode']}"
+                                }
+                              ],
+                              "Phones": [
+                                {
+                                  "PhoneType": "DEFAULT",
+                                  "PhoneNumber": "@{outputs('Get_client_account_row_by_ID_2')?['body/telephone1']}"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "Parse_JSON": {
+                      "runAfter": {
+                        "HTTP_Bank_account": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "d9f8e2cc-6691-4677-997a-dc4f384a8c99"
+                      },
+                      "type": "ParseJson",
+                      "inputs": {
+                        "content": "@body('HTTP_Contacts')",
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "Id": {
+                              "type": "string"
+                            },
+                            "Status": {
+                              "type": "string"
+                            },
+                            "ProviderName": {
+                              "type": "string"
+                            },
+                            "DateTimeUTC": {
+                              "type": "string"
+                            },
+                            "Contacts": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "ContactID": {
+                                    "type": "string"
+                                  },
+                                  "CompanyNumber": {
+                                    "type": "string"
+                                  },
+                                  "ContactStatus": {
+                                    "type": "string"
+                                  },
+                                  "Name": {
+                                    "type": "string"
+                                  },
+                                  "FirstName": {
+                                    "type": "string"
+                                  },
+                                  "LastName": {
+                                    "type": "string"
+                                  },
+                                  "EmailAddress": {
+                                    "type": "string"
+                                  },
+                                  "BankAccountDetails": {
+                                    "type": "string"
+                                  },
+                                  "Addresses": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "AddressType": {
+                                          "type": "string"
+                                        },
+                                        "AddressLine1": {
+                                          "type": "string"
+                                        },
+                                        "AddressLine2": {
+                                          "type": "string"
+                                        },
+                                        "City": {
+                                          "type": "string"
+                                        },
+                                        "Region": {
+                                          "type": "string"
+                                        },
+                                        "PostalCode": {
+                                          "type": "string"
+                                        },
+                                        "Country": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "AddressType",
+                                        "City",
+                                        "Region",
+                                        "PostalCode",
+                                        "Country"
+                                      ]
+                                    }
+                                  },
+                                  "Phones": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "PhoneType": {
+                                          "type": "string"
+                                        },
+                                        "PhoneNumber": {
+                                          "type": "string"
+                                        },
+                                        "PhoneAreaCode": {
+                                          "type": "string"
+                                        },
+                                        "PhoneCountryCode": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "PhoneType",
+                                        "PhoneNumber",
+                                        "PhoneAreaCode",
+                                        "PhoneCountryCode"
+                                      ]
+                                    }
+                                  },
+                                  "UpdatedDateUTC": {
+                                    "type": "string"
+                                  },
+                                  "ContactGroups": {
+                                    "type": "array"
+                                  },
+                                  "IsSupplier": {
+                                    "type": "boolean"
+                                  },
+                                  "IsCustomer": {
+                                    "type": "boolean"
+                                  },
+                                  "SalesTrackingCategories": {
+                                    "type": "array"
+                                  },
+                                  "PurchasesTrackingCategories": {
+                                    "type": "array"
+                                  },
+                                  "ContactPersons": {
+                                    "type": "array"
+                                  },
+                                  "HasValidationErrors": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "ContactID",
+                                  "CompanyNumber",
+                                  "ContactStatus",
+                                  "Name",
+                                  "FirstName",
+                                  "LastName",
+                                  "EmailAddress",
+                                  "BankAccountDetails",
+                                  "Addresses",
+                                  "Phones",
+                                  "UpdatedDateUTC",
+                                  "ContactGroups",
+                                  "IsSupplier",
+                                  "IsCustomer",
+                                  "SalesTrackingCategories",
+                                  "PurchasesTrackingCategories",
+                                  "ContactPersons",
+                                  "HasValidationErrors"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Apply_to_each": {
+                      "foreach": "@body('Parse_JSON')?['Contacts']",
+                      "actions": {
+                        "Set_contactid_variable": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "d69b39c4-de49-4ebe-b688-1a22cdfc7ef3"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "XeroContactid",
+                            "value": "@items('Apply_to_each')?['ContactID']"
+                          }
+                        },
+                        "Update_client_account_with_Xero_ContactID_": {
+                          "runAfter": {
+                            "Set_contactid_variable": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "9647dfee-3f56-49dc-b3a9-89ee88ab6380"
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "connectionName": "shared_commondataserviceforapps",
+                              "operationId": "UpdateRecord",
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                            },
+                            "parameters": {
+                              "entityName": "accounts",
+                              "recordId": "@outputs('Get_client_account_row_by_ID_2')?['body/accountid']",
+                              "item/new_accountintegrationid": "@variables('XeroContactid')"
+                            },
+                            "authentication": {
+                              "type": "Raw",
+                              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                            }
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "Parse_JSON": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "a812e903-114f-498a-a6c3-a37b99064fa4"
+                      },
+                      "type": "Foreach"
+                    },
+                    "HTTP_Bank_account": {
+                      "runAfter": {
+                        "HTTP_Contacts": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "14711a99-87fc-4c6e-a299-227208ebd110"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "method": "POST",
+                        "uri": "https://api.xero.com/api.xro/2.0/Contacts",
+                        "headers": {
+                          "Content-Type": "application/json",
+                          "Accept": "application/json",
+                          "Xero-Tenant-Id": "@variables('XeroTenant-Id')",
+                          "Authorization": "@variables('Authorization')"
+                        },
+                        "body": {
+                          "Account": [
+                            {
+                              "Name": "Cheque Account",
+                              "Type": "BANK",
+                              "BankAccountNumber": "121-121-1234567"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Compose_4": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "Set_variable_2": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "edc0e956-32bb-4832-a124-9fb525dd9fb2"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "XeroContactid",
+                          "value": "@outputs('Get_client_account_row_by_ID_2')?['body/new_accountintegrationid']"
+                        }
+                      }
+                    }
+                  },
+                  "expression": {
+                    "equals": [
+                      "@outputs('Get_client_account_row_by_ID_2')?['body/new_accountintegrationid']",
+                      "@null"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "83cb43cb-886a-4f23-a7b5-6e26bc4ad3e0"
+                  },
+                  "type": "If"
+                },
+                "Set_variable": {
+                  "runAfter": {
+                    "HTTP_Invoices_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "261b9d4c-6b9a-4d1c-991b-27b6a7019e6d"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "XeroContactid",
+                    "value": "@{null}"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "402cb116-0a2c-4c0a-b36c-1a7f507d067f"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_Remittances_rows": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Condition_Self_Bill": {
+                "actions": {
+                  "Apply_to_each_5": {
+                    "foreach": "@outputs('List_Remittances_rows')?['body/value']",
+                    "actions": {
+                      "Get_Supplier_account_row_by_ID_": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "a39cc79d-4ba5-47d4-b44e-cb8127dba941"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps_1",
+                            "operationId": "GetItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "accounts",
+                            "recordId": "@items('Apply_to_each_5')?['_new_supplierid_value']"
+                          },
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                          }
+                        }
+                      },
+                      "Get_primary_contact_row_by_ID_for_supplier": {
+                        "runAfter": {
+                          "Get_Supplier_account_row_by_ID_": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "f56a1038-1616-4ad1-8be4-cada955a6147"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps_1",
+                            "operationId": "GetItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "contacts",
+                            "recordId": "@outputs('Get_Supplier_account_row_by_ID_')?['body/_primarycontactid_value']"
+                          },
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                          }
+                        }
+                      },
+                      "HTTP_Remittances": {
+                        "runAfter": {
+                          "Compose_6": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "14711a99-87fc-4c6e-a299-227208ebd110"
+                        },
+                        "type": "Http",
+                        "inputs": {
+                          "method": "POST",
+                          "uri": "https://api.xero.com/api.xro/2.0/Invoices",
+                          "headers": {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "Xero-Tenant-Id": "@variables('XeroTenant-Id')",
+                            "Authorization": "@variables('Authorization')"
+                          },
+                          "body": {
+                            "Invoices": [
+                              {
+                                "Type": "ACCPAY",
+                                "Contact": {
+                                  "ContactID": "@{outputs('Get_Supplier_account_row_by_ID_')?['body/accountid']}",
+                                  "Name": "@{outputs('Get_Supplier_account_row_by_ID_')?['body/name']}",
+                                  "CompanyNumber": "@{outputs('Get_Supplier_account_row_by_ID_')?['body/accountnumber']}",
+                                  "ContactStatus": "ACTIVE",
+                                  "FirstName": "@{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/firstname']}",
+                                  "LastName": "@{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/lastname']}",
+                                  "EmailAddress": "@{outputs('Get_Supplier_account_row_by_ID_')?['body/emailaddress1']}",
+                                  "IsCustomer": "true",
+                                  "Addresses": [
+                                    {
+                                      "AddressType": "STREET",
+                                      "AddressLine1": "@{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/address1_line1']}",
+                                      "AddressLine2": "@{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/address1_line2']}",
+                                      "City": "@{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/address1_city']}",
+                                      "PostalCode": "@{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/address1_postalcode']}"
+                                    }
+                                  ],
+                                  "Phones": [
+                                    {
+                                      "PhoneType": "DEFAULT",
+                                      "PhoneNumber": "@{outputs('Get_Supplier_account_row_by_ID_')?['body/telephone1']}"
+                                    }
+                                  ]
+                                },
+                                "DateString": "2009-09-08T00:00:00",
+                                "DueDateString": "2009-10-20T00:00:00",
+                                "InvoiceNumber": "@{items('Apply_to_each_5')?['new_selfbillreference']}",
+                                "Reference": "@{items('Apply_to_each_5')?['new_selfbillreference']}",
+                                "CurrencyCode": "@{outputs('Get_currency_row_by_ID_Remittance')?['body/isocurrencycode']}",
+                                "Status": "SUBMITTED",
+                                "LineAmountTypes": "Inclusive",
+                                "Total": "@{outputs('Get_Remittance_row_by_ID')?['body/new_total']}",
+                                "LineItems": [
+                                  "@outputs('Compose_6')"
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Get_Remittance_row_by_ID": {
+                        "runAfter": {
+                          "Get_primary_contact_row_by_ID_for_supplier": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "7a0a90f5-fbac-489d-aa26-9107f52d0842"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps_1",
+                            "operationId": "GetItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "new_remittances",
+                            "recordId": "@items('Apply_to_each_5')?['new_remittanceid']"
+                          },
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                          }
+                        }
+                      },
+                      "Get_currency_row_by_ID_Remittance": {
+                        "runAfter": {
+                          "Get_Remittance_row_by_ID": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "aad9f855-7502-41ed-ba37-88018b6c8594"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps_1",
+                            "operationId": "GetItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "transactioncurrencies",
+                            "recordId": "@outputs('Get_Remittance_row_by_ID')?['body/_transactioncurrencyid_value']"
+                          },
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                          }
+                        }
+                      },
+                      "Remittance_Date_Utc": {
+                        "runAfter": {
+                          "Remittance_Date": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "beff3649-bb68-4439-997b-ea73118f5056"
+                        },
+                        "type": "Compose",
+                        "inputs": "\\/Date(@{convertToUtc(outputs('Remittance_Date'), 'UTC')})\\/"
+                      },
+                      "Remittance_Date": {
+                        "runAfter": {
+                          "Get_currency_row_by_ID_Remittance": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "41c5c82e-676b-48ce-b340-db835fdc970a"
+                        },
+                        "type": "Compose",
+                        "inputs": "@items('Apply_to_each_5')?['new_remittancedate']"
+                      },
+                      "List_Remittance_Details_rows": {
+                        "runAfter": {
+                          "Remittance_Date_Utc": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "40704367-a3e6-45a5-be0c-8b2d1cfca4a9"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps_1",
+                            "operationId": "ListRecords",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "new_remittancedetails",
+                            "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittancedetail\">\n    <attribute name=\"new_remittancedetailid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_units\" />\n    <attribute name=\"new_timesheetcostid\" />\n    <attribute name=\"new_timesheetid\" />\n    <attribute name=\"statuscode\" />\n    <attribute name=\"new_remittanceid\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_paye\" />\n    <attribute name=\"new_paytotal\" />\n    <attribute name=\"new_pay\" />\n    <attribute name=\"new_description\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billunit\" />\n    <attribute name=\"new_billtaxtypeid\" />\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_assignmentid\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_remittanceid\" operator=\"eq\"  uitype=\"new_remittance\" value=\"@{outputs('Get_Remittance_row_by_ID')?['body/new_remittanceid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+                          },
+                          "authentication": {
+                            "type": "Raw",
+                            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                          }
+                        }
+                      },
+                      "Apply_to_each_6": {
+                        "foreach": "@outputs('List_Remittance_Details_rows')?['body/value']",
+                        "actions": {
+                          "Append_to_string_variable_3": {
+                            "runAfter": {
+                              "Compose_Item_3": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "991f04ac-569d-4c2a-b196-f4ad92364113"
+                            },
+                            "type": "AppendToStringVariable",
+                            "inputs": {
+                              "name": "Remittance Items",
+                              "value": "@outputs('Compose_Item_3')"
+                            }
+                          },
+                          "Compose_Description_3": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "5d9caa54-8921-40d2-a590-40fb88982945"
+                            },
+                            "type": "Compose",
+                            "inputs": "@{items('Apply_to_each_6')?['_new_ratetypeid_value']} @{outputs('Get_primary_contact_row_by_ID_for_supplier')?['body/description']}"
+                          },
+                          "Compose_Item_3": {
+                            "runAfter": {
+                              "Compose_Description_3": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "ef1f0b22-386c-41d9-90d6-b5be186e5178"
+                            },
+                            "type": "Compose",
+                            "inputs": "{  \"Description\": \"@{outputs('Compose_Description_3')}\",        \"Quantity\": \"@{items('Apply_to_each_6')?['new_units']}\", \"UnitAmount\": \"@{items('Apply_to_each_6')?['new_pay']}\",          \"TaxType\": \"OUTPUT2\", \"TaxAmount\": \"@{items('Apply_to_each_6')?['new_tax']}\",          \"LineAmount\": \"@{items('Apply_to_each_6')?['new_paytotal']}\",     \"AccountCode\": \"200\"        },"
+                          }
+                        },
+                        "runAfter": {
+                          "List_Remittance_Details_rows": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "e5e5a90d-12db-4856-8d21-54c38fb93de4"
+                        },
+                        "type": "Foreach"
+                      },
+                      "Compose_6": {
+                        "runAfter": {
+                          "Compose_items_3": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "933b9bb0-9c76-4582-a998-e5acf90b4663"
+                        },
+                        "type": "Compose",
+                        "inputs": "@json(outputs('Compose_items_3'))"
+                      },
+                      "Compose_items_3": {
+                        "runAfter": {
+                          "Apply_to_each_6": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "4089527f-9ec8-43cf-87a9-3bea15895bda"
+                        },
+                        "type": "Compose",
+                        "inputs": "@substring(variables('Remittance Items'), 0, sub(length(variables('Remittance Items')), 1))"
+                      }
+                    },
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "402cb116-0a2c-4c0a-b36c-1a7f507d067f"
+                    },
+                    "type": "Foreach"
+                  }
+                },
+                "runAfter": {},
+                "expression": {
+                  "equals": [
+                    "@outputs('Get_a_Batch_row_by_ID')?['body/new_batchestype']",
+                    100000001
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "267e12b9-747a-409c-8f08-9cb5e67509b0"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Get_a_Batch_row_by_ID')?['body/new_batchestype']",
+              100000000
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bd80d793-7250-4f4f-8f6e-962a06a0dfd5"
+          },
+          "type": "If"
+        },
+        "Initialize_variable_Remittance_Items": {
+          "runAfter": {
+            "Initialize_variable_InvoiceItems": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e02ca0a6-054f-44ad-ae72-7722b6090a92"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Remittance Items",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each_Update_Remittance_status_reason_to_processed_of_inactive_state": {
+          "foreach": "@outputs('List_Remittances_rows')?['body/value']",
+          "actions": {
+            "Update_a_row_Remittance_to_inactive_Processed_": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "634b4329-8165-4475-ba0e-802cf704bf47"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "UpdateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@items('Apply_to_each_Update_Remittance_status_reason_to_processed_of_inactive_state')?['new_remittanceid']",
+                  "item/statecode": 1,
+                  "item/statuscode": 100000000
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Apply_to_each_Update_invoice_status_reason_to_processed_of_inactive_state": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f691e831-8f1e-4918-a1ad-6ad3bb7c7d51"
+          },
+          "type": "Foreach"
+        },
+        "Update_batch_row_to_processed_inactive": {
+          "runAfter": {
+            "Apply_to_each_Update_Remittance_status_reason_to_processed_of_inactive_state": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "13dcb01d-a7c1-4dcc-9f1a-4fac00059e0d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_batchs",
+              "recordId": "@outputs('Get_a_Batch_row_by_ID')?['body/new_batchid']",
+              "item/statecode": 1,
+              "item/statuscode": 100000000
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Initialize_XeroContactid_variable": {
+          "runAfter": {
+            "Initialize_variable_Authorization": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "494cfb1b-427a-4206-99c3-cfbf4ca3a686"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "XeroContactid",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

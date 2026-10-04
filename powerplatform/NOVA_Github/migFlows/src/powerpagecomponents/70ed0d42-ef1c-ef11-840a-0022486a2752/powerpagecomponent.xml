@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="70ed0d42-ef1c-ef11-840a-0022486a2752">
+  <content>{
+  "display_name": "Client",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "title": "Client"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client</name>
+  <powerpagecomponenttype>4</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>e2dbc71f-37e6-4ea1-9ca0-3e9eb80aeeac</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,49 @@
+<powerpagecomponent powerpagecomponentid="e57796e8-56c8-f011-8544-6045bd15153f">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_remittance",
+  "entitypermissionsenabled": true,
+  "entitysourcetype": 756150001,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000001,
+  "onsuccess": 756150001,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordidquerystringparametername": "remittanceid",
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": true,
+  "redirecturlquerystringname": "remittanceid",
+  "redirectwebpage": "47f17c88-d25b-7c31-924b-bdc607cdf874",
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "adjustoption",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Remittance Adjust Option</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

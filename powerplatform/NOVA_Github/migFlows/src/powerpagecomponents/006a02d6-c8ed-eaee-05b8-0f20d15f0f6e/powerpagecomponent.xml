@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="006a02d6-c8ed-eaee-05b8-0f20d15f0f6e">
+  <content>{
+  "displayimageonly": false,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "5447b31c-9120-1afc-e4f9-54be1be68906",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>ID Verify</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

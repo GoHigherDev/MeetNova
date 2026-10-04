@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="7668ed27-8a8c-3e25-d819-33875fa1bcbd">
+  <content>{
+  "type": 756150000,
+  "display_name": "Logo URL",
+  "value": "/Logo-sm-64.png"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Logo URL</name>
+  <powerpagecomponenttype>7</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

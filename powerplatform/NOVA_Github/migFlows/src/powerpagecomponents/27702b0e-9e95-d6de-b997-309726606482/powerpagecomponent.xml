@@ -1,0 +1,36 @@
+<powerpagecomponent powerpagecomponentid="27702b0e-9e95-d6de-b997-309726606482">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"min-height: auto; padding: 8px;\"&gt;\n    &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;\n      &lt;div class=\"col-md-12 columnBlockLayout\" style=\"padding: 16px; margin: 60px 0px; min-height: 200px;\"&gt;&lt;/div&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n  ",
+  "displayorder": 172,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "8cb3e2a9-9be6-180f-c10c-04ed23d43c49",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Sign-Up-Contact",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "61cc3871-f38a-b9d2-918c-7e85795414c1",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Sign Up Contact"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Sign Up Contact</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9179b7b5-28a2-ef11-8a69-6045bd69e577</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Sign Up Contact&lt;div class="row sectionBlockLayout text-left" style="min-height: auto; padding: 8px;"&gt;
+    &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;
+      &lt;div class="col-md-12 columnBlockLayout" style="padding: 16px; margin: 60px 0px; min-height: 200px;"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  Sign Up Contact</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

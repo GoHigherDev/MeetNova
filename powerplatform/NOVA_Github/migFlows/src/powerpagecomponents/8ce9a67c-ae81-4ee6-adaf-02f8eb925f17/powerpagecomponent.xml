@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="8ce9a67c-ae81-4ee6-adaf-02f8eb925f17">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 37,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "b263da27-5d88-9504-34ad-f2e912397e79",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Next of Kin Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

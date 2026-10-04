@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="69f0cf6b-018d-1391-5153-89d5adedd638">
+  <content>{
+  "displayorder": 219,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "e0d7e1de-1cb8-42e0-6c39-00c7e3baf920",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Expense-Details-Manual",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Expense Details Manual"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expense Details Manual</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Expense Details ManualExpense Details Manual</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

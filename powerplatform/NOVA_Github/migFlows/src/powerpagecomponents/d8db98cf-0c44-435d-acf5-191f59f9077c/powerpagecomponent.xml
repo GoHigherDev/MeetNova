@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="d8db98cf-0c44-435d-acf5-191f59f9077c">
+  <content>{
+  "displayorder": 88,
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "90574045-cb24-d630-424d-1d3e46412645",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

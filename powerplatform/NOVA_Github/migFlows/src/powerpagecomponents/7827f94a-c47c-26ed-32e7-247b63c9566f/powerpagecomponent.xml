@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="7827f94a-c47c-26ed-32e7-247b63c9566f">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 65,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "d98dc9f3-0326-ee11-9965-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8f122714-b945-ee11-be6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "emergencycontactsdetails",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Emergency Contacts Details for Consultant"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Emergency Contacts Details for Consultant</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Emergency Contacts Details for ConsultantundefinedEmergency Contacts Details for Consultant</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

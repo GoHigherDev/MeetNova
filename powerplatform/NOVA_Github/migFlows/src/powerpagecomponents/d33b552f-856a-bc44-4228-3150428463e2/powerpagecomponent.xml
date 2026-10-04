@@ -1,0 +1,37 @@
+<powerpagecomponent powerpagecomponentid="d33b552f-856a-bc44-4228-3150428463e2">
+  <content>{
+  "copy": "&lt;div data-ppid=\"ef55126c-0ece-0c38-5e91-c959b6810ede\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div data-ppid=\"a47fb9c6-9e2b-0f7c-a04b-25946c991e7b\" class=\"container\" style=\"padding: 0px; display: flex; flex-wrap: wrap;\"&gt;&lt;div data-ppid=\"3fec9488-4079-6a05-d69d-4d612206cba3\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word;\"&gt;{% include 'entity_list' key: 'Candidate Jobs' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "customjavascript": "\r\n",
+  "displayorder": 99,
+  "enablerating": false,
+  "enabletracking": false,
+  "entitylist": "8cf8e395-8025-ee11-9965-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "fa4e8d4c-ca32-ee11-bdf3-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "candidatejobs",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "cd4da54b-c785-e618-2481-414cdfe13801",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Candidate Jobs"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>(review) Jobs </name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Candidate Jobs&lt;div data-ppid="ef55126c-0ece-0c38-5e91-c959b6810ede" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div data-ppid="a47fb9c6-9e2b-0f7c-a04b-25946c991e7b" class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"&gt;&lt;div data-ppid="3fec9488-4079-6a05-d69d-4d612206cba3" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word;"&gt;{% include 'entity_list' key: 'Candidate Jobs' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+(review) Jobs </searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

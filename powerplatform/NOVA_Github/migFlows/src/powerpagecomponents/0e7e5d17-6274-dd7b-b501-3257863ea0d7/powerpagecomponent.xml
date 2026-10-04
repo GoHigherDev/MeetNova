@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="0e7e5d17-6274-dd7b-b501-3257863ea0d7">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 169,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "a9d2b734-46ac-c990-267d-a9128da4316c",
+  "parentweblinkid": "39868ac4-df25-4827-a700-9118b9baf206",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bulk Imports</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

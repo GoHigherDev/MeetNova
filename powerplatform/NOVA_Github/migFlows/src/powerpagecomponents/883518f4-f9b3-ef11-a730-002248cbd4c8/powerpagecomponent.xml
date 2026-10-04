@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="883518f4-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 57,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "83d0d719-72bf-f1eb-3f14-beb91fb71a1d",
+  "parentweblinkid": null,
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "07f01fee-f9b3-ef11-a730-002248cbd4c8"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>الامتثال</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

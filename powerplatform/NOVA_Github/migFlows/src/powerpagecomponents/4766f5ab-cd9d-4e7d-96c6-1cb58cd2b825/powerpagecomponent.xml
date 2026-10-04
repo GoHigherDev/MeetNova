@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="4766f5ab-cd9d-4e7d-96c6-1cb58cd2b825">
+  <content>{
+  "displayorder": 176,
+  "pageid": "c5754f9d-b1cd-bdd4-d541-7c272ca38d76",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Sign-Up Register</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

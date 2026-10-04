@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="6a469b27-eb66-4e7b-8b89-057f117856a9">
+  <content>{
+  "displayorder": 133,
+  "pageid": "2981d5d2-dcf7-1ea0-0a69-ccec151fa40b",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Xero Invoice Modal</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="b6831a07-c479-4a9e-b337-31f9d8e6cca0">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": false,
+  "entitylogicalname": "annotation",
+  "entityname": "App Docs Insert - POA_Attachment",
+  "parententitypermission": "d89b67e4-440d-42dc-8085-82d2ca6fa6bd",
+  "parentrelationship": "new_appdocs_Annotations",
+  "read": true,
+  "scope": 756150003,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>App Docs Insert - POA_Attachment</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

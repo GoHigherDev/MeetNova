@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="46f9ba66-870f-ef11-9f89-002248cbbbd1">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_documenttype",
+  "descriptionposition": 100000000,
+  "entityform": "a2f68f4e-870f-ef11-9f89-002248cbbbd1",
+  "entityformforcreate": "a2f68f4e-870f-ef11-9f89-002248cbbbd1",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "label": "[{\"LCID\":1025,\"Value\":\"نوع الحق في العمل\"},{\"LCID\":1033,\"Value\":\"\"}]",
+  "onsavetype": 100000000,
+  "onsavevalue": "100000001",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>App Docs Insert - Right to Work QP new_documenttype</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

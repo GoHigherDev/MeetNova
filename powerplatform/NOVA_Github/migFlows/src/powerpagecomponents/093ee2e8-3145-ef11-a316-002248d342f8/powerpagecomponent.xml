@@ -1,0 +1,24 @@
+<powerpagecomponent powerpagecomponentid="093ee2e8-3145-ef11-a316-002248d342f8">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_date",
+  "descriptionposition": 100000000,
+  "entityform": "624e2ddd-3145-ef11-a316-002248d342f8",
+  "entityformforcreate": "624e2ddd-3145-ef11-a316-002248d342f8",
+  "fieldisrequired": true,
+  "ignoredefaultvalue": false,
+  "label": "[{\"LCID\":1025,\"Value\":\"التاريخ\"},{\"LCID\":1033,\"Value\":\"\"}]",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Timesheet Cost Hours Insert QP new_date</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

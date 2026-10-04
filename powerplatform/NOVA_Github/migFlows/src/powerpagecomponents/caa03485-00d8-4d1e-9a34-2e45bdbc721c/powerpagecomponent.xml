@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="caa03485-00d8-4d1e-9a34-2e45bdbc721c">
+  <content>{
+  "displayorder": 137,
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "a7eacd91-9ab7-e922-08ca-0e50f54e4614",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Availability</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

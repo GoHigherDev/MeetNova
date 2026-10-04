@@ -1,0 +1,1447 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f1db0"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_0ca5d"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "25e5fb41-b730-4079-a9d9-da9b41af9876"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_assignment",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "New_Deal_-_Internal_Alert": {
+          "runAfter": {
+            "Direct": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7c7a9f53-79ad-460d-9b21-b679dbbfa6c2"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "archerbot@archerresourcing.co.uk",
+              "emailMessage/Subject": "New Deal",
+              "emailMessage/Body": "<p>Consultant: @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}<br>\nClient: @{outputs('Client_by_ID')?['body/name']}<br>\nCurrency: @{outputs('Currency_by_ID')?['body/currencyname']}<br>\nStandard Pay: @{variables('NewStarter')} @{outputs('Currency_by_ID')?['body/isocurrencycode']}<br>\nStandard Charge: @{variables('ChargeRate')} @{outputs('Currency_by_ID')?['body/isocurrencycode']}<br>\nMargin: @{outputs('Calculate_Margin')}<br>\nSector: @{outputs('Sector_by_ID')?['body/new_name']}<br>\n</p>",
+              "emailMessage/From": "archer@rigops.co.uk",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Consultant_by_ID": {
+          "runAfter": {
+            "Candidate_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1c67791d-1b43-489e-b164-784b7e039209"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_consultantid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Client_by_ID": {
+          "runAfter": {
+            "Consultant_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4a27af68-404e-400c-86aa-0e2028d3d235"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "List_rows_-_Assignment_Rates_(Standard_Rate_Only)": {
+          "runAfter": {
+            "Supplier_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5f2d740-f3a8-4949-b13b-f71bf66cb686"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignmentrate\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_payrate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billrate\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\" />\n       <condition attribute=\"new_ratetypeid\" operator=\"eq\" uiname=\"Standard Day\" uitype=\"new_ratetype\" value=\"{F95CF094-100C-EE11-8F6E-6045BD0CFCA3}\" />\n\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Candidate_by_ID": {
+          "runAfter": {
+            "Placement_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "22403e16-4784-4ef5-8a89-d5d1f8bf5b52"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Standard_Rate": {
+          "runAfter": {
+            "Candidate_Country_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "87412856-c3a1-4997-9c6d-942ee8dbacc3"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NewStarter",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates_(Standard_Rate_Only)')?['body/value']",
+          "actions": {
+            "Assignment_Rate_by_ID": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "72685da0-5603-40fd-b8fd-2c1457e672b1"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Apply_to_each')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable": {
+              "runAfter": {
+                "Assignment_Rate_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ae7640f4-eeb4-458b-a797-409f5a8b02bf"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "NewStarter",
+                "value": "@outputs('Assignment_Rate_by_ID')?['body/new_payrate']"
+              }
+            }
+          },
+          "runAfter": {
+            "Charge_Rate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bc549a8f-7a42-4b76-adc1-1a2c88f4a6de"
+          },
+          "type": "Foreach"
+        },
+        "Currency_by_ID": {
+          "runAfter": {
+            "List_rows_-_Assignment_Rates_(Demob_Fee_Only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "26983bc8-2038-474a-ada2-a89d23440911"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "transactioncurrencies",
+              "recordId": "@triggerOutputs()?['body/_transactioncurrencyid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Placement_by_ID": {
+          "runAfter": {
+            "Terminate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "eda6933a-ff32-498b-b34b-834449c493c6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerOutputs()?['body/new_assignmentid']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each_2": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates_(Standard_Rate_Only)')?['body/value']",
+          "actions": {
+            "Get_a_row_by_ID": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "d914ff1b-fc72-4626-8858-3007368a3c49"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Apply_to_each_2')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable_2": {
+              "runAfter": {
+                "Get_a_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f72402dc-4a91-44bd-b281-e862e977f4cd"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "ChargeRate",
+                "value": "@items('Apply_to_each_2')?['new_billrate']"
+              }
+            }
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fedeb658-5184-4854-9024-c91f3cf490ca"
+          },
+          "type": "Foreach"
+        },
+        "Charge_Rate": {
+          "runAfter": {
+            "Standard_Rate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "567afa89-64c2-4e05-ac34-089f8bc14efe"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ChargeRate",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Sector_by_ID": {
+          "runAfter": {
+            "Client_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7f8b2832-eaf9-407a-b3a8-2f2214aecc34"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_sectors",
+              "recordId": "@triggerOutputs()?['body/_new_sectorid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "CRFloat": {
+          "runAfter": {
+            "Apply_to_each_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "47063fe3-5cf9-4762-8c46-01fb7c2042b0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CRFloat",
+                "type": "float",
+                "value": "@float(variables('ChargeRate'))"
+              }
+            ]
+          }
+        },
+        "PRFloat": {
+          "runAfter": {
+            "CRFloat": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bab586ef-da2c-492d-8b21-88b3f18cfb34"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PRFloat",
+                "type": "float",
+                "value": "@float(variables('NewStarter'))"
+              }
+            ]
+          }
+        },
+        "Calculate_Margin": {
+          "runAfter": {
+            "PRFloat": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6463a616-68da-4e0f-a0c4-f910545c066b"
+          },
+          "type": "Compose",
+          "inputs": "@mul(div(sub(variables('CRFloat'), variables('PRFloat')), variables('PRFloat')), 100)\r\n"
+        },
+        "Compose_-_Charge_Rate": {
+          "runAfter": {
+            "Apply_to_each_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "73cdfaa6-3e00-4675-a400-186c60604b1d"
+          },
+          "type": "Compose",
+          "inputs": "@variables('ChargeRate')"
+        },
+        "Sector_Control": {
+          "actions": {
+            "Send_an_email_(V2)": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "2d7c4e6a-ed85-4c37-8266-509e31c6788d"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365_1",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "toconnor@archeroffshore.co.uk;kjaffrey@archeroffshore.co.uk;crewing@archeroffshore.co.uk; ahiggins@archerresourcing.co.uk; @{outputs('Consultant_by_ID')?['body/emailaddress1']}; corchard@archeroffshore.co.uk",
+                  "emailMessage/Subject": "NSF - @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}",
+                  "emailMessage/Body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Email Template</title>\n    <style>\n        /* Inline styles for better Outlook compatibility */\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: Arial, sans-serif;\n            background-color: #f2f2f2;\n        }\n        \n        .container {\n            max-width: 600px;\n            margin: 20px auto;\n            background-color: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n        }\n\n        .content {\n            margin-top: 20px;\n        }\n        \n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        .header img {\n            max-width: 100%;\n            height: auto;\n            display: block;\n            margin: 0 auto;\n        }\n        \n        h1 {\n            color: #333;\n            margin-bottom: 10px;\n            margin-top: 0;\n        }\n        \n        h2 {\n            color: #888;\n            margin-bottom: 10px;\n            margin-top: 10px;\n        }\n\n        .subheading {\n            color: grey;\n            font-size: 14px;\n            margin-top: 5px;\n            margin-bottom: 5px;\n        }\n        \n        p {\n            margin-bottom: 10px;\n        }\n\n        /* Hide snippet text */\n        .hidden-snippet {\n            display: none;\n            font-size: 1px;\n            color: #ffffff;\n        }\n    </style>\n</head>\n<body>\n <div class=\"hidden-snippet\">\n        New Starter Form submitted via RIGOPS by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}\n    </div>\n    <div class=\"container\">\n        <div class=\"header\">\n            <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f71d6fe80aaf4bc828cfea_Offshore%20Header%20Logo.png\" alt=\"Header Image\">\n            <h1>New Starter Form</h1>\n            <h2 class=\"subheading\">Submitted by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}</h2>\n        </div>\n        <div class=\"content\">\n<br>\n            <h2>Consultant Details</h2>\n            <p>Consultant:  @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}</p>\n<p> Sector: @{outputs('Sector_by_ID')?['body/new_name']}</p>\n<br>            \n            <h2>Client Details</h2>\n            <p>Client Name: @{outputs('Client_by_ID')?['body/name']}</p>\n<p>End Client Contracted Entity Location:  @{outputs('Client_Country_by_ID')?['body/new_name']}</p>\n<p> Client Address:  @{outputs('Client_by_ID')?['body/address1_line1']}, @{outputs('Client_by_ID')?['body/address1_line2']}, @{outputs('Client_by_ID')?['body/address1_city']}, @{outputs('Client_by_ID')?['body/address1_stateorprovince']}, @{outputs('Client_Country_by_ID')?['body/new_name']}  </p>\n<br>\n            <h2>Candidate Details</h2>\n            <p>Candidate Name: @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}</p>\n<p>Limited Company: @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyname']}</p>\n<p>Limited Company Address: @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyaddress']} </p>\n<p>Candidate Date of Birth: @{outputs('Candidate_by_ID')?['body/cr0b7_dateofbirth']} </p>\n<p>Candidate Address: @{outputs('Candidate_by_ID')?['body/cr0b7_addressforcontract']}  </p>\n<p>Tax Residence: @{outputs('Candidate_by_ID')?['body/cr0b7_taxresidence']} </p>\n<p>Nationality: @{outputs('Candidate_by_ID')?['body/cr0b7_nationality']} </p>\n<p>Candidate Email Address: @{outputs('Candidate_by_ID')?['body/emailaddress1']}</p>\n<p>Candidate Phone Number: @{outputs('Candidate_by_ID')?['body/mobilephone']}</p>\n<br>\n<h2>Placement Details </h2>\n<p>Role: @{outputs('Candidate_by_ID')?['body/jobtitle']}</p>\n<p>Scope of Work: @{outputs('Placement_by_ID')?['body/cr0b7_scopeofwork']}</p>\n<p>Seafarer Contract?: @{outputs('Placement_by_ID')?['body/new_contractseafarer']}</p>\n<p>Location: @{outputs('Placement_by_ID')?['body/cr0b7_location']}</p>\n<p>Vessel Name: @{outputs('Branch_by_ID')?['body/new_name']}</p>\n<p>Vessel Flag: @{outputs('Placement_by_ID')?['body/cr0b7_vesselflag']} </p>\n<p>Travel Date: @{formatDateTime(parseDateTime(triggerOutputs()?['body/new_traveldate']), 'dd/MM/yyyy', 'en-GB')}</p>\n<p>Start Date: @{formatDateTime(parseDateTime(triggerOutputs()?['body/new_contractstartdate']), 'dd/MM/yyyy', 'en-GB')}</p>\n<p>Duration of Assignment: @{outputs('Placement_by_ID')?['body/cr0b7_jobduration']} </p>\n<p>Currency: @{outputs('Currency_by_ID')?['body/currencyname']} </p>\n<p>Standard Pay Rate: @{variables('NewStarter')} </p>\n<p>Standards Charge Rate: @{variables('ChargeRate')} </p>\n<p>Travel Rate:  </p>\n<p>Travel Charge Rate: @{variables('TravelCharge')} </p>\n<p>Mob Fee: @{variables('MobFee')} </p>\n<p>Demob Fee: @{variables('DemobFee')} </p>\n<p>Night Shift Uplift Pay: @{variables('NighShiftPay')} </p>\n<p>Night Shift Uplift Bill: @{variables('NightShiftCharge')} </p>\n<p>Additional Rates?: @{outputs('Placement_by_ID')?['body/cr0b7_additionalrates']} </p>\n<p> </p>\n<br>\n<h2>Payment Details </h2>\n<p>Payment Method: @{variables('PaymentMethod')} </p>\n<p>Umbrella Company: @{outputs('Supplier_by_ID')?['body/name']} </p>\n<p>Payment Frequency: @{variables('PaymentFrequency')} </p>\n<p>Payment Option: @{outputs('Placement_by_ID')?['body/new_paymentoption']} </p>\n<br>\n<h2>Additional Notes for the Crewing Team: </h2>\n<p> @{outputs('Placement_by_ID')?['body/cr0b7_additionalnotes']} </p>\n\n        </div>\n    </div>\n   <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f7081e21e5ea2f011a4dda_Email%20Signature.png\" alt=\"Header Image\">\n</body>\n</html>\n",
+                  "emailMessage/From": "archer@rigops.co.uk",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "New_Deal_-_Internal_Alert": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Send_an_email_(V2)_2": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "455eb33b-2f27-49e0-bf4f-033ebe735486"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_office365",
+                    "operationId": "SendEmailV2",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                  },
+                  "parameters": {
+                    "emailMessage/To": "ehind@archeroffshore.co.uk;kjaffrey@archeroffshore.co.uk;crewing@archeroffshore.co.uk; ahiggins@archerresourcing.co.uk; @{outputs('Consultant_by_ID')?['body/emailaddress1']}; corchard@archeroffshore.co.uk",
+                    "emailMessage/Subject": "NSF - @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}",
+                    "emailMessage/Body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Email Template</title>\n    <style>\n        /* Inline styles for better Outlook compatibility */\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: Arial, sans-serif;\n            background-color: #f2f2f2;\n        }\n        \n        .container {\n            max-width: 600px;\n            margin: 20px auto;\n            background-color: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n        }\n\n        .content {\n            margin-top: 20px;\n        }\n        \n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        .header img {\n            max-width: 100%;\n            height: auto;\n            display: block;\n            margin: 0 auto;\n        }\n        \n        h1 {\n            color: #333;\n            margin-bottom: 10px;\n            margin-top: 0;\n        }\n        \n        h2 {\n            color: #888;\n            margin-bottom: 10px;\n            margin-top: 10px;\n        }\n\n        .subheading {\n            color: grey;\n            font-size: 14px;\n            margin-top: 5px;\n            margin-bottom: 5px;\n        }\n        \n        p {\n            margin-bottom: 10px;\n        }\n\n        /* Hide snippet text */\n        .hidden-snippet {\n            display: none;\n            font-size: 1px;\n            color: #ffffff;\n        }\n    </style>\n</head>\n<body>\n <div class=\"hidden-snippet\">\n        New Starter Form submitted via RIGOPS by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}\n    </div>\n    <div class=\"container\">\n        <div class=\"header\">\n            <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f71d6fe80aaf4bc828cfea_Offshore%20Header%20Logo.png\" alt=\"Header Image\">\n            <h1>New Starter Form</h1>\n            <h2 class=\"subheading\">Submitted by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}</h2>\n        </div>\n        <div class=\"content\">\n<br>\n            <h2>Consultant Details</h2>\n            <p>Consultant:  @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}</p>\n<p> Sector: @{outputs('Sector_by_ID')?['body/new_name']}</p>\n<br>            \n            <h2>Client Details</h2>\n            <p>Client Name: @{outputs('Client_by_ID')?['body/name']}</p>\n<p>End Client Contracted Entity Location:  @{outputs('Client_Country_by_ID')?['body/new_name']}</p>\n<p> Client Address:  @{outputs('Client_by_ID')?['body/address1_line1']}, @{outputs('Client_by_ID')?['body/address1_line2']}, @{outputs('Client_by_ID')?['body/address1_city']}, @{outputs('Client_by_ID')?['body/address1_stateorprovince']}, @{outputs('Client_Country_by_ID')?['body/new_name']}  </p>\n<br>\n            <h2>Candidate Details</h2>\n            <p>Candidate Name: @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}</p>\n<p>Limited Company: @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyname']}</p>\n<p>Limited Company Address: @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyaddress']} </p>\n<p>Candidate Date of Birth: @{outputs('Candidate_by_ID')?['body/cr0b7_dateofbirth']} </p>\n<p>Candidate Address: @{outputs('Candidate_by_ID')?['body/cr0b7_addressforcontract']}  </p>\n<p>Tax Residence: @{outputs('Candidate_by_ID')?['body/cr0b7_taxresidence']} </p>\n<p>Nationality: @{outputs('Candidate_by_ID')?['body/cr0b7_nationality']} </p>\n<p>Candidate Email Address: @{outputs('Candidate_by_ID')?['body/emailaddress1']}</p>\n<p>Candidate Phone Number: @{outputs('Candidate_by_ID')?['body/mobilephone']}</p>\n<br>\n<h2>Placement Details </h2>\n<p>Role: @{outputs('Candidate_by_ID')?['body/jobtitle']}</p>\n<p>Scope of Work: @{outputs('Placement_by_ID')?['body/cr0b7_scopeofwork']}</p>\n<p>Seafarer Contract?: @{outputs('Placement_by_ID')?['body/new_contractseafarer']}</p>\n<p>Location: @{outputs('Placement_by_ID')?['body/cr0b7_location']}</p>\n<p>Vessel Name: @{outputs('Branch_by_ID')?['body/new_name']}</p>\n<p>Vessel Flag: @{outputs('Placement_by_ID')?['body/cr0b7_vesselflag']} </p>\n<p>Travel Date: @{formatDateTime(parseDateTime(triggerOutputs()?['body/new_traveldate']), 'dd/MM/yyyy', 'en-GB')}</p>\n<p>Start Date: @{formatDateTime(parseDateTime(triggerOutputs()?['body/new_contractstartdate']), 'dd/MM/yyyy', 'en-GB')}</p>\n<p>Duration of Assignment: @{outputs('Placement_by_ID')?['body/cr0b7_jobduration']} </p>\n<p>Currency: @{outputs('Currency_by_ID')?['body/currencyname']} </p>\n<p>Standard Pay Rate: @{variables('NewStarter')} </p>\n<p>Standards Charge Rate: @{variables('ChargeRate')} </p>\n<p>Travel Rate:  </p>\n<p>Travel Charge Rate: @{variables('TravelCharge')} </p>\n<p>Mob Fee: @{variables('MobFee')} </p>\n<p>Demob Fee: @{variables('DemobFee')} </p>\n<p>Night Shift Uplift Pay: @{variables('NighShiftPay')} </p>\n<p>Night Shift Uplift Bill: @{variables('NightShiftCharge')} </p>\n<p>Additional Rates?: @{outputs('Placement_by_ID')?['body/cr0b7_additionalrates']} </p>\n<p> </p>\n<br>\n<h2>Payment Details </h2>\n<p>Payment Method: @{variables('PaymentMethod')} </p>\n<p>Umbrella Company: @{outputs('Supplier_by_ID')?['body/name']} </p>\n<p>Payment Frequency: @{variables('PaymentFrequency')} </p>\n<p>Payment Option: @{outputs('Placement_by_ID')?['body/new_paymentoption']} </p>\n<br>\n<h2>Additional Notes for the Crewing Team: </h2>\n<p> @{outputs('Placement_by_ID')?['body/cr0b7_additionalnotes']} </p>\n\n        </div>\n    </div>\n   <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f7081e21e5ea2f011a4dda_Email%20Signature.png\" alt=\"Header Image\">\n</body>\n</html>\n",
+                    "emailMessage/From": "archer@rigops.co.uk",
+                    "emailMessage/Importance": "Normal"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              }
+            }
+          },
+          "expression": {
+            "or": [
+              {
+                "contains": [
+                  "@outputs('Consultant_by_ID')?['body/lastname']",
+                  "Grey"
+                ]
+              },
+              {
+                "contains": [
+                  "@outputs('Consultant_by_ID')?['body/lastname']",
+                  "Neagus"
+                ]
+              },
+              {
+                "contains": [
+                  "@outputs('Consultant_by_ID')?['body/lastname']",
+                  "O'Connor"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7308da31-3611-4c2b-9ded-775c828b7aaa"
+          },
+          "type": "If"
+        },
+        "Initialize_variable_2": {
+          "runAfter": {
+            "Calculate_Margin": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9c937958-e846-4afa-bf1d-c9a4eec568b9"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PaymentFrequency",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Weekly": {
+          "actions": {
+            "Append_to_string_variable_3": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "7ad37e4c-bde6-42cb-84f1-3d971ae2d0ab"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PaymentFrequency",
+                "value": "Weekly"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_2": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Placement_by_ID')?['body/new_payfrequency']",
+              100000000
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "35d6fec4-c30b-44d6-9f29-2b5bfa6248a8"
+          },
+          "type": "If"
+        },
+        "Monthly": {
+          "actions": {
+            "Append_to_string_variable_4": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "68b37389-60e5-49f6-a42d-873c11c03972"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PaymentFrequency",
+                "value": "Monthly"
+              }
+            }
+          },
+          "runAfter": {
+            "Weekly": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Placement_by_ID')?['body/new_payfrequency']",
+              100000001
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fd94d33c-3f4e-4ecd-95f4-2e67c28002bb"
+          },
+          "type": "If"
+        },
+        "End_of_Month": {
+          "actions": {
+            "Append_to_string_variable_5": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0d1c03bd-9094-42af-97fe-e6c86726118b"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PaymentFrequency",
+                "value": "End of the Month"
+              }
+            }
+          },
+          "runAfter": {
+            "Monthly": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Placement_by_ID')?['body/new_payfrequency']",
+              100000002
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d9fd3733-e877-4540-a460-39c77f9d4e41"
+          },
+          "type": "If"
+        },
+        "End_of_Trip": {
+          "actions": {
+            "Append_to_string_variable_6": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "7b9b1ecc-77a3-438b-9745-8d5b996240eb"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PaymentFrequency",
+                "value": "End of Trip"
+              }
+            }
+          },
+          "runAfter": {
+            "End_of_Month": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Placement_by_ID')?['body/new_payfrequency']",
+              100000003
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "666fec61-c358-40f3-be3c-a5aee0a2c482"
+          },
+          "type": "If"
+        },
+        "Supplier_by_ID": {
+          "runAfter": {
+            "Sector_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ae0148f0-d37f-456a-a667-7eea6a50fd65"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Placement_by_ID')?['body/_new_supplierid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Travel_Rate": {
+          "runAfter": {
+            "Compose_-_Charge_Rate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9a44a6b5-fa59-453b-995d-9ad946f6fcd7"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TravelRate",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Travel_Charge": {
+          "runAfter": {
+            "Travel_Rate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "07d3bf5a-65af-4b2f-9f8b-ecdafdac9aee"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TravelCharge",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "NightShiftPay": {
+          "runAfter": {
+            "Travel_Rate_Finder": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e7d65aa6-5e75-4483-9137-d4e291cd01b1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NighShiftPay",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "NightShiftCharge": {
+          "runAfter": {
+            "NightShiftPay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4d35b685-2ebf-4a76-812f-a1c6724b18a1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NightShiftCharge",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "MobFee": {
+          "runAfter": {
+            "Night_Shift_Finder": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f246cdfd-8de3-49d5-b50c-16e763a602f1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MobFee",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "DemobFee": {
+          "runAfter": {
+            "Mob_Fee_Finder": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "178091ef-e474-44cf-bf51-051b0e85949a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DemobFee",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "List_rows_-_Assignment_Rates_(Travel_Rate_Only)": {
+          "runAfter": {
+            "List_rows_-_Assignment_Rates_(Standard_Rate_Only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5f2d740-f3a8-4949-b13b-f71bf66cb686"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignmentrate\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_payrate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billrate\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\" />\n       <condition attribute=\"new_ratetypeid\" operator=\"eq\" uiname=\"Travel Rate\" uitype=\"new_ratetype\" value=\"{d3be0238-3469-ee11-8def-6045bd0cfca3}\" />\n\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "List_rows_-_Assignment_Rates_(Mob_Fee_Only)": {
+          "runAfter": {
+            "List_rows_-_Assignment_Rates_(Night_Shift_Rate_Only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5f2d740-f3a8-4949-b13b-f71bf66cb686"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignmentrate\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_payrate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billrate\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\" />\n       <condition attribute=\"new_ratetypeid\" operator=\"eq\" uiname=\"Mob Fee\" uitype=\"new_ratetype\" value=\"{ECD043D9-5CE4-EE11-A73E-6045BDC14894}\" />\n\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "List_rows_-_Assignment_Rates_(Demob_Fee_Only)": {
+          "runAfter": {
+            "List_rows_-_Assignment_Rates_(Mob_Fee_Only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5f2d740-f3a8-4949-b13b-f71bf66cb686"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignmentrate\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_payrate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billrate\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\" />\n       <condition attribute=\"new_ratetypeid\" operator=\"eq\" uiname=\"Demob Fee\" uitype=\"new_ratetype\" value=\"{EDD043D9-5CE4-EE11-A73E-6045BDC14894}\" />\n\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "List_rows_-_Assignment_Rates_(Night_Shift_Rate_Only)": {
+          "runAfter": {
+            "List_rows_-_Assignment_Rates_(Travel_Rate_Only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5f2d740-f3a8-4949-b13b-f71bf66cb686"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignmentrate\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_payrate\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billrate\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/new_assignmentid']}\" />\n       <condition attribute=\"new_ratetypeid\" operator=\"eq\" uiname=\"Night Shift\" uitype=\"new_ratetype\" value=\"{CC11E72C-6AAE-EE11-A81C-00224840FB84}\" />\n\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Travel_Rate_Finder": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates_(Travel_Rate_Only)')?['body/value']",
+          "actions": {
+            "Get_Travel_Rate_Only": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "54fa642f-e657-4992-8901-ae286637e7fa"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Travel_Rate_Finder')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable_7": {
+              "runAfter": {
+                "Append_to_string_variable_8": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ef73739b-96e8-4f54-873b-f45dd99101df"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "TravelCharge",
+                "value": "@outputs('Get_Travel_Rate_Only')?['body/new_billrate']"
+              }
+            },
+            "Append_to_string_variable_8": {
+              "runAfter": {
+                "Get_Travel_Rate_Only": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "77cc4f49-98b9-4ff1-bb50-5594f4287a43"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "TravelRate",
+                "value": "@outputs('Get_Travel_Rate_Only')?['body/new_payrate']"
+              }
+            }
+          },
+          "runAfter": {
+            "Travel_Charge": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "db794f61-dda2-471a-8d48-469770ea8a12"
+          },
+          "type": "Foreach"
+        },
+        "Night_Shift_Finder": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates_(Night_Shift_Rate_Only)')?['body/value']",
+          "actions": {
+            "Night_Shift_Only_Selector": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "f92d1a7d-1bcc-4d06-a349-d7080cbcd74b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Night_Shift_Finder')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable_9": {
+              "runAfter": {
+                "Night_Shift_Only_Selector": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0b7807e2-feb0-4ddb-a8f0-63d1b81ed05d"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "NighShiftPay",
+                "value": "@outputs('Night_Shift_Only_Selector')?['body/new_payrate']"
+              }
+            },
+            "Append_to_string_variable_10": {
+              "runAfter": {
+                "Append_to_string_variable_9": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "43a4383f-8941-4219-88da-927d07bd20d5"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "NightShiftCharge",
+                "value": "@outputs('Night_Shift_Only_Selector')?['body/new_billrate']"
+              }
+            }
+          },
+          "runAfter": {
+            "NightShiftCharge": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6f32131e-11ea-4012-8f3f-773b8aa92bd8"
+          },
+          "type": "Foreach"
+        },
+        "Mob_Fee_Finder": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates_(Mob_Fee_Only)')?['body/value']",
+          "actions": {
+            "Mob_Fee_Selector": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "4b2e9089-218f-485a-ae6c-1b2712da83b0"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Mob_Fee_Finder')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable_11": {
+              "runAfter": {
+                "Mob_Fee_Selector": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e11d037e-cbd5-4a55-b1ba-2c3888828f2b"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "MobFee",
+                "value": "@outputs('Mob_Fee_Selector')?['body/new_payrate']"
+              }
+            }
+          },
+          "runAfter": {
+            "MobFee": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ca790ade-6171-414b-87af-db690142eb6f"
+          },
+          "type": "Foreach"
+        },
+        "Apply_to_each_3": {
+          "foreach": "@outputs('List_rows_-_Assignment_Rates_(Demob_Fee_Only)')?['body/value']",
+          "actions": {
+            "Demob_Fee_Selector": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "81feb4a4-5dac-41a5-b5e4-0b48c3c8865d"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignmentrates",
+                  "recordId": "@items('Apply_to_each_3')?['new_assignmentrateid']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable_12": {
+              "runAfter": {
+                "Demob_Fee_Selector": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d1bdd9ef-a6ab-4c9d-96e2-819b2d3a3113"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "DemobFee",
+                "value": "@outputs('Demob_Fee_Selector')?['body/new_payrate']"
+              }
+            }
+          },
+          "runAfter": {
+            "DemobFee": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "44445217-4de2-4d77-a97c-74d960f504d0"
+          },
+          "type": "Foreach"
+        },
+        "Branch_by_ID": {
+          "runAfter": {
+            "Currency_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b341915b-814a-4d72-9345-a67da2edfcc4"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_branchs",
+              "recordId": "@outputs('Placement_by_ID')?['body/_new_branchid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Umbrella": {
+          "actions": {
+            "Append_to_string_variable_13": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "9852866b-0207-4f52-b90b-bb5bf9c46208"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PaymentMethod",
+                "value": "Umbrella"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Placement_by_ID')?['body/cr0b7_paymentmethod']",
+              100000000
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7b63feea-1d2a-4d08-acf1-d8f80c287fbd"
+          },
+          "type": "If"
+        },
+        "Direct": {
+          "actions": {
+            "Append_to_string_variable_14": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "d0461bce-9885-41d9-8e73-9e6102639444"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PaymentMethod",
+                "value": "Direct"
+              }
+            }
+          },
+          "runAfter": {
+            "Umbrella": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Candidate_by_ID')?['body/cr0b7_paymentmethod']",
+              100000001
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cc385d7a-1cbb-4a22-9a3c-6b9076bc9e67"
+          },
+          "type": "If"
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "End_of_Trip": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "afb773ca-407a-4d8e-b81f-e5f30a8abf0f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PaymentMethod",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Client_Country_by_ID": {
+          "runAfter": {
+            "Branch_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "28027065-699e-4ddd-a75a-45664c0e21f1"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_countries",
+              "recordId": "@outputs('Client_by_ID')?['body/_new_countryid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Candidate_Country_by_ID": {
+          "runAfter": {
+            "Client_Country_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "578dce1e-f0fc-497f-a809-7722e44d6904"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_countries",
+              "recordId": "@outputs('Candidate_by_ID')?['body/_new_countryid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Umbrella_Control": {
+          "actions": {
+            "Honest_Payroll_Alert_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "22c106f8-6419-4b57-a4b3-ca5565ef11b9"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "customerservice@honestpayroll.co.uk;crewing@archeroffshore.co.uk;@{outputs('Consultant_by_ID')?['body/emailaddress1']}",
+                  "emailMessage/Subject": "Archer Offshore Referral  - @{triggerOutputs()?['body/new_name']} ",
+                  "emailMessage/Body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Email Template</title>\n    <style>\n        /* Inline styles for better Outlook compatibility */\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: Arial, sans-serif;\n            background-color: #00A6A6;\n        }\n        \n        .container {\n            max-width: 600px;\n            margin: 20px auto;\n            background-color: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n        }\n\n        .content {\n            margin-top: 20px;\n        }\n        \n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        .header img {\n            max-width: 100%;\n            height: auto;\n            display: block;\n            margin: 0 auto;\n        }\n        \n        h1 {\n            color: #333;\n            margin-bottom: 10px;\n            margin-top: 0;\n        }\n        \n        h2 {\n            color: #888;\n            margin-bottom: 10px;\n            margin-top: 10px;\n        }\n\n        .subheading {\n            color: grey;\n            font-size: 14px;\n            margin-top: 5px;\n            margin-bottom: 5px;\n        }\n        \n        p {\n            margin-bottom: 10px;\n        }\n\n        /* Hide snippet text */\n        .hidden-snippet {\n            display: none;\n            font-size: 1px;\n            color: #ffffff;\n        }\n    </style>\n</head>\n<body>\n <div class=\"hidden-snippet\">\n        New Referral from Archer Offshore by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}\n    </div>\n    <div class=\"container\">\n        <div class=\"header\">\n            <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f7506dade737a64b89e903_Referral%20HPAO.png\" alt=\"Header Image\">\n    \n        </div>\n        <div class=\"content\">\n<br>\n            <h2>Referral Details</h2>\n<p>Consultant -  @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}  </p>\n<p> Candidate - @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}</p>\n<p>Do they have a limited company? - @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyname']} </p>\n<p>Email Address - @{outputs('Candidate_by_ID')?['body/emailaddress1']} </p>\n<p>Phone Number - @{outputs('Candidate_by_ID')?['body/mobilephone']} </p>\n<p>Pay Rate - @{variables('NewStarter')} </p>\n<p>Currency - @{outputs('Currency_by_ID')?['body/currencyname']} </p>\n<p>Tax Residence - @{outputs('Candidate_by_ID')?['body/cr0b7_taxresidence']} </p>\n<p>Nationality - @{outputs('Candidate_by_ID')?['body/cr0b7_nationality']} </p>\n<p>Assignment Location - @{triggerOutputs()?['body/cr0b7_assignmentlocation']} </p>\n<p>Vessel Flag - @{triggerOutputs()?['body/cr0b7_vesselflag']} </p>\n<p>End Client - @{outputs('Client_by_ID')?['body/name']} </p>\n<p>End Client Entity - @{outputs('Client_Country_by_ID')?['body/new_name']} </p>\n<p>Pay Frequency - @{variables('PaymentFrequency')} </p>\n<p>Pay Option - @{outputs('Placement_by_ID')?['body/new_paymentoption']} </p>\n<br>\n       <h2>Additional Notes</h2>\n<p>@{triggerOutputs()?['body/cr0b7_additionalnotes']} </p>\n        </div>\n    </div>\n   <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f7081e21e5ea2f011a4dda_Email%20Signature.png\" alt=\"Header Image\">\n<p> For any enquiries, please contact the consultant or crewing team. Emails are above. </p>\n</body>\n</html>",
+                  "emailMessage/From": "archer@rigops.co.uk",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Sector_Control": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Condition_3": {
+                "actions": {
+                  "Honest_International_Alert_3": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "22c106f8-6419-4b57-a4b3-ca5565ef11b9"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_office365",
+                        "operationId": "SendEmailV2",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                      },
+                      "parameters": {
+                        "emailMessage/To": "customerservice@honestinternational.ae;crewing@archeroffshore.co.uk;@{outputs('Consultant_by_ID')?['body/emailaddress1']}",
+                        "emailMessage/Subject": "Archer Offshore Referral  - @{triggerOutputs()?['body/new_name']} ",
+                        "emailMessage/Body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Email Template</title>\n    <style>\n        /* Inline styles for better Outlook compatibility */\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: Arial, sans-serif;\n            background-color: #E1A884;\n        }\n        \n        .container {\n            max-width: 600px;\n            margin: 20px auto;\n            background-color: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n        }\n\n        .content {\n            margin-top: 20px;\n        }\n        \n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        .header img {\n            max-width: 100%;\n            height: auto;\n            display: block;\n            margin: 0 auto;\n        }\n        \n        h1 {\n            color: #333;\n            margin-bottom: 10px;\n            margin-top: 0;\n        }\n        \n        h2 {\n            color: #888;\n            margin-bottom: 10px;\n            margin-top: 10px;\n        }\n\n        .subheading {\n            color: grey;\n            font-size: 14px;\n            margin-top: 5px;\n            margin-bottom: 5px;\n        }\n        \n        p {\n            margin-bottom: 10px;\n        }\n\n        /* Hide snippet text */\n        .hidden-snippet {\n            display: none;\n            font-size: 1px;\n            color: #ffffff;\n        }\n    </style>\n</head>\n<body>\n <div class=\"hidden-snippet\">\n        New Referral from Archer Offshore by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}\n    </div>\n    <div class=\"container\">\n        <div class=\"header\">\n            <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f750b2e819c70945377392_Referral%20HIAO.png\" alt=\"Header Image\">\n            \n        </div>\n        <div class=\"content\">\n<br>\n            <h2>Referral Details</h2>\n<p>Consultant -  @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}  </p>\n<p> Candidate - @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}</p>\n<p>Do they have a limited company? - @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyname']} </p>\n<p>Email Address - @{outputs('Candidate_by_ID')?['body/emailaddress1']} </p>\n<p>Phone Number - @{outputs('Candidate_by_ID')?['body/mobilephone']} </p>\n<p>Pay Rate - @{variables('NewStarter')} </p>\n<p>Currency - @{outputs('Currency_by_ID')?['body/currencyname']} </p>\n<p>Tax Residence - @{outputs('Candidate_by_ID')?['body/cr0b7_taxresidence']} </p>\n<p>Nationality - @{outputs('Candidate_by_ID')?['body/cr0b7_nationality']} </p>\n<p>Assignment Location - @{triggerOutputs()?['body/cr0b7_assignmentlocation']} </p>\n<p>Vessel Flag - @{triggerOutputs()?['body/cr0b7_vesselflag']} </p>\n<p>End Client - @{outputs('Client_by_ID')?['body/name']} </p>\n<p>End Client Entity - @{outputs('Client_Country_by_ID')?['body/new_name']} </p>\n<p>Pay Frequency - @{variables('PaymentFrequency')} </p>\n<p>Pay Option - @{outputs('Placement_by_ID')?['body/new_paymentoption']} </p>\n<br>\n       <h2>Additional Notes</h2>\n<p>@{triggerOutputs()?['body/cr0b7_additionalnotes']} </p>\n        </div>\n    </div>\n   <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f7081e21e5ea2f011a4dda_Email%20Signature.png\" alt=\"Header Image\">\n<p> For any enquiries, please contact the consultant or crewing team. Emails are above. </p>\n</body>\n</html>",
+                        "emailMessage/From": "archer@rigops.co.uk",
+                        "emailMessage/Importance": "Normal"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                },
+                "runAfter": {},
+                "else": {
+                  "actions": {
+                    "Condition_2": {
+                      "actions": {
+                        "Kanopi_Alert_2": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "22c106f8-6419-4b57-a4b3-ca5565ef11b9"
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "connectionName": "shared_office365",
+                              "operationId": "SendEmailV2",
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                            },
+                            "parameters": {
+                              "emailMessage/To": "cs@kanopics.co.uk;crewing@archeroffshore.co.uk;@{outputs('Consultant_by_ID')?['body/emailaddress1']}",
+                              "emailMessage/Subject": "Archer Offshore Referral  - @{triggerOutputs()?['body/new_name']} ",
+                              "emailMessage/Body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Email Template</title>\n    <style>\n        /* Inline styles for better Outlook compatibility */\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: Arial, sans-serif;\n            background-color: #81cdb6;\n        }\n        \n        .container {\n            max-width: 600px;\n            margin: 20px auto;\n            background-color: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n        }\n\n        .content {\n            margin-top: 20px;\n        }\n        \n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        .header img {\n            max-width: 100%;\n            height: auto;\n            display: block;\n            margin: 0 auto;\n        }\n        \n        h1 {\n            color: #333;\n            margin-bottom: 10px;\n            margin-top: 0;\n        }\n        \n        h2 {\n            color: #888;\n            margin-bottom: 10px;\n            margin-top: 10px;\n        }\n\n        .subheading {\n            color: grey;\n            font-size: 14px;\n            margin-top: 5px;\n            margin-bottom: 5px;\n        }\n        \n        p {\n            margin-bottom: 10px;\n        }\n\n        /* Hide snippet text */\n        .hidden-snippet {\n            display: none;\n            font-size: 1px;\n            color: #ffffff;\n        }\n    </style>\n</head>\n<body>\n <div class=\"hidden-snippet\">\n        New Referral from Archer Offshore by @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}\n    </div>\n    <div class=\"container\">\n        <div class=\"header\">\n            <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f751680d92f87b635dcaa6_Referral%20KAO.png\" alt=\"Header Image\">\n     \n        </div>\n        <div class=\"content\">\n<br>\n            <h2>Referral Details</h2>\n<p>Consultant -  @{outputs('Consultant_by_ID')?['body/firstname']} @{outputs('Consultant_by_ID')?['body/lastname']}  </p>\n<p> Candidate - @{outputs('Candidate_by_ID')?['body/firstname']} @{outputs('Candidate_by_ID')?['body/lastname']}</p>\n<p>Do they have a limited company? - @{outputs('Candidate_by_ID')?['body/cr0b7_limitedcompanyname']} </p>\n<p>Email Address - @{outputs('Candidate_by_ID')?['body/emailaddress1']} </p>\n<p>Phone Number - @{outputs('Candidate_by_ID')?['body/mobilephone']} </p>\n<p>Pay Rate - @{variables('NewStarter')} </p>\n<p>Currency - @{outputs('Currency_by_ID')?['body/currencyname']} </p>\n<p>Tax Residence - @{outputs('Candidate_by_ID')?['body/cr0b7_taxresidence']} </p>\n<p>Nationality - @{outputs('Candidate_by_ID')?['body/cr0b7_nationality']} </p>\n<p>Assignment Location - @{triggerOutputs()?['body/cr0b7_assignmentlocation']} </p>\n<p>Vessel Flag - @{triggerOutputs()?['body/cr0b7_vesselflag']} </p>\n<p>End Client - @{outputs('Client_by_ID')?['body/name']} </p>\n<p>End Client Entity - @{outputs('Client_Country_by_ID')?['body/new_name']} </p>\n<p>Pay Frequency - @{variables('PaymentFrequency')} </p>\n<p>Pay Option - @{outputs('Placement_by_ID')?['body/new_paymentoption']} </p>\n<br>\n       <h2>Additional Notes</h2>\n<p>@{triggerOutputs()?['body/cr0b7_additionalnotes']} </p>\n        </div>\n    </div>\n   <img src=\"https://uploads-ssl.webflow.com/653b8eeb9750e980277be71c/65f7081e21e5ea2f011a4dda_Email%20Signature.png\" alt=\"Header Image\">\n<p> For any enquiries, please contact the consultant or crewing team. Emails are above. </p>\n</body>\n</html>",
+                              "emailMessage/From": "archer@rigops.co.uk",
+                              "emailMessage/Importance": "Normal"
+                            },
+                            "authentication": "@parameters('$authentication')"
+                          }
+                        }
+                      },
+                      "runAfter": {},
+                      "expression": {
+                        "equals": [
+                          "@outputs('Supplier_by_ID')?['body/name']",
+                          "Kanopi"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "b745e924-862e-4a29-90f8-8395c8cae6bb"
+                      },
+                      "type": "If"
+                    }
+                  }
+                },
+                "expression": {
+                  "equals": [
+                    "@outputs('Supplier_by_ID')?['body/name']",
+                    "Honest International"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "74962500-63d1-447d-b964-58df0a278105"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Supplier_by_ID')?['body/name']",
+              "Honest Payroll"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "de52a0a7-b1f9-47f7-931e-4ea0913a24ce"
+          },
+          "type": "If"
+        },
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "b635dc0a-cc05-4435-92a2-29d774adf9cd"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/_new_managingaccountid_value']"
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9270364c-fa7b-43df-932e-8fdbbccab082"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/_new_managingaccountid_value@Microsoft.Dynamics.CRM.lookuplogicalname']"
+        },
+        "Compose_3": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b9d535b1-be94-4277-a9f3-b803faad0c33"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/_new_managingaccountid_type']"
+        },
+        "Terminate": {
+          "runAfter": {
+            "Compose_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "985ac09a-b01a-46f5-ad15-fa6e0fcdfaff"
+          },
+          "type": "Terminate",
+          "inputs": {
+            "runStatus": "Failed"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

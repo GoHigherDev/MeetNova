@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="ccafa3c9-b3f5-411b-9e9a-19f491be86ad">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_candidateavailability",
+  "entityname": "Candidate Availability",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150000,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Availability</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

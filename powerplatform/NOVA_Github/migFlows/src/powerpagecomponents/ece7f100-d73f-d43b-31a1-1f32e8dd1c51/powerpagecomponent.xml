@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="ece7f100-d73f-d43b-31a1-1f32e8dd1c51">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 214,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "a6851dc0-c792-fae7-9229-276686b28757",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Create Expense</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,141 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "managingaccountid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "cca160f1-ee9c-449d-88d5-38e765aa2d4d"
+          }
+        }
+      },
+      "actions": {
+        "List_Expenses_row_by_managing_accountid": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_ratetypes",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_ratetype\">\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_name\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_name\" operator=\"like\" value=\"%Expenses%\" />\n      <condition attribute=\"new_managingaccountid\" operator=\"eq\"  uitype=\"account\" value=\"@{triggerBody()?['text']}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "17fb678c-4073-4c64-8774-bda2c7b58854"
+          }
+        },
+        "For_each": {
+          "type": "foreach",
+          "foreach": "@outputs('List_Expenses_row_by_managing_accountid')?['body/value']",
+          "actions": {
+            "Set_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "ratetypeid",
+                "value": "@items('For_each')?['new_ratetypeid']"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_ratetypeid_variable": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "Initialize_ratetypeid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ratetypeid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "List_Expenses_row_by_managing_accountid": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ratetypeid": {
+                  "title": "ratetypeid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "ratetypeid": "@{variables('ratetypeid')}"
+            }
+          },
+          "runAfter": {
+            "For_each": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3ce9b62b-35ba-432f-849d-291d260c1627"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="b05a20f2-7855-ef11-bfe3-002248cb952b">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "msa_managingpartnerid",
+  "descriptionposition": 100000000,
+  "entityform": "966e6bde-7855-ef11-bfe3-002248cb952b",
+  "entityformforcreate": "966e6bde-7855-ef11-bfe3-002248cb952b",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "msa_managingpartnerid",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client contact Summary - QP msa_managingpartnerid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

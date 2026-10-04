@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="000ed40f-e092-4428-3c29-03af8399b1cf">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "149bc89e-3675-e654-e132-9c915a9a862a",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "0e90c088-3441-ef11-a316-6045bd15aee8",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Intermediary Report Consultant</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

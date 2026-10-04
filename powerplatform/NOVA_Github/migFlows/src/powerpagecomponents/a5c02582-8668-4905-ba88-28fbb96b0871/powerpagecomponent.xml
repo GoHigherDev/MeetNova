@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="a5c02582-8668-4905-ba88-28fbb96b0871">
+  <content>{
+  "displayorder": 3,
+  "pageid": "6ee2b8e0-c56d-c74a-2bbc-f246bc4aab5a",
+  "parentweblinkid": "19c7a657-0a0b-4ae3-9ac6-8315415056b5",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Invoices</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

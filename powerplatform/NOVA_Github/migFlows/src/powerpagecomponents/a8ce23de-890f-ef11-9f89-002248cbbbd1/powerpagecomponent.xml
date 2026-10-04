@@ -1,0 +1,45 @@
+<powerpagecomponent powerpagecomponentid="a8ce23de-890f-ef11-9f89-002248cbbbd1">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_referece",
+  "entitypermissionsenabled": false,
+  "forceallfieldsrequired": false,
+  "formname": "Compliance Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000000,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "candidatereferences",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance Reference Insert QP</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

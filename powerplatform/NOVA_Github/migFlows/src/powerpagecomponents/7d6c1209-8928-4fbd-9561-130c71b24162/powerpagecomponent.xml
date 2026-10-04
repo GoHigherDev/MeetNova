@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="7d6c1209-8928-4fbd-9561-130c71b24162">
+  <content>{
+  "displayorder": 206,
+  "pageid": "6836e690-a930-33b0-4971-56b8edeee1b9",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Credit Remittance Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

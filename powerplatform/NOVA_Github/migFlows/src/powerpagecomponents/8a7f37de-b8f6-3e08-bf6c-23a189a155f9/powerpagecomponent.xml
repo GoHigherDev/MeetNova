@@ -1,0 +1,30 @@
+<powerpagecomponent powerpagecomponentid="8a7f37de-b8f6-3e08-bf6c-23a189a155f9">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 173,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "d78f9f62-f827-ef11-840a-6045bd14f37f",
+  "entitylist": "e4c0ed38-8a8e-4afd-a5d2-a3f8f218d98c",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "217347a0-4a35-f011-8c4c-6045bd69f0ab",
+  "parentpageid": "f07ba5c9-dc86-746b-3cbb-553a09c15cfb",
+  "partialurl": "billingdeductions",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Billing Deductions"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Billing Deductions</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Billing DeductionsundefinedBilling Deductions</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

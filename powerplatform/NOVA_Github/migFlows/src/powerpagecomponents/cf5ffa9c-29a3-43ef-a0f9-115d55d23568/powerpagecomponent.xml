@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="cf5ffa9c-29a3-43ef-a0f9-115d55d23568">
+  <content>{
+  "filecontent": null,
+  "displayorder": 9,
+  "parentweblinkid": "8aa3728a-c01c-4e43-aede-8dad732f83c6",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63",
+  "pageid": "5d0cb832-d405-508f-6b7c-02dd163d0b35",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Skills</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

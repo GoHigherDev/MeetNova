@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="4228d99e-e3f4-4da3-98f0-16e50672ecd7">
+  <content>{
+  "displayorder": 25,
+  "pageid": "d4c323d4-fc3b-a64b-c6d7-e13acf299e86",
+  "parentweblinkid": "860f6adb-102b-4428-8ea4-725e333b8ce5",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Managing Accounts</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

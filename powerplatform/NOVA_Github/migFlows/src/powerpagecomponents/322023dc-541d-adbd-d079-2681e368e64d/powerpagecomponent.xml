@@ -1,0 +1,35 @@
+<powerpagecomponent powerpagecomponentid="322023dc-541d-adbd-d079-2681e368e64d">
+  <content>{
+  "copy": "&lt;div id=\"i2a0zo\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div id=\"iz5hhd\" class=\"container\" style=\"padding: 0px; display: flex; flex-wrap: wrap;\"&gt;&lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px;\"&gt;{% include 'entity_list' key: 'Timesheets Adjustment History, Invoices Adjustment History' AISummaryTitle: 'AI Insights' isAISummaryExpanded: 'true' AISummaryChartTypes: '[1,2,3,4,5]' isAISummaryEnabled: 'true'%}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 171,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "8faf678e-c01a-f011-9989-6045bd69f0ab",
+  "parentpageid": "56860037-1057-3e78-f00e-441a647b3720",
+  "partialurl": "adjustmentshistory",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "bc6ffca0-3738-fea2-09a3-51a5cbe19653",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Adjustments History"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Adjustments History</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Adjustments History&lt;div id="i2a0zo" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div id="iz5hhd" class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"&gt;&lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px;"&gt;{% include 'entity_list' key: 'Timesheets Adjustment History, Invoices Adjustment History' AISummaryTitle: 'AI Insights' isAISummaryExpanded: 'true' AISummaryChartTypes: '[1,2,3,4,5]' isAISummaryEnabled: 'true'%}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Adjustments History</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

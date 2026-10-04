@@ -1,0 +1,122 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "DocUrl",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "461c7e9f-4fe0-430b-8502-2d03b6428263"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "arrayjson": {
+                  "title": "ArrayJson",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "arrayjson": "@{outputs('Compose_ArrayJson')}"
+            }
+          },
+          "runAfter": {
+            "Compose_ArrayJson": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8ceb9aa8-e38a-493e-a4c0-7694c7e615b4"
+          }
+        },
+        "HTTP_get_Doc": {
+          "type": "Http",
+          "inputs": {
+            "uri": "@triggerBody()?['text']",
+            "method": "GET"
+          },
+          "runAfter": {},
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "Compose_base64": {
+          "type": "Compose",
+          "inputs": "@base64(body('HTTP_get_Doc'))",
+          "runAfter": {
+            "HTTP_get_Doc": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_Filename": {
+          "type": "Compose",
+          "inputs": "@last(split(triggerBody()?['text'], '_'))",
+          "runAfter": {
+            "Compose_base64": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_ArrayJson": {
+          "type": "Compose",
+          "inputs": {
+            "Name": "@outputs('Compose_Filename')",
+            "ContentBytes": "@outputs('Compose_base64')"
+          },
+          "runAfter": {
+            "Compose_Filename": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="629ee891-2859-e495-b670-0f5c11d846f3">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 195,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "8d6875d3-80ad-88d5-4d45-4a16592b96ae",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>SalesLead</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,613 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_onedriveforbusiness": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedonedriveforbusiness_c3f4d"
+        },
+        "api": {
+          "name": "shared_onedriveforbusiness"
+        }
+      },
+      "shared_commondataserviceforapps-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "501f4a1f-1cba-4477-abfd-73c8278e5d4b"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "table",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "recordid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "fieldname",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "filename",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter your input",
+                  "title": "folder",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2",
+                "text_3",
+                "text_4"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Download_a_file_or_an_image": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9834fc29-253f-468a-8448-293f583b6aaa"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetEntityFileImageFieldContent",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "@triggerBody()['text']",
+              "recordId": "@triggerBody()['text_1']",
+              "fileImageFieldName": "@triggerBody()['text_2']",
+              "size": "full"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Get_file_metadata_using_path": {
+          "runAfter": {
+            "Download_a_file_or_an_image": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6fc84b6b-a8cd-4431-9d37-23e3af31b7b5"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_onedriveforbusiness",
+              "operationId": "GetFileMetadataByPath",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+            },
+            "parameters": {
+              "path": "/@{triggerBody()?['text_4']}/@{triggerBody()?['text_3']}.pdf"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Scope_file_exists": {
+          "actions": {
+            "Update_file": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "8dfd7618-0f21-4335-be0e-fabf0f9d3ab6"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "UpdateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "id": "@outputs('Get_file_metadata_using_path')?['body/Id']",
+                  "body": "@body('Download_a_file_or_an_image')"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              }
+            },
+            "Get_a_row_by_ID_UNUSED_": {
+              "runAfter": {
+                "Update_file": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "7cbecee3-1331-437e-bbe0-82ef4d1b4636"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "@triggerBody()?['text']",
+                  "recordId": "@triggerBody()?['text_1']",
+                  "$select": "new_pdfurl"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Condition_pdf_url_is_null_PLACEHOLDER_never_reached": {
+              "actions": {
+                "Create_share_link-onnull": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "bca5c3d4-607d-4468-92e9-df38574f444b"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_onedriveforbusiness",
+                      "operationId": "CreateShareLinkV2",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                    },
+                    "parameters": {
+                      "id": "@outputs('Update_file')?['body/Id']",
+                      "type": "View",
+                      "scope": "Anonymous"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Update_a_row-nullpdfurl": {
+                  "runAfter": {
+                    "Create_share_link-onnull": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5dc45494-fcd8-4a60-a1eb-b206c637e8d3"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "@triggerBody()?['text']",
+                      "recordId": "@triggerBody()?['text_1']",
+                      "item": "@json(\r\n  concat(\r\n    '{\"new_pdfurl\": \"',\r\n    outputs('Create_share_link-onnull')?['body/WebUrl'],\r\n    '\"}'\r\n  )\r\n)"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Condition_is_timesheets": {
+                  "actions": {
+                    "Get_a_row_by_ID_1": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "b43ffbe9-55aa-43f2-bdd1-759c67b68249"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_timesheets",
+                          "recordId": "@triggerBody()?['text_1']"
+                        },
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps-1",
+                          "operationId": "GetItem",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Condition_1": {
+                      "actions": {},
+                      "runAfter": {
+                        "Get_a_row_by_ID_1": [
+                          "Succeeded"
+                        ]
+                      },
+                      "expression": {
+                        "or": [
+                          {
+                            "not": {
+                              "equals": [
+                                "@outputs('Get_a_row_by_ID_1')?['body/statuscode']",
+                                100000007
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@outputs('Get_a_row_by_ID_1')?['body/statuscode']",
+                                100000009
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "878fe7f3-a715-4d43-aaf6-fa644e33ef7b"
+                      },
+                      "type": "If"
+                    }
+                  },
+                  "runAfter": {
+                    "Update_a_row-nullpdfurl": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@triggerBody()?['text']",
+                          "new_timesheets"
+                        ]
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e0cb8dc4-1351-41fb-a6ac-bc457f5af765"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "Get_a_row_by_ID_UNUSED_": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@triggerBody()?['text_1']",
+                        "@null"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0fd97779-c03f-4ec7-b73a-bc279f552482"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Get_file_metadata_using_path": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "103a1023-9cc7-4d28-ba75-d5541969d997"
+          },
+          "type": "Scope"
+        },
+        "Scope-file_NOT_Exist": {
+          "actions": {
+            "Create_file": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "034c0a83-0d71-4e47-a613-e2fffc2ffd1d"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "CreateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "folderPath": "/@{triggerBody()?['text_4']}",
+                  "name": "@{triggerBody()?['text_3']}.pdf",
+                  "body": "@body('Download_a_file_or_an_image')"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              }
+            },
+            "Create_share_link": {
+              "runAfter": {
+                "Create_file": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bca5c3d4-607d-4468-92e9-df38574f444b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "CreateShareLinkV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "id": "@outputs('Create_file')?['body/Id']",
+                  "type": "View",
+                  "scope": "Anonymous"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Update_a_row": {
+              "runAfter": {
+                "Create_share_link": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5dc45494-fcd8-4a60-a1eb-b206c637e8d3"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "@triggerBody()?['text']",
+                  "recordId": "@triggerBody()?['text_1']",
+                  "item": "@json(\r\n  concat(\r\n    '{\"new_pdfurl\": \"',\r\n    outputs('Create_share_link')?['body/WebUrl'],\r\n    '\"}'\r\n  )\r\n)"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Condition_is_timesheets-copy": {
+              "actions": {
+                "Get_a_row_by_ID_2": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "a529eb3c-6b81-4d80-8c6e-2800afbbc606"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheets",
+                      "recordId": "@triggerBody()?['text_1']"
+                    },
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps-1",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Condition_2": {
+                  "actions": {},
+                  "runAfter": {
+                    "Get_a_row_by_ID_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "or": [
+                      {
+                        "not": {
+                          "equals": [
+                            "@outputs('Get_a_row_by_ID_2')?['body/statuscode']",
+                            100000007
+                          ]
+                        }
+                      },
+                      {
+                        "not": {
+                          "equals": [
+                            "@outputs('Get_a_row_by_ID_2')?['body/statuscode']",
+                            100000009
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "38e6283d-4631-4d8b-bc20-6df13038486e"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "Update_a_row": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@triggerBody()?['text']",
+                      "new_timesheets"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0d73fafb-8823-442f-9202-b68054532589"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Get_file_metadata_using_path": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f3a308ea-630f-4af8-a2ae-8d63f02796c9"
+          },
+          "type": "Scope"
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Scope_file_exists": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "aa83af07-a6a8-4f37-8500-8ef1f9257602"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "success": "@true"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow-notexists": {
+          "runAfter": {
+            "Scope-file_NOT_Exist": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4c94962a-8450-400a-9372-d2df8e23ff3f"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "success": "@true"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "Terminate": {
+          "runAfter": {
+            "Respond_to_a_Power_App_or_flow-notexists": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cd8ac7b4-ba66-4b79-870e-50bf34ca8afc"
+          },
+          "type": "Terminate",
+          "inputs": {
+            "runStatus": "Succeeded"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

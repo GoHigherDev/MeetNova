@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="4fd0554e-4ed1-452d-a4a7-0cb6ccc3e6c6">
+  <content>{
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": false,
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Business-Abstract-9.jpg",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "summary": "",
+  "title": ""
+}</content>
+  <filecontent mimetype="application/octet-stream">Business-Abstract-9.jpg</filecontent>
+  <iscustomizable>1</iscustomizable>
+  <name>Business-Abstract-9.jpg</name>
+  <powerpagecomponenttype>3</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="7a02e190-f6b0-3858-ab7c-0406226fbbdf">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 134,
+  "editorialcomments": "ui",
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "ccacaa48-81dc-ee11-904c-000d3a86a889",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Xero-Self-Bill-Modal",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Xero Self Bill Modal"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Xero Self Bill Modal</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Xero Self Bill ModalundefinedXero Self Bill Modal</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

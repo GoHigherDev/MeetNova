@@ -1,0 +1,999 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_relatedemail",
+              "subscriptionRequest/scope": 4
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "bf44fe9b-2b2a-4dee-90aa-66a3fed4aecb"
+          }
+        }
+      },
+      "actions": {
+        "Send_an_email_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@{variables('EmailTo')};eman.akrm123@gmail.com",
+              "emailMessage/Subject": "@variables('Email Subject')",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">@{variables('Message')}</p>",
+              "emailMessage/Attachments": "@variables('attachmentsArray')",
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365-1"
+            }
+          },
+          "runAfter": {
+            "Condition_if_message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c7f3fb0b-886a-4623-9a32-3d5d646f256f"
+          }
+        },
+        "Initialize_email_subject_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Email Subject",
+                "type": "string",
+                "value": "PDF attached"
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "60addd78-48a1-45b2-bd06-20a95939933c"
+          }
+        },
+        "Initialize_email_to_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "EmailTo",
+                "type": "string",
+                "value": "@triggerBody()?['new_name']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_email_subject_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "04b90422-2582-42c7-b3a1-7e9e616af739"
+          }
+        },
+        "Initialize_EmailContent_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "EmailContent",
+                "type": "string",
+                "value": "Please find your PDF below"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_email_to_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d5514ca7-2f05-4390-924e-e23e18ec3836"
+          }
+        },
+        "Delete_a_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_relatedemails",
+              "recordId": "@triggerBody()?['new_relatedemailid']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "DeleteRecord",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Send_an_email_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4602261a-113f-40b2-9eaa-796b352cbb8e"
+          }
+        },
+        "Initialize_PDFExist_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PDFExist",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_EmailContent_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "25b8d9b6-3795-4ad2-ba9e-649bfd7b036a"
+          }
+        },
+        "Condition_on_Timesheet_lookup": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_new_timesheetid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_variable_pdf_exist_eq_false_2_": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "PDFExist",
+                "value": false
+              },
+              "metadata": {
+                "operationMetadataId": "eea6cb77-f696-4391-9e88-da07929bb267"
+              }
+            },
+            "Get_a_timesheet_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['_new_timesheetid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps_1"
+                }
+              },
+              "runAfter": {
+                "Set_variable_pdf_exist_eq_false_2_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9a1e62a0-a083-4767-befe-a0e9b54a1913"
+              }
+            },
+            "Set_pdf_link_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "EmailContent",
+                "value": "@concat('<a href=\"', outputs('Get_a_timesheet_row_by_ID')?['body/new_pdfurl'], '\">', outputs('Get_a_timesheet_row_by_ID')?['body/new_name'], '</a><br>')"
+              },
+              "runAfter": {
+                "Do_until": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e6314a43-e76e-4ba6-bfb7-e3b0b2b44813"
+              }
+            },
+            "Do_until": {
+              "type": "Until",
+              "expression": "@equals(variables('PDFExist'),true)",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "actions": {
+                "Delay_1": {
+                  "type": "Wait",
+                  "inputs": {
+                    "interval": {
+                      "count": 10,
+                      "unit": "Second"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0734d0ed-a08c-4032-a8b8-061cc84edb99"
+                  }
+                },
+                "Condition-pdf_exists": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "greater": [
+                          "@length(outputs('Get_a_timesheet_row_by_ID')?['body/new_pdfurl'])",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Set_variable_pdf_exist_eq_true": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "PDFExist",
+                        "value": true
+                      },
+                      "runAfter": {
+                        "Append_to_array_variable_attachmentsArray_": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "9039fef6-e72f-47ca-9273-173fa57d2ae0"
+                      }
+                    },
+                    "Compose_timesheet_pdfcontent": {
+                      "type": "Compose",
+                      "inputs": "@base64(body('HTTP_2'))",
+                      "runAfter": {
+                        "HTTP_2": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "28b8029a-ca91-4c0a-a9f8-edc5e991aae9"
+                      }
+                    },
+                    "Append_to_array_variable_attachmentsArray_": {
+                      "type": "AppendToArrayVariable",
+                      "inputs": {
+                        "name": "attachmentsArray",
+                        "value": {
+                          "Name": "@outputs('Compose_filename')",
+                          "ContentBytes": "@outputs('Compose_timesheet_pdfcontent')"
+                        }
+                      },
+                      "runAfter": {
+                        "Compose_timesheet_pdfcontent": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c2d56e43-9db7-4a4b-b040-455daf92e61f"
+                      }
+                    },
+                    "Compose_filename": {
+                      "type": "Compose",
+                      "inputs": "@concat(outputs('Get_a_timesheet_row_by_ID')?['body/new_name'] ,'.pdf')",
+                      "metadata": {
+                        "operationMetadataId": "b3347de3-f52e-45c5-998d-a2dce0a618a0"
+                      }
+                    },
+                    "HTTP_2": {
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@outputs('Get_a_timesheet_row_by_ID')?['body/new_pdfurl']",
+                        "method": "GET"
+                      },
+                      "runAfter": {
+                        "Compose_filename": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "1d6179e0-1fe8-46a1-adb9-17ae80acb646"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "Delay_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "749d0baf-3a86-4797-92f3-bbf0b164b382"
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_a_timesheet_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "59fc3b72-722d-49c3-80f2-9c79528b7048"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_invoice_Lookup": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fcc47a11-700d-4b9e-b88c-3254033db2c8"
+          }
+        },
+        "Condition_invoice_Lookup": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_new_invoiceid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_variable_pdf_exist_false1": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "PDFExist",
+                "value": false
+              },
+              "metadata": {
+                "operationMetadataId": "097d8daa-ca23-485d-ab7d-4f53b38fa4bf"
+              }
+            },
+            "Get_a_invoice_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@triggerBody()?['_new_invoiceid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps_1"
+                }
+              },
+              "runAfter": {
+                "Set_variable_pdf_exist_false1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b143d59c-5f9a-4447-9bb3-289593760670"
+              }
+            },
+            "Set_filename_variable_1": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "EmailContent",
+                "value": "@concat('<a href=\"', outputs('Get_a_invoice_row_by_ID')?['body/new_pdfurl'], '\">', outputs('Get_a_invoice_row_by_ID')?['body/new_name'], '</a><br>')"
+              },
+              "runAfter": {
+                "Do_until_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6968e838-fd41-4b7b-b615-11e7c4215f5e"
+              }
+            },
+            "Do_until_1": {
+              "type": "Until",
+              "expression": "@equals(variables('PDFExist'),true)",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "actions": {
+                "Delay_2": {
+                  "type": "Wait",
+                  "inputs": {
+                    "interval": {
+                      "count": 10,
+                      "unit": "Second"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0b7842b7-ae2e-476c-a839-6bc2af17defa"
+                  }
+                },
+                "Condition-pdf_exists-copy": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "greater": [
+                          "@length(outputs('Get_a_invoice_row_by_ID')?['body/new_pdfurl'])",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Compose_invoice_filename": {
+                      "type": "Compose",
+                      "inputs": "@concat(outputs('Get_a_invoice_row_by_ID')?['body/new_name'], '.pdf')",
+                      "metadata": {
+                        "operationMetadataId": "b3347de3-f52e-45c5-998d-a2dce0a618a0"
+                      }
+                    },
+                    "Compose_invoice_PDFContent": {
+                      "type": "Compose",
+                      "inputs": "@base64(body('HTTPINV'))",
+                      "runAfter": {
+                        "HTTPINV": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "28b8029a-ca91-4c0a-a9f8-edc5e991aae9"
+                      }
+                    },
+                    "Append_to_array_variable_attachmentsArray__2": {
+                      "type": "AppendToArrayVariable",
+                      "inputs": {
+                        "name": "attachmentsArray",
+                        "value": {
+                          "Name": "@outputs('Compose_invoice_filename')",
+                          "ContentBytes": "@outputs('Compose_invoice_PDFContent')"
+                        }
+                      },
+                      "runAfter": {
+                        "Compose_invoice_PDFContent": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c2d56e43-9db7-4a4b-b040-455daf92e61f"
+                      }
+                    },
+                    "Set_variable_pdf_exist_eq_true_1": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "PDFExist",
+                        "value": true
+                      },
+                      "runAfter": {
+                        "Append_to_array_variable_attachmentsArray__2": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "d4c92dc5-85c1-4d52-b733-5f148771e112"
+                      }
+                    },
+                    "HTTPINV": {
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@outputs('Get_a_invoice_row_by_ID')?['body/new_pdfurl']",
+                        "method": "GET"
+                      },
+                      "runAfter": {
+                        "Compose_invoice_filename": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "dfe3f2de-e1d6-451c-94bc-be767f39ff4c"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "Delay_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6ef60121-11cf-4fbe-9202-d534e1d4210e"
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_a_invoice_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "86013764-cd1b-4c22-b1b8-896caebf2efa"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_remittance_lookup": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a84e80e2-faa6-4e27-8529-0e79da318bf3"
+          }
+        },
+        "Condition_remittance_lookup": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_new_selfbillid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Get_a_self-bill_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@triggerBody()?['_new_selfbillid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps_1"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "673d7e57-b885-4d6b-8d5e-2c021314d92d"
+              }
+            },
+            "Set_filename_variable_2": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "EmailContent",
+                "value": "@concat('<a href=\"', outputs('Get_a_self-bill_by_ID')?['body/new_pdfurl'], '\">', outputs('Get_a_self-bill_by_ID')?['body/new_name'], '</a><br>')"
+              },
+              "runAfter": {
+                "Do_until_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6cf61c22-f019-47a7-b61c-f9ae7276bd6c"
+              }
+            },
+            "Do_until_2": {
+              "type": "Until",
+              "expression": "@equals(variables('PDFExist'),true)",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "actions": {
+                "Delay_2-copy": {
+                  "type": "Wait",
+                  "inputs": {
+                    "interval": {
+                      "count": 10,
+                      "unit": "Second"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "97a8e675-b29a-4fa5-b1c7-c5fb3f35c46a"
+                  }
+                },
+                "Condition-pdf_exists-remittance": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "greater": [
+                          "@length(outputs('Get_a_self-bill_by_ID')?['body/new_pdfurl'])",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Compose_remittance_filename": {
+                      "type": "Compose",
+                      "inputs": "@concat(outputs('Get_a_self-bill_by_ID')?['body/new_name'], '.pdf')",
+                      "metadata": {
+                        "operationMetadataId": "b3347de3-f52e-45c5-998d-a2dce0a618a0"
+                      }
+                    },
+                    "Compose_sbPDFcontent": {
+                      "type": "Compose",
+                      "inputs": "@base64(body('HTTP'))",
+                      "runAfter": {
+                        "HTTP": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "28b8029a-ca91-4c0a-a9f8-edc5e991aae9"
+                      }
+                    },
+                    "Append_to_array_variable_attachmentsArray__3": {
+                      "type": "AppendToArrayVariable",
+                      "inputs": {
+                        "name": "attachmentsArray",
+                        "value": {
+                          "Name": "@outputs('Compose_remittance_filename')",
+                          "ContentBytes": "@outputs('Compose_sbPDFcontent')"
+                        }
+                      },
+                      "runAfter": {
+                        "Compose_sbPDFcontent": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c2d56e43-9db7-4a4b-b040-455daf92e61f"
+                      }
+                    },
+                    "Set_variable_pdf_exist_eq_true_2": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "PDFExist",
+                        "value": true
+                      },
+                      "runAfter": {
+                        "Append_to_array_variable_attachmentsArray__3": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "6599cde2-ad06-4cf9-8db2-639217598b9b"
+                      }
+                    },
+                    "HTTP": {
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@outputs('Get_a_self-bill_by_ID')?['body/new_pdfurl']",
+                        "method": "GET"
+                      },
+                      "runAfter": {
+                        "Compose_remittance_filename": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c869cbff-d12f-4c44-8606-214f17f25446"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "Delay_2-copy": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4f421702-1060-45b0-9c89-16c611b46d02"
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_a_self-bill_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "41d0225c-0e23-49d7-90e6-461456bd6daf"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0b437fc9-3dce-4358-9301-e77db3181d1b"
+          }
+        },
+        "Delay": {
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 10,
+              "unit": "Second"
+            }
+          },
+          "runAfter": {
+            "Condition_on_Timesheet_lookup": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "affe2531-c80c-49b8-b3d8-db410c2b1519"
+          }
+        },
+        "Initialize_attachmentsArray__variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "attachmentsArray",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_PDFExist_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dae0990a-c620-48c6-b83e-e2ab5734430e"
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {
+            "Initialize_attachmentsArray__variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3b570cfc-a3df-43f2-8a1d-8fb40abc2759"
+          }
+        },
+        "Condition_if_global_notification_is_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@body('Run_a_Child_Flow_Global')?['result']",
+                    "@false"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                },
+                "metadata": {
+                  "operationMetadataId": "670fe492-13ff-4842-9ff0-40d62472a9c1"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58b29beb-d08b-4fd1-83c6-7f591bfc605a"
+          }
+        },
+        "Run_a_Child_Flow_Enable": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "5e028360-aa88-f011-b4cb-6045bdfc0113"
+            }
+          },
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c4d0148f-a156-4b7e-8769-63154b3e25b0"
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@body('Run_a_Child_Flow_Enable')?['success']",
+                    "@false"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                },
+                "metadata": {
+                  "operationMetadataId": "07bb5c4b-9be0-4d6a-babf-74b2f8ce7f39"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9df31d01-6f6e-4843-aae0-6aa14a685e07"
+          }
+        },
+        "Get_a_notification_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "5e028360-aa88-f011-b4cb-6045bdfc0113"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "09f8e3af-fbdc-4580-a9ec-0d9b05915d9c"
+          }
+        },
+        "Initialize_Message_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "Please find your link PDF below\n\n\n@{variables('EmailContent')}\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a542a264-fe45-49c4-99e8-b1d284dfad64"
+          }
+        },
+        "Condition_if_message_not_empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Message_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              },
+              "metadata": {
+                "operationMetadataId": "0cb3737c-b4dc-468f-848c-4247027410a6"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "72202f18-e861-4b2d-815a-20d5640aca1a"
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

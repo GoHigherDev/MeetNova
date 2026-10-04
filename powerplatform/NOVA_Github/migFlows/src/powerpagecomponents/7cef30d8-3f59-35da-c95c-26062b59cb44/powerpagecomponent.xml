@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="7cef30d8-3f59-35da-c95c-26062b59cb44">
+  <content>{
+  "displayorder": 45,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "913ae56b-8213-ef11-9f89-0022486a2752",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "1df63799-c7c8-ee11-9079-6045bd0cfca3",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "candidatetimesheetdetails",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Candidate Timesheet Details"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Timesheet Details</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Candidate Timesheet DetailsCandidate Timesheet Details</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

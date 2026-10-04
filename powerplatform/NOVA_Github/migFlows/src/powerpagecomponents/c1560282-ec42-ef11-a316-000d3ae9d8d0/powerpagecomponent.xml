@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="c1560282-ec42-ef11-a316-000d3ae9d8d0">
+  <content>{
+  "isdefault": false,
+  "type": 756150001,
+  "usewebsiteheaderandfooter": true,
+  "webtemplateid": "6ca25e60-ec42-ef11-a316-000d3ae9d8d0"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Reset Password</name>
+  <powerpagecomponenttype>6</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,329 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_onedriveforbusiness": {
+        "api": {
+          "name": "shared_onedriveforbusiness"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedonedriveforbusiness_c3f4d"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "fileid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "timesheetid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "timesheetname",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "6fcd6f00-d8d2-4e17-85dd-669cccf388fd"
+          }
+        }
+      },
+      "actions": {
+        "Scope": {
+          "type": "Scope",
+          "actions": {
+            "Upload_PDF_to_Record": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "x-ms-file-name": "Timesheet_@{triggerBody()?['text_2']}.pdf",
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['text_1']",
+                  "fileImageFieldName": "new_stagepdf",
+                  "item": "@body('Convert_file_using_path')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateEntityFileImageFieldContent",
+                  "connectionName": "shared_commondataserviceforapps"
+                },
+                "retryPolicy": {
+                  "type": "exponential",
+                  "count": 5,
+                  "interval": "PT30S",
+                  "minimumInterval": "PT30S",
+                  "maximumInterval": "PT1H"
+                }
+              },
+              "runAfter": {
+                "Convert_file_using_path": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ccf087b0-baa9-4fcb-8ff9-9f10f4284b5c"
+              }
+            },
+            "Delay": {
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 30,
+                  "unit": "Second"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "c2418ada-0849-4ccc-85c6-43294e6e871e"
+              }
+            },
+            "Respond_to_a_Power_App_or_flow-copy": {
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "title": "success",
+                      "x-ms-dynamically-added": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": {}
+                },
+                "statusCode": 200,
+                "body": {
+                  "success": "@{true}"
+                }
+              },
+              "runAfter": {
+                "Upload_PDF_to_Record": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5fcfc1d1-b1aa-4c92-bb87-6cbc8b4806ba"
+              }
+            },
+            "Convert_file_using_path": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "path": "@triggerBody()?['text']",
+                  "type": "PDF"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+                  "operationId": "ConvertFileByPath",
+                  "connectionName": "shared_onedriveforbusiness"
+                }
+              },
+              "runAfter": {
+                "Delay": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "89515949-a08e-4a27-aa4b-c94b83580a1c"
+              }
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "04ef95e8-c238-41c3-a914-b533cc139c84"
+          }
+        },
+        "Scope_1": {
+          "type": "Scope",
+          "actions": {
+            "Upload_PDF_to_Record-copy": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "x-ms-file-name": "Timesheet_@{triggerBody()?['text_2']}.pdf",
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['text_1']",
+                  "fileImageFieldName": "new_stagepdf",
+                  "item": "@body('Convert_file_using_path_2')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateEntityFileImageFieldContent",
+                  "connectionName": "shared_commondataserviceforapps"
+                },
+                "retryPolicy": {
+                  "type": "exponential",
+                  "count": 5,
+                  "interval": "PT30S",
+                  "minimumInterval": "PT30S",
+                  "maximumInterval": "PT1H"
+                }
+              },
+              "runAfter": {
+                "Convert_file-fail_final_retry": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ccf087b0-baa9-4fcb-8ff9-9f10f4284b5c"
+              }
+            },
+            "Convert_file-fail_final_retry": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "id": "@triggerBody()?['text']",
+                  "type": "PDF"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+                  "operationId": "ConvertFile",
+                  "connectionName": "shared_onedriveforbusiness"
+                },
+                "retryPolicy": {
+                  "type": "exponential",
+                  "count": 5,
+                  "interval": "PT30S",
+                  "minimumInterval": "PT30S",
+                  "maximumInterval": "PT1H"
+                }
+              },
+              "runAfter": {
+                "Convert_file_using_path_2": [
+                  "Succeeded"
+                ]
+              },
+              "limit": {
+                "timeout": "P1D"
+              },
+              "metadata": {
+                "b!avPKxoJG3kW6I9L0MECWNpE3_wIPSqtEuETRXNI0fVzoGRflOra3T6TNYnvX-UK9.0172APWYOK4RBUYGFUUZBKJUD5EAJ6SUVX": "/Archer Offshore/20222test.xlsx",
+                "operationMetadataId": "357342d9-54bd-43f5-b0ce-085c26d7eace"
+              }
+            },
+            "Delay-copy": {
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 30,
+                  "unit": "Second"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "5ec81d6f-1576-4dd3-99ca-480cbb836fc3"
+              }
+            },
+            "Respond_to_a_Power_App_or_flow": {
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "title": "success",
+                      "x-ms-dynamically-added": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": {}
+                },
+                "statusCode": 200,
+                "body": {
+                  "success": "@{true}"
+                }
+              },
+              "runAfter": {
+                "Upload_PDF_to_Record-copy": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5fcfc1d1-b1aa-4c92-bb87-6cbc8b4806ba"
+              }
+            },
+            "Convert_file_using_path_2": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "path": "@triggerBody()?['text']",
+                  "type": "PDF"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+                  "operationId": "ConvertFileByPath",
+                  "connectionName": "shared_onedriveforbusiness"
+                }
+              },
+              "runAfter": {
+                "Delay-copy": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1a63b538-2f45-43b5-95ef-c5c17c81393b"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58536046-f4cd-4b8c-a72b-6b5703ba3a49"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

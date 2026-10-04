@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="086b9f14-f2df-ef11-a731-002248cbefc2">
+  <content>{
+  "flowapiurl": "/_api/cloudflow/v1.0/trigger/e28f8ae3-f1df-ef11-a731-002248cbefc2",
+  "flowtriggerurl": "https://16cf9874-a2f7-efca-8a88-e875894cfe48.12.common.uae.azure-apihub.net:443/apim/logicflows/19E6CFDE7AFB10A52FCCB07814D7E2A2-47B60381B5A2A2B6/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "19e6cfde-7afb-10a5-2fcc-b07814d7e2a2",
+  "processid": "e28f8ae3-f1df-ef11-a731-002248cbefc2",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "0e90c088-3441-ef11-a316-6045bd15aee8",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Create Invoice</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="f604fb31-da71-4d1d-a773-13265554afbb">
+  <content>{
+  "displayorder": 171,
+  "pageid": "d0472882-4e4c-6c90-9b88-159bf37f5c9e",
+  "parentweblinkid": "c39b6c6f-e75a-482f-b8f2-e0ed0de76c05",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Purchase Orders</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

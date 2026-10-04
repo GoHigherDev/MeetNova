@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="5fe740cd-649c-4b6e-88ba-0567935f80a1">
+  <content>{
+  "displayorder": 129,
+  "pageid": "4a0a13f3-f79b-6b6e-0c74-d3f3a718e4f2",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Supplier Settings</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

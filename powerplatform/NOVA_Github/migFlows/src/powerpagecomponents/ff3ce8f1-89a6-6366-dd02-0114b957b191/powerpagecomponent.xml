@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="ff3ce8f1-89a6-6366-dd02-0114b957b191">
+  <content>{
+  "displayorder": 203,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "96a793c6-0566-f011-bec2-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8cb3e2a9-9be6-180f-c10c-04ed23d43c49",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "creditnoteinvoice",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Credit Note Invoice"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Credit Note Invoice</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Credit Note InvoiceCredit Note Invoice</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,288 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "impersonation": {},
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "24ba531d-e95c-40f3-9d6f-a87aa1643579"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "clientid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "number": {
+                  "title": "templatetype",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter a number",
+                  "x-ms-content-hint": "NUMBER"
+                },
+                "text_1": {
+                  "title": "managingaccountid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "number",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "List_rows_template_by_client": {
+          "runAfter": {
+            "Initialize_template_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fa5cacea-d2ab-4690-b71c-f6dbada7500d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords"
+            },
+            "parameters": {
+              "entityName": "new_templates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\" >\n    <entity name=\"new_template\" >\n        <attribute name=\"new_templateid\" />\n\n        <attribute name=\"new_templatefile\" />\n\n        <filter type=\"and\" >\n            <condition attribute=\"new_templatetype\" operator=\"eq\" value=\"@{triggerBody()['number']}\" />\n      <condition attribute=\"new_templatefile\" operator=\"not-null\" />\n        </filter>\n        <link-entity name=\"new_template_clientaccount\" from=\"new_templateid\" to=\"new_templateid\" alias=\"ntca\" >\n            <attribute name=\"new_templateid\" />\n            <filter type=\"and\" >\n                <condition attribute=\"accountid\" operator=\"eq\" value=\"@{triggerBody()['text']}\" />\n            </filter>\n        </link-entity>\n    </entity>\n</fetch>",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_if_client_template_exists": {
+          "actions": {
+            "Apply_to_each": {
+              "foreach": "@outputs('List_rows_template_by_client')?['body/value']",
+              "actions": {
+                "Set_Templateid_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2f12062c-2234-42f7-89ab-16df4b34040e"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Templateid",
+                    "value": "@items('Apply_to_each')?['new_templateid']"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "c0f27e9a-9598-4644-ad7c-d509262a3500"
+              },
+              "type": "Foreach"
+            }
+          },
+          "runAfter": {
+            "List_rows_template_by_client": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "List_rows_template_by_managing_account": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "f935b925-c45f-4254-9940-698c111d5903"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "ListRecords"
+                  },
+                  "parameters": {
+                    "entityName": "new_templates",
+                    "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_template\">\n    <attribute name=\"new_templateid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_managingaccountid\" />\n    <attribute name=\"new_isdefault\" />\n    <order attribute=\"new_isdefault\" descending=\"true\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_templatetype\" operator=\"eq\" value=\"@{triggerBody()['number']}\" />\n      <condition attribute=\"new_templatefile\" operator=\"not-null\" />\n      <condition attribute=\"new_managingaccountid\" operator=\"eq\" uitype=\"account\" value=\"@{triggerBody()['text_1']}\" />\n    </filter>\n  </entity>\n</fetch>",
+                    "$top": 1
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "Condition_if_template_exists": {
+                "actions": {
+                  "Apply_to_each_2": {
+                    "foreach": "@outputs('List_rows_template_by_managing_account')?['body/value']",
+                    "actions": {
+                      "Set_Templateid_variable_2": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "06ae3c4a-ddbf-4d76-b1cf-17cb07b7e52c"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "Templateid",
+                          "value": "@items('Apply_to_each_2')?['new_templateid']"
+                        }
+                      }
+                    },
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "4ff368f1-34b7-41f7-b07d-2227f1badc96"
+                    },
+                    "type": "Foreach"
+                  }
+                },
+                "runAfter": {
+                  "List_rows_template_by_managing_account": [
+                    "Succeeded"
+                  ]
+                },
+                "else": {
+                  "actions": {
+                    "Set_variable": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "82ff825f-3027-4439-b8bb-5512c6742733"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Use Default Template",
+                        "value": "@true"
+                      }
+                    }
+                  }
+                },
+                "expression": {
+                  "greater": [
+                    "@length(outputs('List_rows_template_by_managing_account')?['body/value'])",
+                    0
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "22a897e6-82e0-4ca5-9322-d2d5992e600c"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs('List_rows_template_by_client')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "068abad8-b3e1-41e3-b40f-c0f52345130f"
+          },
+          "type": "If"
+        },
+        "Initialize_Is_Default_Template_variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c28d0ace-3a9a-480a-9bd2-6e2e055dca4a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Use Default Template",
+                "type": "boolean",
+                "value": "@false"
+              }
+            ]
+          }
+        },
+        "Initialize_template_variable": {
+          "runAfter": {
+            "Initialize_Is_Default_Template_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8bc4ab84-ee57-4306-af8a-3b059a13b791"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Templateid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Condition_if_client_template_exists": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fdfd87a0-6940-4b4a-8394-69c51f920fb4"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "usedefault": "@variables('Use Default Template')",
+              "templateid": "@variables('Templateid')"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usedefault": {
+                  "title": "usedefault",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                },
+                "templateid": {
+                  "title": "templateid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

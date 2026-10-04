@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="5ec9e851-94d0-d677-64d9-210f4bcc1bfb">
+  <content>{
+  "displayorder": 166,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "7da2c3bb-5dad-04f9-9d7f-31783fa539f5",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Recruitment-Stage-List",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Recruitment Stage List"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Recruitment Stage List</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Recruitment Stage ListRecruitment Stage List</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

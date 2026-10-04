@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="d04ef6bc-7651-4dd6-af59-3697f58e2219">
+  <content>{
+  "display_name": "old Default",
+  "powerpagesitelanguageid": "9694bc5f-1e05-ee11-8f6e-6045bd0cfca3",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "title": "old"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>old</name>
+  <powerpagecomponenttype>4</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

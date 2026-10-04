@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="17954926-90e1-427d-b40b-0f72a9e8ce4d">
+  <content>{
+  "displayorder": 33,
+  "pageid": "7e7ca12b-ddd3-6e4b-4d36-52b277927c23",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shifts</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

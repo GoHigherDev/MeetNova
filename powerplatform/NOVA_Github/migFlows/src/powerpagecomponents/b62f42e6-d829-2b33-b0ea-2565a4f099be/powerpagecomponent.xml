@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="b62f42e6-d829-2b33-b0ea-2565a4f099be">
+  <content>{
+  "webpageid": "3b7a1840-e3e0-5d55-3ac9-33a7e04f06e7",
+  "right": 2,
+  "scope": 1,
+  "adx_webpageaccesscontrolrule_webrole": [
+    "02fc0d54-701f-f011-9989-6045bd69f0ab",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+    "066f7c2f-4572-ee11-8179-6045bd0cfca3",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "0e90c088-3441-ef11-a316-6045bd15aee8"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Commission Settings</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

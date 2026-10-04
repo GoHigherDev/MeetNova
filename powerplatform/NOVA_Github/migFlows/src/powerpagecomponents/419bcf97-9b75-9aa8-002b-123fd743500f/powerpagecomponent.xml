@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="419bcf97-9b75-9aa8-002b-123fd743500f">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 166,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "5ec9e851-94d0-d677-64d9-210f4bcc1bfb",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Recruitment Stage List</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

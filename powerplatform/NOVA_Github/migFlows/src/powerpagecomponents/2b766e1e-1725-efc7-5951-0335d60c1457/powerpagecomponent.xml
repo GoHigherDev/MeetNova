@@ -1,0 +1,27 @@
+<powerpagecomponent powerpagecomponentid="2b766e1e-1725-efc7-5951-0335d60c1457">
+  <content>{
+  "displayorder": 2,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "5e6cf210-8b20-f011-9989-6045bd69f0ab",
+  "parentpageid": "0cd885ac-33a6-28b3-0d59-3b3d20a2017c",
+  "partialurl": "placementscalendar",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Calendar"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Calendar</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>CalendarCalendar</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

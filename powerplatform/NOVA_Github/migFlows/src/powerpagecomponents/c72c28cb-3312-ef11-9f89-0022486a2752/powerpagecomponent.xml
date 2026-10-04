@@ -1,0 +1,49 @@
+<powerpagecomponent powerpagecomponentid="c72c28cb-3312-ef11-9f89-0022486a2752">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": true,
+  "attachfileallowmultiple": true,
+  "attachfilerequired": true,
+  "attachfilerequirederrormessage": "[{\"LCID\":1033,\"Value\":\"Please attach a file\"}]",
+  "attachfilerestrictaccept": false,
+  "attachfilesaveoption": 756150000,
+  "attachfilestoragelocation": 756150000,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_appdocs",
+  "entitypermissionsenabled": false,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000000,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": " \r\n$(document).ready(function() {\r\n    var expirydateField = document.getElementById('new_expirydate');\r\n    if (expirydateField) {\r\n        var parentTR = expirydateField.closest('tr');\r\n        if (parentTR) {\r\n            parentTR.style.display = 'none';\r\n        }\r\n    }\r\n});",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "declarations",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>(Delete) App Docs Insert - Declaration QP</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

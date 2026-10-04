@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="8a55e84d-5e13-ef11-9f89-0022486a2752">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_managingaccountid",
+  "descriptionposition": 100000000,
+  "entityform": "193fc737-5e13-ef11-9f89-0022486a2752",
+  "entityformforcreate": "193fc737-5e13-ef11-9f89-0022486a2752",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "msa_managingpartnerid",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Professional Registration Type Insert QP new_managingaccountid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

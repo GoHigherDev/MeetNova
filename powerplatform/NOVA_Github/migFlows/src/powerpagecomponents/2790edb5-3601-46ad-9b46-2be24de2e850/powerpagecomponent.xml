@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="2790edb5-3601-46ad-9b46-2be24de2e850">
+  <content>{
+  "displayorder": 27,
+  "pageid": "c1b0ecb3-a819-f40f-95a3-39d4ff19efb6",
+  "parentweblinkid": "860f6adb-102b-4428-8ea4-725e333b8ce5",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Roles</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

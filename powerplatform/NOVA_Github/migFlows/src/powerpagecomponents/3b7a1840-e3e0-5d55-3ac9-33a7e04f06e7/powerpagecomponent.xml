@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="3b7a1840-e3e0-5d55-3ac9-33a7e04f06e7">
+  <content>{
+  "displayorder": 49,
+  "enablerating": false,
+  "enabletracking": false,
+  "entitylist": "df94e426-d53e-ef11-a316-6045bd14f37f",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "7da2c3bb-5dad-04f9-9d7f-31783fa539f5",
+  "parentpageid": "3a9b2241-f6af-81d0-9012-5d7c32b6f37d",
+  "partialurl": "Commission-Settings",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Commission Settings"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Commission Settings</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Commission SettingsCommission Settings</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

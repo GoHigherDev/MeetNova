@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="b596c2fb-7a63-4d8c-9e9b-2da8bd5511ed">
+  <content>{
+  "filecontent": null,
+  "displayorder": 55,
+  "weblinksetid": "63bf9ba6-3dcd-4076-bb73-21d8707af6d6",
+  "pageid": "79f71c4f-8853-a1f9-4f4b-10ccae8dfd34",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Set Availability</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

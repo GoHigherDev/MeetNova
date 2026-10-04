@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="cad8d2ae-75db-4c5e-84a1-133d58fb91a0">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 54,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "4fc743e3-bfbc-8041-4886-e7d94d5537fb",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Emergency Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

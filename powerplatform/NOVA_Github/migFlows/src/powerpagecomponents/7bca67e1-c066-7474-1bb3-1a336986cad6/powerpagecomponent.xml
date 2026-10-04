@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="7bca67e1-c066-7474-1bb3-1a336986cad6">
+  <content>{
+  "displayorder": 37,
+  "enablerating": false,
+  "enabletracking": false,
+  "entitylist": "6d34eb71-36bc-401b-8d8d-09b99deee95e",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "d882ccb2-8454-ee11-be6f-6045bd0cfca3",
+  "parentpageid": "3a9b2241-f6af-81d0-9012-5d7c32b6f37d",
+  "partialurl": "Suppliers",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Suppliers"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Suppliers</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>SuppliersSuppliers</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

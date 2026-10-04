@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="6f1ef42c-fdea-4bf5-bea3-325c5a34e129">
+  <content>{
+  "displayorder": 54,
+  "pageid": "4fc743e3-bfbc-8041-4886-e7d94d5537fb",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Emergency Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

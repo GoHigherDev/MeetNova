@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="d421b0ce-54c8-43ec-9937-29f99691f7db">
+  <content>{
+  "displayorder": 38,
+  "pageid": "cd4da54b-c785-e618-2481-414cdfe13801",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>(review) Jobs </name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

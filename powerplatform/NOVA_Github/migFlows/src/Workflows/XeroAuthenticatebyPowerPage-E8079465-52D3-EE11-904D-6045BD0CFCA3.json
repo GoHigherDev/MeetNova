@@ -1,0 +1,104 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "284d3355-de27-4ffd-8d95-7d70b203751e"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "ResponseCode",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "XeroClientId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "RunAuthenticationFlow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "35770fea-15de-411b-95b9-1f6075215db2"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "xeroaccestoken": "@body('RunAuthenticationFlow')?['xeroaccestoken']",
+              "xerotenantid": "@body('RunAuthenticationFlow')?['xerotenantid']"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "xeroaccestoken": {
+                  "title": "XeroAccesToken",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "xerotenantid": {
+                  "title": "XeroTenantId",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "RunAuthenticationFlow": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1aab4324-04f0-4543-9d59-409b5673714a"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "518dcb26-4fd3-ee11-904d-6045bd0cfca3"
+            },
+            "body": {
+              "text": "@triggerBody()['text']",
+              "text_1": "@triggerBody()['text_1']"
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

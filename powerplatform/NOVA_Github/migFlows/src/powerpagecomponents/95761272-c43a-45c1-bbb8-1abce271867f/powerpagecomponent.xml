@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="95761272-c43a-45c1-bbb8-1abce271867f">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": false,
+  "delete": false,
+  "entitylogicalname": "new_trainingtype",
+  "entityname": "Training Type",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150000,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Training Type</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

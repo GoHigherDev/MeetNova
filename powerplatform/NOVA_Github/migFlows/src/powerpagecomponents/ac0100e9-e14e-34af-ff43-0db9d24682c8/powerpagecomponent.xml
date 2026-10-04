@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="ac0100e9-e14e-34af-ff43-0db9d24682c8">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 174,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "f69c376e-6439-25d8-e9a2-c58a2f637d67",
+  "parentweblinkid": "39868ac4-df25-4827-a700-9118b9baf206",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Tax Types</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

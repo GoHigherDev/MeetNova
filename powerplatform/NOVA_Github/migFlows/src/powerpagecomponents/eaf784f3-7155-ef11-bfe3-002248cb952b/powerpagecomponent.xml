@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="eaf784f3-7155-ef11-bfe3-002248cb952b">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_isanapprover",
+  "descriptionposition": 100000000,
+  "entityform": "abb611b9-7155-ef11-bfe3-002248cb952b",
+  "entityformforcreate": "abb611b9-7155-ef11-bfe3-002248cb952b",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "True",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client Approver Insert - QP new_isanapprover</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

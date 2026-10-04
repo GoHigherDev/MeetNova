@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="d15eb3cb-1580-6644-e58f-1862e4753fd4">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 146,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "bb4b6fc4-1a30-a996-e4d4-ef16e17afa95",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Declarations</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="1b1674c8-6e43-ef11-a316-002248d342f8">
+  <content>{
+  "flowapiurl": "https://quickshiftsportal.powerappsportals.com/_api/cloudflow/v1.0/trigger/216eb1fd-e186-e5d2-23ce-3f517d23a7bb",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/216EB1FDE186E5D223CE3F517D23A7BB-E0183C3B6C77F252/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "216eb1fd-e186-e5d2-23ce-3f517d23a7bb",
+  "processid": "20b682b1-6e43-ef11-a316-002248d342f8",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Reset Password Request:</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

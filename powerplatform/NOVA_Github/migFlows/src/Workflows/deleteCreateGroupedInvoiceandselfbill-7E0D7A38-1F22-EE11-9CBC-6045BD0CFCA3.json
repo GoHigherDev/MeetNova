@@ -1,0 +1,2107 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "description": "on timesheet authorised",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000007 and new_invoicingtype ne 00000001 and _new_invoiceid_value eq null"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "d93de664-15d7-4d1b-b014-a53dc3e2c04c"
+          }
+        }
+      },
+      "actions": {
+        "List_Timesheetcosts_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheetcosts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheetcost\">\n    <attribute name=\"new_timesheetcostid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_units\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_paye\" />\n    <attribute name=\"new_paytotal\" />\n    <attribute name=\"new_pay\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <attribute name=\"new_billunit\" />\n    <attribute name=\"new_billtotal\" />\n    <attribute name=\"new_billtaxtypeid\" />\n<attribute name=\"new_paytaxtypeid\" />\n    <attribute name=\"new_bill\" />\n    <attribute name=\"new_assignmentrateid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_timesheetid\" operator=\"eq\"  uitype=\"new_timesheet\" value=\"{@{triggerOutputs()?['body/new_timesheetid']}}\" />\n<condition attribute=\"new_units\" operator=\"ne\" value=\"0\"/>\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_Remittance_guid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cdc28821-1208-4850-aae8-de09f3958d0c"
+          }
+        },
+        "Initialize_invoice_guid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "invoice guid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0847d30f-16ba-4f7c-982d-968e73739164"
+          }
+        },
+        "Initialize_Invoice_Date_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Inovice Date",
+                "type": "string",
+                "value": "@formatDateTime(variables('Remittance Date'), 'yyyy-MM-dd')"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Remittance_Date_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81064ad5-49c4-4edc-ae71-0341ed895b4d"
+          }
+        },
+        "Initialize_Remittance_guid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Remittance guid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_invoice_guid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0847d30f-16ba-4f7c-982d-968e73739164"
+          }
+        },
+        "Condition_if_bill_Frequency_is_equal_to_\"End_of_the_Month\"": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Get_assignment_row_by_ID')?['body/new_billfrequency']",
+              100000002
+            ]
+          },
+          "actions": {
+            "Current_Month_End_Date": {
+              "type": "Compose",
+              "inputs": "@addDays(outputs('Format_Month_Date'), -1)",
+              "runAfter": {
+                "Format_Month_Date": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d18d1e14-689f-4993-b358-91305a3f5c0d"
+              }
+            },
+            "Set_Invoice_Date_End_of_Month": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Inovice Date",
+                "value": "@{formatDateTime(outputs('Current_Month_End_Date'), 'yyyy-MM-ddTHH:mm:ss.fffffffZ')}"
+              },
+              "runAfter": {
+                "Current_Month_End_Date": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "df299979-3fe9-4780-b398-9e165da86e0f"
+              }
+            },
+            "Format_Month_Date": {
+              "type": "Compose",
+              "inputs": "@addMonths(concat(formatDateTime(utcNow(), 'yyyy-MM'), '-01'), 1)",
+              "metadata": {
+                "operationMetadataId": "9417262c-2e59-4ce9-8539-744cd5c71ce8"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_if_bill_Frequency_is_equal_to_monthly": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "74e2fafd-c69a-4b5a-bc8f-148d39f6a276"
+          }
+        },
+        "Condition_if_bill_Frequency_is_equal_to_monthly": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Get_assignment_row_by_ID')?['body/new_billfrequency']",
+              100000001
+            ]
+          },
+          "actions": {
+            "Set_Invoice_Date_Monthly": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Inovice Date",
+                "value": "@formatDateTime(\r\n    addDays(\r\n        startOfMonth(utcNow()),\r\n        sub(\r\n            min(\r\n                int(outputs('Get_assignment_row_by_ID')?['body/new_dayofmonthformonthlyinvoicegrouping']),\r\n                div(\r\n                    sub(\r\n                        ticks(addDays(startOfMonth(utcNow()), 31)),\r\n                        ticks(startOfMonth(utcNow()))\r\n                    ),\r\n                    864000000000\r\n                )\r\n            ),\r\n            1\r\n        )\r\n    ),\r\n    'yyyy-MM-ddTHH:mm:ss.fffffffZ'\r\n)"
+              },
+              "metadata": {
+                "operationMetadataId": "b096ae3b-9d59-48a4-bd16-7b100eadab10"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_if_bill_Frequency_is_equal_to_\"Weekly\"": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "74e2fafd-c69a-4b5a-bc8f-148d39f6a276"
+          }
+        },
+        "Condition_if_bill_Frequency_is_equal_to_\"Weekly\"": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Get_assignment_row_by_ID')?['body/new_billfrequency']",
+              100000000
+            ]
+          },
+          "actions": {
+            "Compose": {
+              "type": "Compose",
+              "inputs": "@dayOfWeek(utcNow())",
+              "metadata": {
+                "operationMetadataId": "94d0a8b6-8a07-4643-b2ac-659c48e6c2df"
+              }
+            },
+            "Get_Friday_Date": {
+              "type": "Compose",
+              "inputs": "@body('Run_a_Child_Flow')?['weekend']",
+              "runAfter": {
+                "Run_a_Child_Flow": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "858739b9-e60d-4284-9244-63a563dcb7ec"
+              }
+            },
+            "Set_invoice_Date": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Inovice Date",
+                "value": "@variables('Remittance Date')"
+              },
+              "runAfter": {
+                "Get_Friday_Date": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ac84293c-9429-4026-b1e7-c91260f08577"
+              }
+            },
+            "Run_a_Child_Flow": {
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "129c3211-0a41-ef11-a316-6045bd15aee8"
+                },
+                "body": {
+                  "text": "@body('Get_a_client_row_by_ID')?['_new_managingaccountid_value']",
+                  "text_1": "@utcNow()"
+                }
+              },
+              "runAfter": {
+                "Compose": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9efa5537-7b77-4322-a173-7f3a3da179a4"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "ConditionPayFrequencyEqEndoftheMonth": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3c42b63b-2c3b-45ee-867a-ecc96dff538c"
+          }
+        },
+        "Get_a_client_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_assignment_row_by_ID')?['body/_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0c4c6ff5-8e6d-459d-9ecb-1bf1ae7df7ca"
+          }
+        },
+        "ConditionPayFrequencyEqWeekly": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Get_assignment_row_by_ID')?['body/new_payfrequency']",
+              100000000
+            ]
+          },
+          "actions": {
+            "Set_pay_Date": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Remittance Date",
+                "value": "@formatDateTime(outputs('Compose_weekly_pay_day'), 'yyyy-MM-dd')"
+              },
+              "runAfter": {
+                "Compose_weekly_pay_day": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ac84293c-9429-4026-b1e7-c91260f08577"
+              }
+            },
+            "Compose_weekly_pay_day": {
+              "type": "Compose",
+              "inputs": "@addDays(utcNow(), if(less(dayOfWeek(utcNow()), outputs('Get_a_Managing_Account_row_by_ID')?['body/new_weeklypayrolldate']), sub(outputs('Get_a_Managing_Account_row_by_ID')?['body/new_weeklypayrolldate'], dayOfWeek(utcNow())), add(7, sub(outputs('Get_a_Managing_Account_row_by_ID')?['body/new_weeklypayrolldate'], dayOfWeek(utcNow())))))",
+              "metadata": {
+                "operationMetadataId": "31a12ab8-6a1d-4543-af00-2fb629d1d170"
+              }
+            },
+            "Set_invoice_date_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Inovice Date",
+                "value": "@variables('Remittance Date')"
+              },
+              "runAfter": {
+                "Set_pay_Date": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ca59c10b-6f18-4d0e-9aab-ab4fa8c19d9b"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition-no_pdf_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3c42b63b-2c3b-45ee-867a-ecc96dff538c"
+          }
+        },
+        "ConditionPayFrequencyEqMonthly": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Get_assignment_row_by_ID')?['body/new_payfrequency']",
+              100000001
+            ]
+          },
+          "actions": {
+            "Set_remittance_Date_Monthly": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Remittance Date",
+                "value": "@concat(\r\n  formatDateTime(concat(formatDateTime(utcNow(), 'yyyy-MM-'), string(outputs('Get_assignment_row_by_ID')?['body/new_dayofmonthformonthlypaymentselfbill'])), 'yyyy-MM-dd'), \r\n  'T',\r\n  formatDateTime(utcNow(), 'HH:mm:ss.fffffffZ')\r\n)\r\n"
+              },
+              "metadata": {
+                "operationMetadataId": "b096ae3b-9d59-48a4-bd16-7b100eadab10"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "ConditionPayFrequencyEqWeekly": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "74e2fafd-c69a-4b5a-bc8f-148d39f6a276"
+          }
+        },
+        "ConditionPayFrequencyEqEndoftheMonth": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Get_assignment_row_by_ID')?['body/new_payfrequency']",
+              100000002
+            ]
+          },
+          "actions": {
+            "Current_Month_End_Date_2": {
+              "type": "Compose",
+              "inputs": "@addDays(outputs('Format_Month_Date_2'), -1)",
+              "runAfter": {
+                "Format_Month_Date_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d18d1e14-689f-4993-b358-91305a3f5c0d"
+              }
+            },
+            "Set_remittance_Date_End_of_Month_2": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Remittance Date",
+                "value": "@{formatDateTime(outputs('Current_Month_End_Date_2'), 'yyyy-MM-ddTHH:mm:ss.fffffffZ')}"
+              },
+              "runAfter": {
+                "Current_Month_End_Date_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "df299979-3fe9-4780-b398-9e165da86e0f"
+              }
+            },
+            "Format_Month_Date_2": {
+              "type": "Compose",
+              "inputs": "@addMonths(concat(formatDateTime(utcNow(), 'yyyy-MM'), '-01'), 1)",
+              "metadata": {
+                "operationMetadataId": "9417262c-2e59-4ce9-8539-744cd5c71ce8"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "ConditionPayFrequencyEqMonthly": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "74e2fafd-c69a-4b5a-bc8f-148d39f6a276"
+          }
+        },
+        "GetSupplierRowByID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_assignment_row_by_ID')?['body/_new_supplierid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_client_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0c4c6ff5-8e6d-459d-9ecb-1bf1ae7df7ca"
+          }
+        },
+        "Compose_2": {
+          "type": "Compose",
+          "inputs": "@outputs('Get_assignment_row_by_ID')?['body/new_dayofmonthformonthlypaymentselfbill']",
+          "runAfter": {
+            "List_Timesheetcosts_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "687868ea-da3b-44d8-98ba-6b14e56fb49c"
+          }
+        },
+        "Get_a_Managing_Account_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerBody()?['_new_managingaccountid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "GetSupplierRowByID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "96d9a1ae-3fb2-4760-a71b-ba0dcb0de9c7"
+          }
+        },
+        "Initialize_Payroll_day_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "payroll day",
+                "type": "integer",
+                "value": "@body('Get_a_Managing_Account_row_by_ID')?['new_weeklypayrolldate']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_Managing_Account_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8e70e1e7-6688-4b5a-8f1e-4a6099b5ae56"
+          }
+        },
+        "Initialize_Remittance_Date_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Remittance Date",
+                "type": "string",
+                "value": "@concat(formatDateTime(addDays(utcNow(), if(less(dayOfWeek(utcNow()), outputs('Get_a_Managing_Account_row_by_ID')?['body/new_weeklypayrolldate']), sub(outputs('Get_a_Managing_Account_row_by_ID')?['body/new_weeklypayrolldate'], dayOfWeek(utcNow())), add(7, sub(outputs('Get_a_Managing_Account_row_by_ID')?['body/new_weeklypayrolldate'], dayOfWeek(utcNow()))))), 'yyyy-MM-dd'), 'T00:00:00.0000000Z')\r\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Payroll_day_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81064ad5-49c4-4edc-ae71-0341ed895b4d"
+          }
+        },
+        "Condition-no_pdf_2": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@variables('PDFExists')",
+                  "@false"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Terminate_1": {
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Failed",
+                "runError": {
+                  "code": "123",
+                  "message": "Timesheet has no PDF"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "241e16ea-5b2f-4e26-a034-fc156cdf276c"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition-no_pdf": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "631c278f-884c-4ecd-9db8-e57ea800d568"
+          }
+        },
+        "Initialize_variable_PDF_Exists": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PDFExists",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Invoice_Date_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "645ffe8e-e565-402a-913f-5b48f321f2b9"
+          }
+        },
+        "Condition-no_pdf": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@variables('PDFExists')",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Do_until": {
+                "type": "Until",
+                "expression": "@equals(variables('PDFExists'),true)",
+                "limit": {
+                  "count": 11,
+                  "timeout": "PT1H"
+                },
+                "actions": {
+                  "Delay_1": {
+                    "type": "Wait",
+                    "inputs": {
+                      "interval": {
+                        "count": 10,
+                        "unit": "Second"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "8f9f7e70-26ee-411f-9f1c-888fabc438fc"
+                    }
+                  },
+                  "Get_an_updated_timesheet__row_by_ID": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_timesheets",
+                        "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                        "$select": "new_pdfurl"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "GetItem",
+                        "connectionName": "shared_commondataserviceforapps"
+                      }
+                    },
+                    "runAfter": {
+                      "Delay_1": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "687df7aa-d16d-4867-850f-ed444d6875eb"
+                    }
+                  },
+                  "Condition_pdf_not_null": {
+                    "type": "If",
+                    "expression": {
+                      "and": [
+                        {
+                          "not": {
+                            "equals": [
+                              "@outputs('Get_an_updated_timesheet__row_by_ID')?['body/new_pdfurl']",
+                              ""
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "actions": {
+                      "Set_variable": {
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "PDFExists",
+                          "value": true
+                        },
+                        "metadata": {
+                          "operationMetadataId": "c8b48575-8999-4a2b-a3e7-21d2598c8e4f"
+                        }
+                      }
+                    },
+                    "else": {
+                      "actions": {}
+                    },
+                    "runAfter": {
+                      "Get_an_updated_timesheet__row_by_ID": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "abd2ba4b-79da-423e-834a-43b33506836a"
+                    }
+                  }
+                },
+                "metadata": {
+                  "operationMetadataId": "df54ec74-7b77-4640-a1cc-3b2396390613"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Condition_pdf_null": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "18c21c2a-e0a7-4cf2-8293-9fffdd3ff7ab"
+          }
+        },
+        "Condition_pdf_null": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_an_timesheet__row_by_ID')?['body/new_pdfurl']",
+                    ""
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_variable-pdfexists": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "PDFExists",
+                "value": true
+              },
+              "metadata": {
+                "operationMetadataId": "71d4e0d3-2d66-4e35-917f-880a8ac5ba98"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Get_an_timesheet__row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "281612ab-9285-456a-bb25-21d754b715d0"
+          }
+        },
+        "Delay": {
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 25,
+              "unit": "Second"
+            }
+          },
+          "runAfter": {
+            "Get_assignment_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "565beb81-ccbf-4803-8a58-49d1c5a6d3e7"
+          }
+        },
+        "Get_assignment_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerOutputs()?['body/_new_assignmentid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1f08d7f2-baed-4126-b1b3-12bffe37caf3"
+          }
+        },
+        "Get_an_timesheet__row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+              "$select": "new_pdfurl"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_PDF_Exists": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "147e11ff-437e-452b-940b-800fee6e74e2"
+          }
+        },
+        "Condition_AUTOMATIC_INVOICE": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_a_client_row_by_ID')?['body/new_invoicingtype']",
+                  100000000
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Condition_Invoice_by_PO": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_invoicegrouping']",
+                  100000001
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_invoice_by_PO": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "d00fe0c8-f6ba-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_clientid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Inovice Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoice\">\n    <attribute name=\"new_invoiceid\" />\n    <filter type=\"and\">     \n       <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n    </filter>\n <link-entity name=\"new_timesheet\" from=\"new_invoiceid\" to=\"new_invoiceid\" link-type=\"inner\" alias=\"av\">\n      <filter type=\"and\">\n        <condition attribute=\"new_purchaseorderid\" operator=\"eq\"  uitype=\"new_purchaseorder\" value=\"@{triggerOutputs()?['body/_new_purchaseorderid_value']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@outputs('Get_a_client_row_by_ID')?['body/new_paymentterms']"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "da2ed4dd-5658-4e9b-8f44-7143bc98eef3"
+                  }
+                },
+                "Set_invoice_variable_by_po": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "invoice guid",
+                    "value": "@body('Run_a_Child_Flow_invoice_by_PO')?['invoiceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_invoice_by_PO": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "03bf132f-44c0-4fdb-be63-1b53a5343c2d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "Condition_Invoice_by_client": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@body('Get_assignment_row_by_ID')?['new_invoicegrouping']",
+                      100000002
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_invoice_by_client": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "d00fe0c8-f6ba-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_clientid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Inovice Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoice\">\n    <attribute name=\"new_invoiceid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_clientid\" operator=\"eq\"  uitype=\"account\" value=\"@{triggerOutputs()?['body/_new_clientid_value']}\" />\n      <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n    </filter>\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@outputs('Get_a_client_row_by_ID')?['body/new_paymentterms']"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "119c48a2-87d2-4ed7-9e04-b3ae180d46b6"
+                  }
+                },
+                "Set_invoice_variable_by_client": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "invoice guid",
+                    "value": "@body('Run_a_Child_Flow_invoice_by_client')?['invoiceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_invoice_by_client": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "03bf132f-44c0-4fdb-be63-1b53a5343c2d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_Invoice_by_PO": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "Condition_Invoice_by_candidate": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_invoicegrouping']",
+                  100000003
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_invoice_by_candidate": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "d00fe0c8-f6ba-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_clientid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Inovice Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoice\">\n    <attribute name=\"new_invoiceid\" />\n    <attribute name=\"new_name\" />\n    <filter type=\"and\">\n        <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n    </filter>\n\n        <link-entity name=\"new_timesheet\" from=\"new_invoiceid\" to=\"new_invoiceid\" link-type=\"inner\" alias=\"au\">\n      <filter type=\"and\">\n        <condition attribute=\"new_candidateid\" operator=\"eq\"  uitype=\"contact\" value=\"@{triggerOutputs()?['body/_new_candidateid_value']}\" />\n      </filter>\n    </link-entity>\n\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@outputs('Get_a_client_row_by_ID')?['body/new_paymentterms']"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "30906103-4f3f-48de-b64f-1ff17f64c8d6"
+                  }
+                },
+                "Set_invoice_variable_by_candidate": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "invoice guid",
+                    "value": "@body('Run_a_Child_Flow_invoice_by_candidate')?['invoiceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_invoice_by_candidate": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "03bf132f-44c0-4fdb-be63-1b53a5343c2d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_Invoice_by_client": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "Condition_Invoice_by_Branch": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_invoicegrouping']",
+                  100000004
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_invoice_by_Branch": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "d00fe0c8-f6ba-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_clientid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Inovice Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoice\">\n    <attribute name=\"new_invoiceid\" />\n    <attribute name=\"new_name\" />\n    <filter type=\"and\">\n      <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n    </filter>\n\n        <link-entity name=\"new_timesheet\" from=\"new_invoiceid\" to=\"new_invoiceid\" link-type=\"inner\" alias=\"au\">\n      <filter type=\"and\">\n<condition attribute=\"new_branchid\" operator=\"eq\" uitype=\"new_branch\" value=\"@{triggerOutputs()?['body/_new_branchid_value']}\" />\n      </filter>\n    </link-entity>\n\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@outputs('Get_a_client_row_by_ID')?['body/new_paymentterms']"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "76731a8b-c39a-4c0f-8d69-01a6bb6c17b6"
+                  }
+                },
+                "Set_invoice_variable_by_Branch": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "invoice guid",
+                    "value": "@body('Run_a_Child_Flow_invoice_by_Branch')?['invoiceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_invoice_by_Branch": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "03bf132f-44c0-4fdb-be63-1b53a5343c2d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_Invoice_by_candidate": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "Condition_Invoice_by_Timesheet": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_invoicegrouping']",
+                  100000000
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_invoice_by_Timesheet": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "d00fe0c8-f6ba-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_clientid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Inovice Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_invoice\">\n    <attribute name=\"new_invoiceid\" />\n    <attribute name=\"new_name\" />\n    <filter type=\"and\">\n  <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n    </filter>\n\n           <link-entity name=\"new_timesheet\" from=\"new_invoiceid\" to=\"new_invoiceid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_timesheetid\" operator=\"eq\" uitype=\"new_timesheet\" value=\"@{triggerOutputs()?['body/new_timesheetid']}\" />\n      </filter>\n    </link-entity>\n\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@outputs('Get_a_client_row_by_ID')?['body/new_paymentterms']"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ada59561-3aab-42a1-843c-11496c27621b"
+                  }
+                },
+                "Set_invoice_variable_by_Timesheet": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "invoice guid",
+                    "value": "@body('Run_a_Child_Flow_invoice_by_Timesheet')?['invoiceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_invoice_by_Timesheet": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "03bf132f-44c0-4fdb-be63-1b53a5343c2d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_Invoice_by_Branch": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_if_bill_Frequency_is_equal_to_\"End_of_the_Month\"": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1fa5c5ef-efcc-4842-a643-726ee82d6b9f"
+          }
+        },
+        "Condition_Automatic_Remittance": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('GetSupplierRowByID')?['body/new_invoicingtype']",
+                  100000000
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "ConditionRemittancebyTimesheet": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_selfbillgrouping']",
+                  100000000
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_remittance_by_Timesheet": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "4e36e83d-05bb-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_supplierid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Remittance Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <filter type=\"and\">\n           <condition attribute=\"statuscode\" operator=\"in\">\n        <value>100000001</value>\n        <value>100000002</value>\n        <value>1</value>\n      </condition>\n    </filter>\n\n    <link-entity name=\"new_timesheet\" from=\"new_remittanceid\" to=\"new_remittanceid\" link-type=\"inner\" alias=\"ab\">\n      <filter type=\"and\">\n        <condition attribute=\"new_timesheetid\" operator=\"eq\" uitype=\"new_timesheet\" value=\"@{triggerOutputs()?['body/new_timesheetid']}\" />\n      </filter>\n    </link-entity>\n\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@coalesce(outputs('GetSupplierRowByID')?['body/new_paymentterms'], 0)"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b0b83a36-ebb2-48bf-a128-bc15dee81eed"
+                  }
+                },
+                "Set_remittance_guid_by_timesheet": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Remittance guid",
+                    "value": "@body('Run_a_Child_Flow_remittance_by_Timesheet')?['remittanceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_remittance_by_Timesheet": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "ConditionRemittancebyPO": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_selfbillgrouping']",
+                  100000001
+                ]
+              },
+              "actions": {
+                "Set_remittance_guid_by_PO": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Remittance guid",
+                    "value": "@body('Run_a_Child_Flow_remittance_By_PO')?['remittanceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_remittance_By_PO": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                  }
+                },
+                "Run_a_Child_Flow_remittance_By_PO": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "4e36e83d-05bb-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_supplierid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Remittance Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <filter type=\"and\">\n            <condition attribute=\"statuscode\" operator=\"in\">\n        <value>100000001</value>\n        <value>100000002</value>\n        <value>1</value>\n      </condition>\n    </filter>\n    <link-entity name=\"new_timesheet\" from=\"new_remittanceid\" to=\"new_remittanceid\" link-type=\"inner\" alias=\"ay\">\n      <filter type=\"and\">\n        <condition attribute=\"new_purchaseorderid\" operator=\"eq\"  uitype=\"new_purchaseorder\" value=\"@{triggerOutputs()?['body/_new_purchaseorderid_value']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@coalesce(outputs('GetSupplierRowByID')?['body/new_paymentterms'], 0)"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "96d0a1df-1b50-4d5a-a8bc-e2a82c59b108"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "ConditionRemittancebyTimesheet": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "ConditionRemittancebySupplier": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_selfbillgrouping']",
+                  100000002
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_remittance_BySupplier": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "4e36e83d-05bb-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_supplierid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Remittance Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <filter type=\"and\">\n      <condition attribute=\"statuscode\" operator=\"in\">\n        <value>100000001</value>\n        <value>100000002</value>\n        <value>1</value>\n      </condition>\n      <condition attribute=\"new_supplierid\" operator=\"eq\"  uitype=\"account\" value=\"@{triggerOutputs()?['body/_new_supplierid_value']}\" />\n    </filter>\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@coalesce(outputs('GetSupplierRowByID')?['body/new_paymentterms'], 0)"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "cd5a6b68-55bd-4a08-93c3-af2d32aa2c24"
+                  }
+                },
+                "Set_remittance_guid_BySupplier": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Remittance guid",
+                    "value": "@body('Run_a_Child_Flow_remittance_BySupplier')?['remittanceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_remittance_BySupplier": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "ConditionRemittancebyPO": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "ConditionRemittancebyCandidate": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_selfbillgrouping']",
+                  100000003
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_remittance_ByCandidate": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "4e36e83d-05bb-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_supplierid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Remittance Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <filter type=\"and\">\n      <condition attribute=\"statuscode\" operator=\"in\">\n        <value>100000001</value>\n        <value>100000002</value>\n        <value>1</value>\n      </condition>\n    </filter>\n    <link-entity name=\"new_timesheet\" from=\"new_remittanceid\" to=\"new_remittanceid\" link-type=\"inner\" alias=\"ax\">\n      <filter type=\"and\">\n        <condition attribute=\"new_candidateid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerOutputs()?['body/_new_candidateid_value']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@coalesce(outputs('GetSupplierRowByID')?['body/new_paymentterms'], 0)"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "dcf1a61c-e74f-4b75-ba9e-e46bde5c26f9"
+                  }
+                },
+                "Set_remittance_guid_ByCandidate": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Remittance guid",
+                    "value": "@body('Run_a_Child_Flow_remittance_ByCandidate')?['remittanceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_remittance_ByCandidate": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "ConditionRemittancebySupplier": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            },
+            "ConditionRemittanceByBranch": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Get_assignment_row_by_ID')?['body/new_selfbillgrouping']",
+                  100000004
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_remittance_ByBranch": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "4e36e83d-05bb-ef11-a72f-6045bd6b2802"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_timesheetid']",
+                      "text_1": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                      "text_3": "@triggerOutputs()?['body/_new_candidateid_value']",
+                      "text_4": "@triggerOutputs()?['body/_new_supplierid_value']",
+                      "text_5": "@triggerOutputs()?['body/_transactioncurrencyid_value']",
+                      "text_6": "@variables('Remittance Date')",
+                      "text_7": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                      "text_8": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <filter type=\"and\">\n          <condition attribute=\"statuscode\" operator=\"in\">\n        <value>100000001</value>\n        <value>100000002</value>\n        <value>1</value>\n      </condition>\n    </filter>\n    <link-entity name=\"new_timesheet\" from=\"new_remittanceid\" to=\"new_remittanceid\" link-type=\"inner\" alias=\"ba\">\n      <filter type=\"and\">\n<condition attribute=\"new_branchid\" operator=\"eq\" uitype=\"new_branch\" value=\"@{triggerOutputs()?['body/_new_branchid_value']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>",
+                      "text_2": "@coalesce(triggerOutputs()?['body/_new_branchid_value'], '')",
+                      "text_9": "@coalesce(triggerOutputs()?['body/_new_purchaseorderid_value'], '')",
+                      "number": "@coalesce(outputs('GetSupplierRowByID')?['body/new_paymentterms'], 0)"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4938ab1a-91ec-4f0f-9176-b1920a55cc9a"
+                  }
+                },
+                "Set_remittance_guid_ByBranch": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Remittance guid",
+                    "value": "@body('Run_a_Child_Flow_remittance_ByBranch')?['remittanceid']"
+                  },
+                  "runAfter": {
+                    "Run_a_Child_Flow_remittance_ByBranch": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "ConditionRemittancebyCandidate": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b543185b-70af-4f3c-8778-c20cd797bd6d"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_AUTOMATIC_INVOICE": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c20120a9-724e-4c1d-bc52-dcb687b2d8d9"
+          }
+        },
+        "Condition_if_Invoice_Exists": {
+          "type": "If",
+          "expression": {
+            "greater": [
+              "@length(variables('invoice guid'))",
+              0
+            ]
+          },
+          "actions": {
+            "Relate_rows_placement_and_invoices_n_to_n__2": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@outputs('Get_assignment_row_by_ID')?['body/new_assignmentid']",
+                  "associationEntityRelationship": "new_invoice_placement",
+                  "item/@odata.id": "@outputs('Get_a_row_by_ID')?['body/@odata.id']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "AssociateEntities",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Update_a_Timesheet_with_Invoice_and_Remittance_lookup_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+              }
+            },
+            "Relate_rows_invoices_and_candidates_2": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "contacts",
+                  "recordId": "@triggerOutputs()?['body/_new_candidateid_value']",
+                  "associationEntityRelationship": "new_invoice_candidate",
+                  "item/@odata.id": "@outputs('Get_a_row_by_ID')?['body/@odata.id']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "AssociateEntities",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Relate_rows_placement_and_invoices_n_to_n__2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+              }
+            },
+            "For_each": {
+              "type": "Foreach",
+              "foreach": "@outputs('List_Timesheetcosts_rows')?['body/value']",
+              "actions": {
+                "AssignmentRate1": {
+                  "type": "Compose",
+                  "inputs": "@items('For_each')?['_new_assignmentrateid_value']",
+                  "metadata": {
+                    "operationMetadataId": "521a0e3d-15f4-4317-8056-2bf60210d6d1"
+                  }
+                },
+                "RateType2": {
+                  "type": "Compose",
+                  "inputs": "@items('For_each')?['_new_ratetypeid_value']",
+                  "runAfter": {
+                    "AssignmentRate1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7d10a84e-bdd1-4c9f-a206-faf1932e5493"
+                  }
+                },
+                "Condition_1": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@outputs('AssignmentRate1')",
+                          "@null"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {},
+                  "else": {
+                    "actions": {
+                      "AddaInvoiceDetail": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_invoicedetails",
+                            "item/new_name": "@items('For_each')?['new_name']",
+                            "item/new_bill": "@items('For_each')?['new_bill']",
+                            "item/new_BillTAXTypeid@odata.bind": "@outputs('GetBillTaxRateRowbyID')?['body/@odata.id']",
+                            "item/new_billtotal": "@items('For_each')?['new_billtotal']",
+                            "item/new_billunit": "@items('For_each')?['new_billunit']",
+                            "item/transactioncurrencyid@odata.bind": "/transactioncurrencies/@{outputs('Get_assignment_row_by_ID')?['body/_transactioncurrencyid_value']}",
+                            "item/new_date": "@items('For_each')?['new_date']",
+                            "item/new_description": "@items('For_each')?['new_description']",
+                            "item/new_invoiceid@odata.bind": "@outputs('Get_a_row_by_ID')?['body/@odata.id']",
+                            "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingaccountid_value']})",
+                            "item/new_assignmentid@odata.bind": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                            "item/new_assignmentrateid@odata.bind": "@outputs('GetAssignmentRatebyID')?['body/@odata.id']",
+                            "item/new_ratetypeid@odata.bind": "@outputs('GetRateTypebyID')?['body/@odata.id']",
+                            "item/new_tax": "@mul(\r\n  div(\r\n    body('GetBillTaxRateRowbyID')?['new_percentage'],\r\n    100\r\n  ),\r\n  items('For_each')?['new_billtotal']\r\n)\r\n",
+                            "item/new_timesheetid@odata.bind": "@outputs('Get_an_timesheet__row_by_ID')?['body/@odata.id']",
+                            "item/new_timesheetcostid@odata.bind": "@items('For_each')?['@odata.id']",
+                            "item/new_total": "@add(\r\n  items('For_each')?['new_billtotal'],\r\n  mul(\r\n    div(\r\n      body('GetBillTaxRateRowbyID')?['new_percentage'],\r\n      100\r\n    ),\r\n    items('For_each')?['new_billtotal']\r\n  )\r\n)\r\n",
+                            "item/new_units": "@items('For_each')?['new_units']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "CreateRecord",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "GetRateTypebyID": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "2b27d439-81c3-4082-82fd-c4efe3503f85"
+                        }
+                      },
+                      "Update_a_row": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_timesheetcosts",
+                            "recordId": "@items('For_each')?['new_timesheetcostid']",
+                            "item/new_invoiceid@odata.bind": "new_invoices(@{variables('invoice guid')})"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "UpdateOnlyRecord",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "AddaInvoiceDetail": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "5501763e-afba-40da-964f-a98211311217"
+                        }
+                      },
+                      "GetBillTaxRateRowbyID": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_billtaxtypes",
+                            "recordId": "@items('For_each')?['_new_billtaxtypeid_value']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "GetItem",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "metadata": {
+                          "operationMetadataId": "5445fe04-63c5-4fba-aa41-21ac2f7e9ba1"
+                        }
+                      },
+                      "GetAssignmentRatebyID": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_assignmentrates",
+                            "recordId": "@items('For_each')?['_new_assignmentrateid_value']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "GetItem",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "GetBillTaxRateRowbyID": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "b0c5c887-0918-4ff9-b1bd-fff88b13d3e3"
+                        }
+                      },
+                      "GetRateTypebyID": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_ratetypes",
+                            "recordId": "@items('For_each')?['_new_ratetypeid_value']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "GetItem",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "GetAssignmentRatebyID": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "44dc234d-6a2c-4da4-9950-8f610bdfc728"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "RateType2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "436439d3-5ad6-44a8-afa2-d34df3379bf1"
+                  }
+                }
+              },
+              "runAfter": {
+                "Relate_rows_invoices_and_candidates_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c3fcf49b-563f-4814-b9e5-c3ffbeedebc9"
+              }
+            },
+            "Update_a_row_1": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@variables('invoice guid')",
+                  "item/new_invoicedate": "@variables('Inovice Date')",
+                  "item/statuscode": 100000004
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps_1"
+                }
+              },
+              "runAfter": {
+                "For_each": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0088acff-774a-488c-a4c0-844a5f1c7e83"
+              }
+            },
+            "Get_a_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@variables('invoice guid')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps_1"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "3e3ec5bf-7632-4b15-9e2b-4ef2ce60c67d"
+              }
+            },
+            "Update_a_Timesheet_with_Invoice_and_Remittance_lookup_2": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                  "item/new_invoiceid@odata.bind": "/new_invoices(@{variables('invoice guid')})",
+                  "item/new_processeddate": "@utcNow()"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Get_a_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "31a9da6c-e6da-4f39-8834-38bbda1898c5"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_Automatic_Remittance": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cdc44a36-9c0d-4625-9236-150d0006c6a2"
+          }
+        },
+        "Condition_if_Remittance__exist": {
+          "type": "If",
+          "expression": {
+            "greater": [
+              "@length(variables('Remittance guid'))",
+              0
+            ]
+          },
+          "actions": {
+            "Update_a_Timesheet_with_Invoice_and_Remittance_lookup": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                  "item/new_processeddate": "@utcNow()",
+                  "item/new_remittanceid@odata.bind": "/new_remittances(@{variables('Remittance guid')})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "31a9da6c-e6da-4f39-8834-38bbda1898c5"
+              }
+            },
+            "Get_a_remittance_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@variables('Remittance guid')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Update_a_Timesheet_with_Invoice_and_Remittance_lookup": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "eed33bc7-5677-4897-8126-80ba7871424a"
+              }
+            },
+            "Relate_rows_placement_and_self_bills_n_to_n_": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@outputs('Get_assignment_row_by_ID')?['body/new_assignmentid']",
+                  "associationEntityRelationship": "new_assignment_new_remittance",
+                  "item/@odata.id": "@outputs('Get_a_remittance_row_by_ID')?['body/@odata.id']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "AssociateEntities",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Get_a_remittance_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+              }
+            },
+            "Apply_to_each": {
+              "type": "Foreach",
+              "foreach": "@outputs('List_Timesheetcosts_rows')?['body/value']",
+              "actions": {
+                "Condition": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@outputs('AssignmentRate')",
+                          "@null"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {},
+                  "else": {
+                    "actions": {
+                      "Add_Remittance_Details": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_remittancedetails",
+                            "item/new_name": "@items('Apply_to_each')?['new_name']",
+                            "item/new_assignmentrateid@odata.bind": "@outputs('GetRemittanceAssignmentRatebyID')?['body/@odata.id']",
+                            "item/new_billunit": "@items('Apply_to_each')?['new_billunit']",
+                            "item/transactioncurrencyid@odata.bind": "/transactioncurrencies/@{outputs('Get_assignment_row_by_ID')?['body/_transactioncurrencyid_value']}",
+                            "item/new_date": "@items('Apply_to_each')?['new_date']",
+                            "item/new_description": "@items('Apply_to_each')?['new_description']",
+                            "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingaccountid_value']})",
+                            "item/new_pay": "@items('Apply_to_each')?['new_pay']",
+                            "item/new_BillTAXTypeid@odata.bind": "@outputs('GetPayTaxRate')?['body/@odata.id']",
+                            "item/new_paytotal": "@items('Apply_to_each')?['new_paytotal']",
+                            "item/new_assignmentid@odata.bind": "@outputs('Get_assignment_row_by_ID')?['body/@odata.id']",
+                            "item/new_ratetypeid@odata.bind": "@outputs('GetRateTypeByIDRemittance')?['body/@odata.id']",
+                            "item/new_remittanceid@odata.bind": "/new_remittances(@{variables('Remittance guid')})",
+                            "item/new_tax": "@mul(\r\n  div(\r\n    body('GetPayTaxRate')?['new_percentage'],\r\n    100\r\n  ),\r\n  items('Apply_to_each')?['new_paytotal']\r\n)\r\n",
+                            "item/new_timesheetid@odata.bind": "@outputs('Get_an_timesheet__row_by_ID')?['body/@odata.id']",
+                            "item/new_timesheetcostid@odata.bind": "@items('Apply_to_each')?['@odata.id']",
+                            "item/new_total": "@add(\r\n  items('Apply_to_each')?['new_paytotal'],\r\n  mul(\r\n    div(\r\n      body('GetPayTaxRate')?['new_percentage'],\r\n      100\r\n    ),\r\n    items('Apply_to_each')?['new_paytotal']\r\n  )\r\n)\r\n",
+                            "item/new_units": "@items('Apply_to_each')?['new_units']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "CreateRecord",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "GetRateTypeByIDRemittance": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "2c317ccb-a409-4233-aaed-5482b302d674"
+                        }
+                      },
+                      "Update_Timesheet_Costs": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_timesheetcosts",
+                            "recordId": "@items('Apply_to_each')?['new_timesheetcostid']",
+                            "item/new_remittanceid@odata.bind": "/new_remittances(@{variables('Remittance guid')})"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "UpdateOnlyRecord",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "Add_Remittance_Details": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "fe9149f5-9a9d-4877-b2e0-41ec486556f8"
+                        }
+                      },
+                      "GetRemittanceAssignmentRatebyID": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_assignmentrates",
+                            "recordId": "@items('Apply_to_each')?['_new_assignmentrateid_value']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "GetItem",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "metadata": {
+                          "operationMetadataId": "f0ccdae3-c09b-4a06-8340-676e563428f7"
+                        }
+                      },
+                      "GetRateTypeByIDRemittance": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_ratetypes",
+                            "recordId": "@items('Apply_to_each')?['_new_ratetypeid_value']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "GetItem",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "GetPayTaxRate": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "8d076b50-3e73-41f2-8a0a-1a296df73557"
+                        }
+                      },
+                      "GetPayTaxRate": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "entityName": "new_billtaxtypes",
+                            "recordId": "@items('Apply_to_each')?['_new_paytaxtypeid_value']"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                            "operationId": "GetItem",
+                            "connectionName": "shared_commondataserviceforapps_1"
+                          }
+                        },
+                        "runAfter": {
+                          "GetRemittanceAssignmentRatebyID": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "cb733177-b48b-470e-ae5d-1c351951a8c6"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "RateType": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "987e0187-ad61-4e1d-9bf5-5bf48799256e"
+                  }
+                },
+                "AssignmentRate": {
+                  "type": "Compose",
+                  "inputs": "@items('Apply_to_each')?['_new_assignmentrateid_value']",
+                  "metadata": {
+                    "operationMetadataId": "10c37a93-e42a-4b51-9e8c-f4f3dad2d102"
+                  }
+                },
+                "RateType": {
+                  "type": "Compose",
+                  "inputs": "@items('Apply_to_each')?['_new_ratetypeid_value']",
+                  "runAfter": {
+                    "AssignmentRate": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "12fa4dff-8d73-483f-8a4f-df5e4f95636c"
+                  }
+                }
+              },
+              "runAfter": {
+                "Relate_rows_placement_and_self_bills_n_to_n_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3fc5667c-420a-44ef-98fb-3d047d219963"
+              }
+            },
+            "Update_a_remittance_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@variables('Remittance guid')",
+                  "item/new_remittancedate": "@variables('Remittance Date')",
+                  "item/statuscode": 100000002
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Apply_to_each": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "91852f11-3855-4feb-86b8-e928f3e1aaaa"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_Automatic_Remittance": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cdc44a36-9c0d-4625-9236-150d0006c6a2"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

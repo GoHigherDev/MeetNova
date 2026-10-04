@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="301e98ce-63ac-0cd0-7de9-1e429fcc206a">
+  <content>{
+  "displayorder": 91,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "0e132f9c-54fe-ef11-bae3-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "44b9fb28-c6c8-ee11-9079-6045bd0cfca3",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "activeexpenses",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Approver Expenses"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Approver Expenses</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Approver ExpensesApprover Expenses</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

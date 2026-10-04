@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="5f02ae90-7a2e-40d5-afdc-2c0b6d5ef0b3">
+  <content>{
+  "displayorder": 1,
+  "pageid": "27bf18d5-dd23-ef11-840a-6045bd147a38",
+  "parentweblinkid": "89f44dcc-082b-4b8a-b6cd-6db2f3a2f0e9",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Sectors</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

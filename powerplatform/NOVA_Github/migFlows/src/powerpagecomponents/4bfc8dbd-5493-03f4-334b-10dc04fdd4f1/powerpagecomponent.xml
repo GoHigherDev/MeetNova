@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="4bfc8dbd-5493-03f4-334b-10dc04fdd4f1">
+  <content>{
+  "displayimageonly": false,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "bff51ca5-3935-5b90-d1c0-0986fc6fda64",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Reset Password</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

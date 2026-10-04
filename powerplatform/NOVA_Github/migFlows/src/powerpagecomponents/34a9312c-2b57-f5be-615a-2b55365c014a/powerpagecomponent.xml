@@ -1,0 +1,35 @@
+<powerpagecomponent powerpagecomponentid="34a9312c-2b57-f5be-615a-2b55365c014a">
+  <content>{
+  "copy": "&lt;div id=\"iv17pj\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div id=\"i54qc8\" class=\"container\" style=\"padding: 0px; display: flex; flex-wrap: wrap;\"&gt;&lt;div id=\"i3rj7l\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word;\"&gt;{% entityform name: 'App Docs Insert - POA' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 139,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "8f122714-b945-ee11-be6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "proofofaddressinsert",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "92e36dd4-1dc5-e5de-dc24-076a0fd09a1e",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Proof of Address"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Proof of Address Doc</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Proof of Address&lt;div id="iv17pj" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div id="i54qc8" class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"&gt;&lt;div id="i3rj7l" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word;"&gt;{% entityform name: 'App Docs Insert - POA' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Proof of Address Doc</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

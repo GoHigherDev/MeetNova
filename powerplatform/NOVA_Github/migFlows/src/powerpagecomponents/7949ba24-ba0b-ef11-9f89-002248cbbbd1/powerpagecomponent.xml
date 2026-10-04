@@ -1,0 +1,13 @@
+<powerpagecomponent powerpagecomponentid="7949ba24-ba0b-ef11-9f89-002248cbbbd1">
+  <content>{
+  "source": "{% include 'Compliance Settings' %}\r\n&lt;div class=\"wrapper-body\"&gt;\r\n    &lt;div class=\"container\"&gt;\r\n        &lt;div class=\"page-heading\"&gt;\r\n            {% block breadcrumbs %}\r\n            {% include 'Breadcrumbs' %}\r\n            {% endblock %}\r\n            {% block title %}\r\n            {% endblock %}\r\n        &lt;/div&gt;\r\n    &lt;/div&gt;\r\n    &lt;div id=\"mainContent\"&gt;\r\n        {% block main %}\r\n        {% include 'Page Copy' %}\r\n\r\n        {% endblock %}\r\n    &lt;/div&gt;\r\n    &lt;div class=\"push\"&gt;&lt;/div&gt;\r\n&lt;/div&gt;"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance Settings Page</name>
+  <powerpagecomponenttype>8</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

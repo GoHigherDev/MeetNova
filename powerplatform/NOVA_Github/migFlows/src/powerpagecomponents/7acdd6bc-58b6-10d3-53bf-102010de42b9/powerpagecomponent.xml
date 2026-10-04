@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="7acdd6bc-58b6-10d3-53bf-102010de42b9">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 156,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "ce2f1f7f-962a-cb0c-d135-b5d096c05c56",
+  "parentweblinkid": "ff641dce-1686-96fa-5487-8e687083b602",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Stage Lists</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

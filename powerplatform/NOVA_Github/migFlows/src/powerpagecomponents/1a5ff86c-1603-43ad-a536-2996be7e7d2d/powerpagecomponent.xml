@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="1a5ff86c-1603-43ad-a536-2996be7e7d2d">
+  <content>{
+  "formname": "Attachments",
+  "mode": 100000001,
+  "successmessage": "[{\"LCID\":1033}]",
+  "targetentitylogicalname": "cr7ef_supportticketcreation62ee_cp",
+  "type": 100000001,
+  "webform": "b6cf9252-eb59-4582-bff8-367bac091f03"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Attachments</name>
+  <powerpagecomponenttype>20</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

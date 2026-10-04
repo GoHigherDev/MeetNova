@@ -1,0 +1,55 @@
+<powerpagecomponent powerpagecomponentid="258c6ee0-3b03-ef11-9f89-0022481bbf4e">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": true,
+  "attachfileallowmultiple": true,
+  "attachfilelabel": "[{\"LCID\":1033,\"Value\":\"Certificates\"}]",
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "attachfilesaveoption": 756150000,
+  "attachfilestoragelocation": 756150000,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_candidateregistration",
+  "entitypermissionsenabled": false,
+  "entitysourcetype": 756150001,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000001,
+  "onsuccess": 756150001,
+  "populatereferenceentitylookupfield": true,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordidquerystringparametername": "registrationid",
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": true,
+  "redirecturlquerystringname": "contactid",
+  "redirectwebpage": "1dcce07b-a4d1-d9e1-fdff-3ab1203d362c",
+  "referenceentitylogicalname": "new_candidateregistration",
+  "referenceentityshowreadonlyform": false,
+  "referenceentitysourcetype": 756150001,
+  "referencequerystringisprimarykey": true,
+  "referencerecordsourcerelationshipname": "new_candidateregistration_candidateid",
+  "renderwebresourcesinline": false,
+  "setentityreference": true,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "registrationForm",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Emergency Contact Details</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

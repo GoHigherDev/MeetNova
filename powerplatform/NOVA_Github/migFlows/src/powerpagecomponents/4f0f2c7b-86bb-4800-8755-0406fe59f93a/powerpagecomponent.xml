@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="4f0f2c7b-86bb-4800-8755-0406fe59f93a">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 94,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "0f4b0371-bbad-0bf4-71ce-d1b7487dc776",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Edit</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="c40f0690-5ef0-4755-a7a0-1bd0c5d8c69e">
+  <content>{
+  "displayorder": 167,
+  "pageid": "ec28ab91-bbc7-4e6b-2ec3-a5870be65ccd",
+  "parentweblinkid": "c39b6c6f-e75a-482f-b8f2-e0ed0de76c05",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Manual Invoices</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

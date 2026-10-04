@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="e219f32a-7c43-4765-a820-1d0a03ab7a95">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": false,
+  "delete": false,
+  "entitylogicalname": "new_declarationtype",
+  "entityname": "Declaration Type",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150000,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Declaration Type</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

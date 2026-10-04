@@ -1,0 +1,37 @@
+<powerpagecomponent powerpagecomponentid="84d7cc15-cbe9-4872-e9c4-3048fcb45da5">
+  <content>{
+  "copy": "{% include 'Documents' %}\n\n&lt;div data-ppid=\"d8b626fa-8691-c721-fdb5-ed0773a8a5c6\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div data-ppid=\"d265d53b-ba02-ba78-e1a3-552b23d9d780\" class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div data-ppid=\"ed6b6d97-aa1c-3bae-3213-c97860e58220\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Timesheet Client' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 90,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "a233694e-f743-ee11-be6f-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "ce92424d-e209-ee11-8f6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "timesheetclientdetails",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "ecbcff54-c75a-32f0-44c2-5274eccef64c",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheet Client</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>{% include 'Documents' %}
+
+&lt;div data-ppid="d8b626fa-8691-c721-fdb5-ed0773a8a5c6" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div data-ppid="d265d53b-ba02-ba78-e1a3-552b23d9d780" class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div data-ppid="ed6b6d97-aa1c-3bae-3213-c97860e58220" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Timesheet Client' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Timesheet Client</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

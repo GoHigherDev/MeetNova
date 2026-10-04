@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="1e9eca8d-a0dc-4b34-af12-19e7b9df1e42">
+  <content>{
+  "entityform": "52c3874c-8f0e-ef11-9f89-002248cbbbd1",
+  "label": "[{\"LCID\":1033,\"Value\":\"Declarations\"}]",
+  "tabname": "candidatedeclarations",
+  "type": 100000002
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Declarations candidatedeclarations</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

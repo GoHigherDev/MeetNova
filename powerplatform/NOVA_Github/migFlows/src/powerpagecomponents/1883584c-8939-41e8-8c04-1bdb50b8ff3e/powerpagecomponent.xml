@@ -1,0 +1,27 @@
+<powerpagecomponent powerpagecomponentid="1883584c-8939-41e8-8c04-1bdb50b8ff3e">
+  <content>{
+  "accountrelationship": "new_bonussetting_managingaccountid",
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_bonussetting",
+  "entityname": "Commission",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150002,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Commission</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

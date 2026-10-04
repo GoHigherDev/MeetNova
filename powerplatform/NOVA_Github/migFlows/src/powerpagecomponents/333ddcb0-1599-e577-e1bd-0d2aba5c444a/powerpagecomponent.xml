@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="333ddcb0-1599-e577-e1bd-0d2aba5c444a">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 176,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "28702de8-30d2-4720-a84b-a1d7d49713cc",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "5f7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "parentpageid": "f07ba5c9-dc86-746b-3cbb-553a09c15cfb",
+  "partialurl": "account-codes",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Account Codes"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Account Codes</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Account CodesundefinedAccount Codes</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,782 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000003 and new_istimesheetpreapproved eq false",
+              "subscriptionRequest/name": "aefb2921-f336-f011-8c4c-6045bd69f0ab"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "bf44fe9b-2b2a-4dee-90aa-66a3fed4aecb"
+          }
+        }
+      },
+      "actions": {
+        "Get_Candidate_Email_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Get_a_placement_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e47e333b-1e07-4914-b884-50ac8d400058"
+          }
+        },
+        "Initialize_TimesheetCostTable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TimesheetCostTable",
+                "type": "string",
+                "value": "<table border=\"1\">\n  <tr>\n    <th>Day</th>\n    <th>Date</th>\n    <th>Start</th>\n    <th>End</th>\n    <th>Break</th>\n  <th>Unit</th>\n    <th>Rate</th>\n  </tr>"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_client_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "39036f57-4ee4-4b38-9d58-77979989089f"
+          }
+        },
+        "Initialize_EmailContent_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "EmailContent",
+                "type": "string",
+                "value": "Please find your PDF attached"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TimesheetCostTable_Units": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "39ca1b75-2cd6-4a6a-86d2-b3f356a3744e"
+          }
+        },
+        "Initialize_PDFExist_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PDFExist",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_EmailContent_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e00eebb0-c40f-486d-83ad-4ec832b9a8d7"
+          }
+        },
+        "Get_a_placement_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerOutputs()?['body/_new_assignmentid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5860ce71-95ab-4131-9d8d-0d79250a22b9"
+          }
+        },
+        "Condition_1": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(triggerOutputs()?['body/new_timesheetid'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Do_until": {
+              "type": "Until",
+              "expression": "@equals(variables('PDFExist'),true)",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "actions": {
+                "Get_a_timesheet_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheets",
+                      "recordId": "@triggerOutputs()?['body/new_timesheetid']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "2ddc2083-c0ef-4ae8-813a-c44bcfd36d5e"
+                  }
+                },
+                "Get_timesheet_hours": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('List_timesheet_cost_rows')?['body/value']",
+                  "actions": {
+                    "Get_a_assignment_rate_row_by_ID": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_assignmentrates",
+                          "recordId": "@item()?['_new_assignmentrateid_value']"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "GetItem",
+                          "connectionName": "shared_commondataserviceforapps-1"
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "fe963964-a22b-41d5-a21a-7ae9fe5211c8"
+                      }
+                    },
+                    "check_if_times_exist": {
+                      "type": "If",
+                      "expression": {
+                        "and": [
+                          {
+                            "not": {
+                              "equals": [
+                                "@item()?['new_start']",
+                                "@null"
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "equals": [
+                                "@item()?['new_finish']",
+                                "@null"
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      "actions": {
+                        "Append_to_string_variable": {
+                          "type": "AppendToStringVariable",
+                          "inputs": {
+                            "name": "TimesheetCostTable",
+                            "value": "<tr>\n<td>@{formatDateTime(parseDateTime(items('Get_timesheet_hours')?['new_date']), 'dddd', 'en-GB')}</td>\n <td>@{if(empty(items('Get_timesheet_hours')?['new_date']), null, formatDateTime(parseDateTime(items('Get_timesheet_hours')?['new_date']), 'dd/MM/yyyy', 'en-GB'))}</td>\n <td>@{if(empty(items('Get_timesheet_hours')?['new_start']), '', formatDateTime(parseDateTime(items('Get_timesheet_hours')?['new_start']), 'HH:mm:ss', 'en-US'))}</td>\n <td>@{if(empty(items('Get_timesheet_hours')?['new_finish']), '', formatDateTime(parseDateTime(items('Get_timesheet_hours')?['new_finish']), 'HH:mm:ss', 'en-US'))}</td>\n <td>@{items('Get_timesheet_hours')?['new_break']}</td>\n <td>@{items('Get_timesheet_hours')?['new_units']}</td>\n <td>@{outputs('Get_a_assignment_rate_row_by_ID')?['body/new_name']}</td>\n</tr>"
+                          },
+                          "metadata": {
+                            "operationMetadataId": "5c7b6199-122d-4057-a61b-5d79675cd7ad"
+                          }
+                        },
+                        "Set_Hours_true": {
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "Hours",
+                            "value": "@true"
+                          },
+                          "runAfter": {
+                            "Append_to_string_variable": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "805e85ce-d0c9-4e9f-a3e0-954c87db05be"
+                          }
+                        }
+                      },
+                      "else": {
+                        "actions": {
+                          "Append_to_string_variable_units": {
+                            "type": "AppendToStringVariable",
+                            "inputs": {
+                              "name": "TimesheetCostTableUnits",
+                              "value": "<tr>\n<td>@{formatDateTime(parseDateTime(items('Get_timesheet_hours')?['new_date']), 'dddd', 'en-GB')}</td>\n <td>@{if(empty(items('Get_timesheet_hours')?['new_date']), null, formatDateTime(parseDateTime(items('Get_timesheet_hours')?['new_date']), 'dd/MM/yyyy', 'en-GB'))}</td>\n <td>@{outputs('Get_a_assignment_rate_row_by_ID')?['body/new_name']} </td>\n <td>@{items('Get_timesheet_hours')?['new_units']}</td>\n<td>@{items('Get_timesheet_hours')?['new_paytotal']}</td>\n</tr>"
+                            },
+                            "metadata": {
+                              "operationMetadataId": "2f547e1a-656b-4101-9e7a-8845f23d512f"
+                            }
+                          },
+                          "Set_units_false": {
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "Hours",
+                              "value": "@false"
+                            },
+                            "runAfter": {
+                              "Append_to_string_variable_units": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "93aed5a9-dde6-4181-9e3e-73c8560ef4be"
+                            }
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "Get_a_assignment_rate_row_by_ID": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5b88826b-2ce7-42b3-8495-d29f420e583f"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "List_timesheet_cost_rows": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "18f2824c-df3e-452e-852b-3bcd0a3e830c"
+                  }
+                },
+                "List_timesheet_cost_rows": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheetcost\">\n    <attribute name=\"new_timesheetcostid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_isexpense\" />\n    <attribute name=\"new_description\" />\n    <attribute name=\"new_billunit\" />\n    <attribute name=\"new_candidateid\" />\n    <attribute name=\"new_ratetypeid\" />\n    <attribute name=\"new_assignmentid\" />\n    <attribute name=\"new_billtaxtypeid\" />\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_timesheetid\" />\n    <attribute name=\"new_units\" />\n    <attribute name=\"new_date\" />\n    <attribute name=\"new_bill\" />\n    <attribute name=\"new_billtotal\" />\n    <attribute name=\"new_pay\" />\n    <attribute name=\"new_paye\" />\n    <attribute name=\"new_expensepaytotal\" />\n    <attribute name=\"new_paytotal\" />\n <attribute name=\"new_start\" />\n <attribute name=\"new_finish\" />\n <attribute name=\"new_break\" />\n    <order attribute=\"new_date\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_timesheetid\" operator=\"eq\" uitype=\"new_timesheet\" value=\"@{outputs('Get_a_timesheet_row_by_ID')?['body/new_timesheetid']}\" />\n <condition attribute=\"new_assignmentrateid\" operator=\"not-null\" />\n    </filter>\n  </entity>\n</fetch>"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "ListRecords",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_timesheet_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "165f9f1e-f7d6-4e04-befd-79d45dd981ea"
+                  }
+                },
+                "Compose": {
+                  "type": "Compose",
+                  "inputs": "@variables('TimesheetCostTable')",
+                  "runAfter": {
+                    "Get_timesheet_hours": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "38cfd703-981b-4197-aef6-fdfb67dd439e"
+                  }
+                },
+                "check_if_pdf_exist": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "greater": [
+                          "@length(outputs('Get_a_timesheet_row_by_ID')?['body/new_pdfurl'])",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Set_var_pdExist_to_true": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "PDFExist",
+                        "value": true
+                      },
+                      "metadata": {
+                        "operationMetadataId": "9c32c433-c619-4bf6-a072-10c226c045f7"
+                      }
+                    },
+                    "Set_pdf_url": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "EmailContent",
+                        "value": "@concat('<a href=\"', outputs('Get_a_timesheet_row_by_ID')?['body/new_pdfurl'], '\">','Click here to also view a PDF copy of Timesheet ', outputs('Get_a_timesheet_row_by_ID')?['body/new_name'], '</a>')"
+                      },
+                      "runAfter": {
+                        "Set_var_pdExist_to_true": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "577d4abe-388d-4cee-8a9c-ee9ead8eb955"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "Compose": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "1d1ee8ed-026e-4b39-b3ee-d882d2c3de24"
+                  }
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "83148935-2b9e-4fdb-a172-6161d92112bc"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Hours_or_units": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dfff842a-e7a4-4f37-9403-32e09fa9e996"
+          }
+        },
+        "Get_a_client_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_a_placement_row_by_ID')?['body/_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_Candidate_Email_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89e3be6d-43a4-4388-8cfa-8aff4b27589d"
+          }
+        },
+        "Initialize_TimesheetCostTable_Units": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TimesheetCostTableUnits",
+                "type": "string",
+                "value": "<table border=\"1\">\n  <tr>\n    <th>Day</th>\n    <th>Date</th>\n    <th>Rate</th>\n   <th>Unit</th>\n   <th>pay Total</th>\n  </tr>"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TimesheetCostTable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "39036f57-4ee4-4b38-9d58-77979989089f"
+          }
+        },
+        "Hours_or_units": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Hours",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_PDFExist_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "39036f57-4ee4-4b38-9d58-77979989089f"
+          }
+        },
+        "AppendTableCloseunits": {
+          "type": "AppendToStringVariable",
+          "inputs": {
+            "name": "TimesheetCostTableUnits",
+            "value": "</table>"
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "afc30138-c2ec-4c27-b9b0-08269f477c97"
+          }
+        },
+        "AppendTableClose": {
+          "type": "AppendToStringVariable",
+          "inputs": {
+            "name": "TimesheetCostTable",
+            "value": "</table>"
+          },
+          "runAfter": {
+            "AppendTableCloseunits": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "afc30138-c2ec-4c27-b9b0-08269f477c97"
+          }
+        },
+        "Condition-_login_required_=_yes": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_Candidate_Email_by_ID')?['body/new_loginrequiredcandidate']",
+                  "@true"
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Get_a_placement_row_by_ID')?['body/new_istimesheetpreapproved']",
+                  "@false"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Check__Hours__or_unit_-_send_email_": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@variables('Hours')",
+                      "@true"
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Send_an_email_(V2)-appreoved_hours_timesheet": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "emailMessage/To": "@body('Get_Candidate_Email_by_ID')?['emailaddress1']",
+                      "emailMessage/Subject": "Your timesheet has been Approved",
+                      "emailMessage/Body": "<p class=\"editor-paragraph\">@{variables('Message')}<br><br>@{variables('TimesheetCostTable')}<br><br>@{variables('EmailContent')}<br></p><br>",
+                      "emailMessage/Importance": "Normal"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                      "operationId": "SendEmailV2",
+                      "connectionName": "shared_office365-1"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "a0ea2784-2d67-4f7d-9150-28a80f76ffba"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Send_an_email_(V2)_approved_units_timesheet": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "emailMessage/To": "@body('Get_Candidate_Email_by_ID')?['emailaddress1']",
+                        "emailMessage/Subject": "Your timesheet has been Approved",
+                        "emailMessage/Body": "<br><p class=\"editor-paragraph\">@{variables('Message')}</p><p class=\"editor-paragraph\"><br>@{variables('TimesheetCostTableUnits')}<br><br>@{variables('EmailContent')}<br></p><br>",
+                        "emailMessage/Importance": "Normal"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                        "operationId": "SendEmailV2",
+                        "connectionName": "shared_office365-1"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a0ea2784-2d67-4f7d-9150-28a80f76ffba"
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "1a6e792c-6442-4ce9-b138-1165b5fe4030"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_if__message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8311d8ed-7338-4113-95fe-8fbbf33f7877"
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {}
+        },
+        "Condition_if_global_notification_is_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_Enable": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "00052928-aa88-f011-b4cb-6045bdfc0113"
+            }
+          },
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Enable')?['success']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_notification_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "00052928-aa88-f011-b4cb-6045bdfc0113"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Message_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "\n\nUser Name: @{outputs('Get_Candidate_Email_by_ID')?['body/adx_identity_username']}<br>\n\nHi @{body('Get_Candidate_Email_by_ID')?['firstname']},\n<br>\nYour timesheet is approved for Validation.<br>\n\n\nBellow is the details of your timesheet:<br>\n\nTimesheet Name: @{outputs('Get_a_timesheet_row_by_ID')?['body/new_name']}<br>\nPlacement Name: @{outputs('Get_a_placement_row_by_ID')?['body/new_name']}<br>\nPeriod Start: @{outputs('Get_a_timesheet_row_by_ID')?['body/new_periodstart']}<br>\nPeriod End: @{outputs('Get_a_timesheet_row_by_ID')?['body/new_periodend']}<br>\nclient Name: @{outputs('Get_a_client_row_by_ID')?['body/name']}<br>\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Condition_1": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if__message_not_empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Message_Hours_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "AppendTableClose": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

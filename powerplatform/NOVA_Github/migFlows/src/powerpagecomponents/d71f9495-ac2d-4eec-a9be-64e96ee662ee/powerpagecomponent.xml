@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="d71f9495-ac2d-4eec-a9be-64e96ee662ee">
+  <content>{
+  "displayorder": 79,
+  "pageid": "ebc790ea-362e-bc09-8377-b0f8268c5f30",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "06fdb42b-f394-4563-a266-60a794b1992d"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Assignments</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="65602de0-028c-dfa4-9f7d-290a2c18971c">
+  <content>{
+  "displayorder": 44,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8cb3e2a9-9be6-180f-c10c-04ed23d43c49",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Credit-Report-Consultant",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Credit Report Consultant"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Credit Report Consultant</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Credit Report ConsultantCredit Report Consultant</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="4837bff3-8c0f-ef11-9f89-002248cbbbd1">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_documenttype",
+  "descriptionposition": 100000000,
+  "entityform": "1fdc73bf-8c0f-ef11-9f89-002248cbbbd1",
+  "entityformforcreate": "1fdc73bf-8c0f-ef11-9f89-002248cbbbd1",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "100000001",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>App Docs Insert - Training QP new_documenttype</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

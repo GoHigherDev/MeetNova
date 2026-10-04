@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="2cd12c40-8cb7-8dc7-6c40-274a14cd8e3e">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "b1ec2ebc-fc2f-d1fa-01de-e9d2cdf58e53",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "2ad918ea-ee43-ee11-be6f-6045bd0cfca3",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Consultant Jobs Applied by candidate</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

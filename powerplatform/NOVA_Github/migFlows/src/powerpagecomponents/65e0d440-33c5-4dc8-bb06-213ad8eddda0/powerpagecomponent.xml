@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="65e0d440-33c5-4dc8-bb06-213ad8eddda0">
+  <content>{
+  "displayorder": 90,
+  "pageid": "c4d24875-6031-8c7b-8de0-2e52b97bc8e8",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Stage List Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

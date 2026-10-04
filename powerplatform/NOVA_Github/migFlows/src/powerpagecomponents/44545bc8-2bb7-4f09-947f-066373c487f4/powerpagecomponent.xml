@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="44545bc8-2bb7-4f09-947f-066373c487f4">
+  <content>{
+  "displayorder": 168,
+  "parentweblinkid": "6e8c59de-075b-48e0-85af-95a53f5aac30",
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "a9d2b734-46ac-c990-267d-a9128da4316c",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bulk Imports</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

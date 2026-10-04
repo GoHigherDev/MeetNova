@@ -1,0 +1,393 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Quickshifts Portal (new_QuickshiftsPortal)": {
+          "defaultValue": "https://quickshiftsportal.powerappsportals.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_QuickshiftsPortal",
+            "description": "used by candidates and clients"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_isreminder",
+              "subscriptionRequest/filterexpression": "new_isreminder eq true and statuscode eq 1"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "6812abf4-0e86-42e5-b86d-8ab4f7e4d27f"
+          }
+        }
+      },
+      "actions": {
+        "Candidate_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c67dbfd3-6b35-4ba7-9ab9-6176efba7a23"
+          }
+        },
+        "Get_a_Client_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerBody()?['_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Candidate_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5aa14fe7-ea4b-4a14-b198-3e5367f705b2"
+          }
+        },
+        "Condition_-_Status_is_open": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerBody()?['statuscode']",
+                  1
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Condition_-_login_required_=_yes": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@outputs('Candidate_row_by_ID')?['body/new_loginrequiredcandidate']",
+                      "@true"
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "candidate_-_username_is_empty": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@empty(body('Candidate_row_by_ID')?['adx_identity_username'])",
+                          "@true"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Send_an_email_Unregistered": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "emailMessage/To": "@body('Candidate_row_by_ID')?['emailaddress1']",
+                          "emailMessage/Subject": "Open Timesheet Reminder - @{triggerBody()?['new_name']}",
+                          "emailMessage/Body": "\n<p class=\"editor-paragraph\">Hello @{body('Candidate_row_by_ID')?['firstname']},</p><br><p class=\"editor-paragraph\">This is a reminder that your timesheet is open by the client.</p><p class=\"editor-paragraph\"><br>However, before accessing the timesheet. Please click the link below to complete your registration process:</p>\n<br>\n<a href= \"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/registration/?contactid=@{outputs('Candidate_row_by_ID')?['body/contactid']}\">Registration</a>\n<br>\nOnce you have completed your registration process, please click the link below to access the timesheet:\n<br>\n<a href= \"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/candidatetimesheetdetails/?timesheetid=@{triggerOutputs()?['body/new_timesheetid']}&contactid=@{outputs('Candidate_row_by_ID')?['body/contactid']}\">@{triggerOutputs()?['body/new_name']}</a>\n<br>\n<p class=\"editor-paragraph\">Thank you, Timesheets System</p>",
+                          "emailMessage/Importance": "Normal"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                          "operationId": "SendEmailV2",
+                          "connectionName": "shared_office365-1"
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c2e29e4c-0dfc-49c4-b0ba-17eb15dba94b"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {
+                      "Send_an_email_(V2)_registered": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "emailMessage/To": "@{outputs('Candidate_row_by_ID')?['body/emailaddress1']}, hala.hassouna96@gmail.com",
+                            "emailMessage/Subject": "Open Timesheet Reminder - @{triggerBody()?['new_name']}",
+                            "emailMessage/Body": "<p class=\"editor-paragraph\"><br><br>@{variables('Message')}<br><br></p><br><p class=\"editor-paragraph\">If you want to close your Timesheet please click on the button below:<br><br><a href=\"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/Timesheet-Closure/?timesheetid=@{triggerOutputs()?['body/new_timesheetid']}&amp;contactid=@{outputs('Candidate_row_by_ID')?['body/contactid']}\" class=\"editor-link\"><br>Close Timesheet<br></a></p><br>",
+                            "emailMessage/Importance": "Normal"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                            "operationId": "SendEmailV2",
+                            "connectionName": "shared_office365-1"
+                          }
+                        },
+                        "metadata": {
+                          "operationMetadataId": "c2e29e4c-0dfc-49c4-b0ba-17eb15dba94b"
+                        }
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "41c5791a-050a-45a7-ba84-0681c8516d39"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "metadata": {
+                "operationMetadataId": "16f14bb9-d2e3-4494-a501-f742cda34f99"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_if_message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b561dd06-d1de-4707-8c4b-28c1f97fc1ac"
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {}
+        },
+        "Condition_if_global_notification_is_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_Enable": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "48ca5e31-8685-f011-b4cb-6045bd15153f"
+            }
+          },
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Enable')?['success']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_notification_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "48ca5e31-8685-f011-b4cb-6045bd15153f"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Message_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "\nUser Name: @{outputs('Candidate_row_by_ID')?['body/adx_identity_username']} <div>\n</div>\n\n\n<p class=\"editor-paragraph\">Hello @{outputs('Candidate_row_by_ID')?['body/firstname']},</p>\n<p class=\"editor-paragraph\">This is a reminder that your timesheet is open by the client.\n\n\n\n<a href=\"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/candidatetimesheetdetails/?timesheetid=@{triggerOutputs()?['body/new_timesheetid']}&amp;contactid=@{outputs('Candidate_row_by_ID')?['body/contactid']}\">@{triggerOutputs()?['body/new_name']}</a> <br>\n\nThank you, Timesheets System\n\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_Client_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_message_not_empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Message_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

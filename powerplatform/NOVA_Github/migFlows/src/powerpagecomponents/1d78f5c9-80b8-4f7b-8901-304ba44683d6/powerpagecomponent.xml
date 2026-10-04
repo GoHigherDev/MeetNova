@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="1d78f5c9-80b8-4f7b-8901-304ba44683d6">
+  <content>{
+  "displayorder": 169,
+  "pageid": "71f71dc6-f53f-d58b-8e15-3483a01f2d73",
+  "parentweblinkid": "234ebc0b-7e9a-4add-a87d-5d2ccea8fc01",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Xero</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

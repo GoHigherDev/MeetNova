@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="9f0f7a4c-361f-ef11-840a-0022486a2752">
+  <content>{
+  "flowapiurl": "https://quickshifts-dev.powerappsportals.com/_api/cloudflow/v1.0/trigger/36c4121d-fe79-31ba-7243-b04160072c7f",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/36C4121DFE7931BA7243B04160072C7F-47B60381B5A2A2B6/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "36c4121d-fe79-31ba-7243-b04160072c7f",
+  "processid": "444efc7e-341f-ef11-840a-0022486a2752",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "198c028f-e0d0-ee11-9079-6045bd0cfca3",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>XERO Post Self Bill to trigger</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

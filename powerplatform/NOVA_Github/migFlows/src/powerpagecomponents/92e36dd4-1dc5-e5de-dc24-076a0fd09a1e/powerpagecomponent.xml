@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="92e36dd4-1dc5-e5de-dc24-076a0fd09a1e">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 143,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8f122714-b945-ee11-be6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "proofofaddressinsert",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Proof of Address Insert"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Proof of Address Doc</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Proof of Address InsertundefinedProof of Address Doc</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

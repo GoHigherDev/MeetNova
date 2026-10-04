@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="f31a1944-d06d-4d9c-978a-1daf42c3ceb1">
+  <content>{
+  "displayorder": 34,
+  "pageid": "bf178df1-8622-bad7-0fdb-c63c2d935c95",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheets</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

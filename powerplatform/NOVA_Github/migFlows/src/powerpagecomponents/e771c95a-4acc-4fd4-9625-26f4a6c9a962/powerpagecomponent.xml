@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="e771c95a-4acc-4fd4-9625-26f4a6c9a962">
+  <content>{
+  "displayorder": 51,
+  "pageid": "85d9fbbc-647a-ca26-9b54-3807985c81b0",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Skill Type Edit</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

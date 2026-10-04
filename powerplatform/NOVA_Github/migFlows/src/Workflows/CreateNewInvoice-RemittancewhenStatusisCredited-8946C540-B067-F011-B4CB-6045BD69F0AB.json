@@ -1,0 +1,647 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_creditnote",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_istriggercreditcomplete",
+              "subscriptionRequest/filterexpression": "new_istriggercreditcomplete eq true",
+              "subscriptionRequest/name": "8946c540-b067-f011-b4cb-6045bd69f0ab:MTA"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "38004928-29ef-48a2-b31a-f4423f49fca1"
+          }
+        }
+      },
+      "actions": {
+        "Condition_if_Invoice": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_new_invoiceid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "List_Invoices_details_rows_without_this_credit_note_": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoicedetails",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_invoicedetail\">\n<attribute name=\"new_invoicedetailid\"/>\n<filter type=\"and\">\n<condition attribute=\"new_creditnoteid\" operator=\"ne\"  uitype=\"new_creditnote\" value=\"@{triggerOutputs()?['body/new_creditnoteid']}\"/>\n<condition attribute=\"new_invoiceid\" operator=\"eq\"  uitype=\"new_invoice\" value=\"@{triggerOutputs()?['body/_new_invoiceid_value']}\"/>\n</filter>\n</entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Add_a_new_invoice_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "196ff514-97c4-4fe4-a693-a932b2ff4f18"
+              }
+            },
+            "Add_a_new_invoice_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "item/new_name": "temp",
+                  "item/new_BranchId@odata.bind": "@if(not(empty(outputs('Get_a_invoice_row_by_ID')?['body/_new_branchid_value'])), concat('/new_branchs(', outputs('Get_a_invoice_row_by_ID')?['body/_new_branchid_value'], ')'), null)\r\n",
+                  "item/new_clientid@odata.bind": "/accounts(@{outputs('Get_a_invoice_row_by_ID')?['body/_new_clientid_value']})",
+                  "item/new_creditnoteid_new_creditnote@odata.bind": "@if(not(empty(triggerOutputs()?['body/new_creditnoteid'])), concat('/new_creditnotes(', triggerOutputs()?['body/new_creditnoteid'], ')'), null)\r\n",
+                  "item/new_creditnoteinvoicereplacementid@odata.bind": "@if(not(empty(triggerOutputs()?['body/new_creditnoteid'])), concat('/new_creditnotes(', triggerOutputs()?['body/new_creditnoteid'], ')'), null)\r\n",
+                  "item/new_creditedbyid@odata.bind": "/contacts(@{outputs('Get_a_invoice_row_by_ID')?['body/_new_creditedbyid_value']})",
+                  "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_a_invoice_row_by_ID')?['body/_transactioncurrencyid_value']})",
+                  "item/new_invoicedate": "@utcNow()",
+                  "item/new_invoicingtype": 100000000,
+                  "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingacountid_value']})",
+                  "item/new_paymentterms": "@outputs('Get_a_invoice_row_by_ID')?['body/new_paymentterms']",
+                  "item/new_purchaseorderid@odata.bind": "@if(not(empty(outputs('Get_a_invoice_row_by_ID')?['body/_new_purchaseorderid_value'])), concat('/new_purchaseorders(', outputs('Get_a_invoice_row_by_ID')?['body/_new_purchaseorderid_value'], ')'), null)\r\n",
+                  "item/statuscode": 1,
+                  "item/new_associatedtimesheet": "@outputs('Get_a_invoice_row_by_ID')?['body/new_associatedtimesheet']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Get_a_invoice_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ca42d5e2-c6b1-42f0-a7f7-34f4aa4765d6"
+              }
+            },
+            "Get_a_invoice_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@triggerOutputs()?['body/_new_invoiceid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "af56e644-8279-4865-9a2f-73478400c5a2"
+              }
+            },
+            "For_each_detail": {
+              "type": "Foreach",
+              "foreach": "@outputs('List_Invoices_details_rows_without_this_credit_note_')?['body/value']",
+              "actions": {
+                "Get_a_invoicedetails_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_invoicedetails",
+                      "recordId": "@item()?['new_invoicedetailid']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b33a6409-d470-4ebc-ab29-b510acc8d978"
+                  }
+                },
+                "Add_a_detail_new_row": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_invoicedetails",
+                      "item/new_name": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_date']",
+                      "item/new_bill": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_bill']",
+                      "item/new_BillTAXTypeid@odata.bind": "/new_billtaxtypes(@{outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_billtaxtypeid_value']})",
+                      "item/new_billtotal": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_billtotal']",
+                      "item/new_billunit": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_billunit']",
+                      "item/new_creditnoteid@odata.bind": "@if(not(empty(triggerOutputs()?['body/new_creditnoteid'])), concat('/new_creditnotes(', triggerOutputs()?['body/new_creditnoteid'], ')'), null)\r\n",
+                      "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_a_invoicedetails_row_by_ID')?['body/_transactioncurrencyid_value']})",
+                      "item/new_date": "@utcNow()",
+                      "item/new_invoiceid@odata.bind": "/new_invoices(@{outputs('Add_a_new_invoice_row')?['body/new_invoiceid']})",
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingacountid_value']})",
+                      "item/new_assignmentid@odata.bind": "@if(not(empty(outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_assignmentid_value'])), concat('/new_assignments(', outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_assignmentid_value'], ')'), null)",
+                      "item/new_assignmentrateid@odata.bind": "/new_assignmentrates(@{outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_assignmentrateid_value']})",
+                      "item/new_ratetypeid@odata.bind": "@if(not(empty(outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_ratetypeid_value'])), concat('/new_ratetypes(', outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_ratetypeid_value'], ')'), null)",
+                      "item/new_tax": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_tax']",
+                      "item/new_timesheetid@odata.bind": "@if(not(empty(outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_timesheetid_value'])), concat('/new_timesheets(', outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_timesheetid_value'], ')'), null)",
+                      "item/new_timesheetcostid@odata.bind": "@if(not(empty(outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_timesheetcostid_value'])), concat('/new_timesheetcosts(', outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_timesheetcostid_value'], ')'), null)",
+                      "item/new_total": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_total']",
+                      "item/new_units": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/new_units']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_invoicedetails_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5b7450cc-aed5-4efa-82bb-45370b53ec41"
+                  }
+                },
+                "Update_timesheet_cost_row": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_timesheetcostid_value']",
+                      "item/new_invoicedetailid@odata.bind": "/new_invoicedetails(@{outputs('Add_a_detail_new_row')?['body/new_invoicedetailid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Add_a_detail_new_row": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Relate_rows_invoices_and_candidates": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "contacts",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_candidateid_value']",
+                      "associationEntityRelationship": "new_invoice_candidate",
+                      "item/@odata.id": "@outputs('Add_a_new_invoice_row')?['body/@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "AssociateEntities",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_timesheet_cost_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+                  }
+                },
+                "Relate_rows_placement_and_invoices_n_to_n": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_assignments",
+                      "recordId": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_assignmentid_value']",
+                      "associationEntityRelationship": "new_invoice_placement",
+                      "item/@odata.id": "@outputs('Add_a_new_invoice_row')?['body/@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "AssociateEntities",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Relate_rows_invoices_and_candidates": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+                  }
+                },
+                "Get_a_timesheet_cost_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@outputs('Get_a_invoicedetails_row_by_ID')?['body/_new_timesheetcostid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Update_timesheet_cost_row": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Update_a_timesheet_row": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheets",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_timesheetid_value']",
+                      "item/new_invoiceid@odata.bind": "/new_invoices(@{outputs('Add_a_new_invoice_row')?['body/new_invoiceid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Relate_rows_placement_and_invoices_n_to_n": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Invoices_details_rows_without_this_credit_note_": [
+                  "Succeeded"
+                ]
+              },
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "b6ee8bd6-23bd-4cf8-8cb8-ae6cd2c28683"
+              }
+            },
+            "Update_invoice_row_to_filled": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@outputs('Add_a_new_invoice_row')?['body/new_invoiceid']",
+                  "item/statuscode": 100000004
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "For_each_detail": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "0b4b6872-552e-406e-b760-492f2041c4cd"
+          }
+        },
+        "Condition_if_remittance": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_new_remittanceid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "List_Remittances_details_rows_without_this_credit_note": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittancedetails",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_remittancedetail\">\n<attribute name=\"new_remittancedetailid\"/>\n<filter type=\"and\">\n<condition attribute=\"new_creditnoteid\" operator=\"ne\" uitype=\"new_creditnote\" value=\"@{triggerOutputs()?['body/new_creditnoteid']}\"/>\n<condition attribute=\"new_remittanceid\" operator=\"eq\"  uitype=\"new_remittance\" value=\"@{triggerOutputs()?['body/_new_remittanceid_value']}\"/>\n</filter>\n</entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Add_a_new_remittance_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "196ff514-97c4-4fe4-a693-a932b2ff4f18"
+              }
+            },
+            "Add_a_new_remittance_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "item/new_name": "temp",
+                  "item/new_BranchId@odata.bind": "@if(not(empty(outputs('Get_a_remittance_row_by_ID')?['body/_new_branchid_value'])), concat('/new_branchs(', outputs('Get_a_remittance_row_by_ID')?['body/_new_branchid_value'], ')'), null)",
+                  "item/new_creditnoteid_new_creditnote@odata.bind": "@if(not(empty(triggerOutputs()?['body/new_creditnoteid'])), concat('/new_creditnotes(', triggerOutputs()?['body/new_creditnoteid'], ')'), null)\r\n",
+                  "item/new_creditnoteremittancereplacementid@odata.bind": "@if(not(empty(triggerOutputs()?['body/new_creditnoteid'])), concat('/new_creditnotes(', triggerOutputs()?['body/new_creditnoteid'], ')'), null)\r\n",
+                  "item/new_creditedbyid@odata.bind": "contacts(@{outputs('Get_a_remittance_row_by_ID')?['body/_new_creditedbyid_value']})",
+                  "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_a_remittance_row_by_ID')?['body/_transactioncurrencyid_value']})",
+                  "item/new_invoicingtype": 100000000,
+                  "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingacountid_value']})",
+                  "item/new_paymentterms": "@outputs('Get_a_remittance_row_by_ID')?['body/new_paymentterms']",
+                  "item/new_assignmentid@odata.bind": "@if(not(empty(outputs('Get_a_remittance_row_by_ID')?['body/_new_assignmentid_value'])), concat('/new_assignments(', outputs('Get_a_remittance_row_by_ID')?['body/_new_assignmentid_value'], ')'), null)\r\n",
+                  "item/new_purchaseorderid@odata.bind": "@if(not(empty(outputs('Get_a_remittance_row_by_ID')?['body/_new_purchaseorderid_value'])), concat('/new_purchaseorders(', outputs('Get_a_remittance_row_by_ID')?['body/_new_purchaseorderid_value'], ')'), null)\r\n",
+                  "item/new_remittancedate": "@utcNow()\r\n",
+                  "item/statuscode": 1,
+                  "item/new_supplierid@odata.bind": "/accounts(@{outputs('Get_a_remittance_row_by_ID')?['body/_new_supplierid_value']})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Get_a_remittance_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "afa05076-5898-4093-a677-37f15e71f64f"
+              }
+            },
+            "Get_a_remittance_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@triggerOutputs()?['body/_new_remittanceid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "ce6f497e-2567-4d8b-8787-5135863d2a56"
+              }
+            },
+            "For_each": {
+              "type": "Foreach",
+              "foreach": "@outputs('List_Remittances_details_rows_without_this_credit_note')?['body/value']",
+              "actions": {
+                "Get_a_remittance_details_row_by_ID_": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_remittancedetails",
+                      "recordId": "@item()?['new_remittancedetailid']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "714db8ca-d2f1-4eb2-8bd8-75bcc607da54"
+                  }
+                },
+                "Add_a_remittance_detail_new_row": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_remittancedetails",
+                      "item/new_name": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_date']",
+                      "item/new_assignmentrateid@odata.bind": "/new_assignmentrates(@{outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_assignmentrateid_value']})",
+                      "item/new_billunit": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_billunit']",
+                      "item/new_creditnoteid@odata.bind": "@if(not(empty(triggerOutputs()?['body/new_creditnoteid'])), concat('/new_creditnotes(', triggerOutputs()?['body/new_creditnoteid'], ')'), null)\r\n",
+                      "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_a_remittance_details_row_by_ID_')?['body/_transactioncurrencyid_value']})",
+                      "item/new_date": "@utcNow()",
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingacountid_value']})",
+                      "item/new_pay": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_pay']",
+                      "item/new_BillTAXTypeid@odata.bind": "/new_billtaxtypes(@{outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_billtaxtypeid_value']})",
+                      "item/new_paytotal": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_paytotal']",
+                      "item/new_paye": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_paye']",
+                      "item/new_assignmentid@odata.bind": "@if(not(empty(outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_assignmentid_value'])), concat('/new_assignments(', outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_assignmentid_value'], ')'), null)\r\n",
+                      "item/new_ratetypeid@odata.bind": "@if(not(empty(outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_ratetypeid_value'])), concat('/new_ratetypes(', outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_ratetypeid_value'], ')'), null)\r\n",
+                      "item/new_remittanceid@odata.bind": "/new_remittances(@{outputs('Add_a_new_remittance_row')?['body/new_remittanceid']})",
+                      "item/new_supplierid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_supplierid_value']})",
+                      "item/new_tax": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_tax']",
+                      "item/new_timesheetid@odata.bind": "@if(not(empty(outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_timesheetid_value'])), concat('/new_timesheets(', outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_timesheetid_value'], ')'), null)\r\n",
+                      "item/new_timesheetcostid@odata.bind": "@if(not(empty(outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_timesheetcostid_value'])), concat('/new_timesheetcosts(', outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_timesheetcostid_value'], ')'), null)",
+                      "item/new_total": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_total']",
+                      "item/new_units": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/new_units']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_remittance_details_row_by_ID_": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6fd59871-112b-49de-b03d-0467135f362f"
+                  }
+                },
+                "Update_timesheet_cost_row_rem": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_timesheetcostid_value']",
+                      "item/new_remittancedetailid@odata.bind": "/new_remittancedetails(@{outputs('Add_a_remittance_detail_new_row')?['body/new_remittancedetailid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Add_a_remittance_detail_new_row": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Get_a_timesheet_cost_row_by_ID_1": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@outputs('Get_a_remittance_details_row_by_ID_')?['body/_new_timesheetcostid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Update_timesheet_cost_row_rem": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Relate_rows_placement_and_remittance_n_to_n": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_assignments",
+                      "recordId": "@outputs('Add_a_new_remittance_row')?['body/_new_assignmentid_value']",
+                      "associationEntityRelationship": "new_assignment_new_remittance",
+                      "item/@odata.id": "@outputs('Add_a_new_remittance_row')?['body/@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "AssociateEntities",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_timesheet_cost_row_by_ID_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+                  }
+                },
+                "Update_a_timesheet_row_1": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheets",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID_1')?['body/_new_timesheetid_value']",
+                      "item/new_remittanceid@odata.bind": "/new_remittances(@{outputs('Add_a_new_remittance_row')?['body/new_remittanceid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Relate_rows_placement_and_remittance_n_to_n": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Remittances_details_rows_without_this_credit_note": [
+                  "Succeeded"
+                ]
+              },
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "53dc1e47-55f0-4267-a947-c9bb6c2489da"
+              }
+            },
+            "Update_remittance_row_to_filled": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@outputs('Add_a_new_remittance_row')?['body/new_remittanceid']",
+                  "item/statuscode": 100000002
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "For_each": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_if_Invoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4ae69fb0-665b-4b33-973d-02bf9d1a9406"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="f6ef1fee-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "display_name": "Profile Navigation",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Profile Navigation</name>
+  <powerpagecomponenttype>4</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

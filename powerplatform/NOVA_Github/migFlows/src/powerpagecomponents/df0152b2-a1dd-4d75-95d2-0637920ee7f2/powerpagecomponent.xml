@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="df0152b2-a1dd-4d75-95d2-0637920ee7f2">
+  <content>{
+  "filecontent": null,
+  "displayorder": 90,
+  "weblinksetid": "63bf9ba6-3dcd-4076-bb73-21d8707af6d6",
+  "pageid": "8fa501bc-bd2c-b223-6a0f-380363c85df8",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Stage Lists</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

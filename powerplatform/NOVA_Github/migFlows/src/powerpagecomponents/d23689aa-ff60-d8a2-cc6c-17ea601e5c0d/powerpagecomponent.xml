@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="d23689aa-ff60-d8a2-cc6c-17ea601e5c0d">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 31,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "3ef8be24-ff31-ef11-8e4e-6045bd14f37f",
+  "parentpageid": "f07ba5c9-dc86-746b-3cbb-553a09c15cfb",
+  "partialurl": "billingdashboard-deleted",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "BillingDashbaord"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>BillingDashboard-deleted</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>BillingDashbaordundefinedBillingDashboard-deleted</searchcontent>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

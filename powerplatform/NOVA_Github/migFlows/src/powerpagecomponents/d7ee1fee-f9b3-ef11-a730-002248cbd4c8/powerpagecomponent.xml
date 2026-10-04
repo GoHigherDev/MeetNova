@@ -1,0 +1,36 @@
+<powerpagecomponent powerpagecomponentid="d7ee1fee-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "copy": "&lt;div id=\"i4vw3j\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div id=\"iga49a\" class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div id=\"iq6rl7\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Unsubscribe' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 25,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "2b68b201-0f26-ee11-9965-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "f434b46b-62f6-ee11-a1fe-6045bd0d54a8",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "unsubscribe",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "7593fbb7-d2e0-1e91-119d-9f0151d181f7",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Allow Availability Notifications"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Allow Availability Notifications</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Allow Availability Notifications&lt;div id="i4vw3j" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div id="iga49a" class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div id="iq6rl7" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Unsubscribe' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Allow Availability Notifications</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

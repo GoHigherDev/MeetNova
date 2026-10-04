@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="bbb984d0-9b0e-4d98-8d61-341a6263be53">
+  <content>{
+  "displayorder": 139,
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "822b4097-8eea-63d1-0f1f-379300316c09",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

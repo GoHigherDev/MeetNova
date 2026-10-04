@@ -1,0 +1,227 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps-2": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheetcost",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_invoiceid"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps-2"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "087da7a0-dc61-4e74-ae25-df345a92659b"
+          }
+        }
+      },
+      "actions": {
+        "List_ROWS_Timesheetcosts_by_invoice_by_placement": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheetcosts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_timesheetcost\">\n<attribute name=\"new_timesheetcostid\"/>\n<filter type=\"and\">\n<condition attribute=\"new_assignmentid\" operator=\"eq\" uitype=\"new_assignment\" value=\"@{triggerOutputs()?['body/_new_assignmentid_value']}\"/>\n<condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{outputs('Get_a_timesheet_by_ID')?['body/_new_invoiceid_value']}\"/>\n</filter>\n</entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps-2"
+            }
+          },
+          "runAfter": {
+            "Get_a_timesheet_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6b1c7ca0-3313-4230-9310-327fed582147"
+          }
+        },
+        "If_timesheet_cost_DONOT_exist": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@length(outputs('List_ROWS_Timesheetcosts_by_invoice_by_placement')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Unrelate_INVOICE_ROW_from_Placement_": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@outputs('Get_a_timesheet_by_ID')?['body/_new_invoiceid_value']",
+                  "associationEntityRelationship": "new_invoice_placement",
+                  "$id": "@outputs('Get_a_placement__by_ID')?['body/@odata.id']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "DisassociateEntities",
+                  "connectionName": "shared_commondataserviceforapps-2"
+                }
+              },
+              "runAfter": {
+                "Get_a_placement__by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3580cf75-3ef6-4da3-a799-d7d50812c346"
+              }
+            },
+            "Get_a_placement__by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@triggerOutputs()?['body/_new_assignmentid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps-2"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "3cb71bbe-4e03-4d09-960f-6921ed28e223"
+              }
+            },
+            "Update_a_timesheet_by_remove_the_invoice": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/_new_timesheetid_value']",
+                  "item/new_invoiceid@odata.bind": "@null"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps-2"
+                }
+              },
+              "runAfter": {
+                "Unrelate_INVOICE_ROW_from_candidate_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "72b24be3-5974-4b54-9bb9-9974c9567b1f"
+              }
+            },
+            "Get_a_candidate_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "contacts",
+                  "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps-2"
+                }
+              },
+              "runAfter": {
+                "Unrelate_INVOICE_ROW_from_Placement_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "a6613098-d8e2-4e91-9b8e-87cff2bb1e1e"
+              }
+            },
+            "Unrelate_INVOICE_ROW_from_candidate_": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@outputs('Get_a_timesheet_by_ID')?['body/_new_invoiceid_value']",
+                  "associationEntityRelationship": "new_invoice_candidate",
+                  "$id": "@outputs('Get_a_candidate_by_ID')?['body/@odata.id']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "DisassociateEntities",
+                  "connectionName": "shared_commondataserviceforapps-2"
+                }
+              },
+              "runAfter": {
+                "Get_a_candidate_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "10bd5b21-9aee-48a9-b218-3cbab3f055c8"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "List_ROWS_Timesheetcosts_by_invoice_by_placement": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2b03e2b5-b21a-470a-9b12-99efdfcba74b"
+          }
+        },
+        "Get_a_timesheet_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@triggerOutputs()?['body/_new_timesheetid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-2"
+            }
+          },
+          "runAfter": {}
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

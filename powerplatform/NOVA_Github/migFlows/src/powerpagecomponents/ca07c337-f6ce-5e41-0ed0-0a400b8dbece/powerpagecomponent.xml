@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="ca07c337-f6ce-5e41-0ed0-0a400b8dbece">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 51,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "76a233b0-351e-c92f-51d9-e1735d1aab92",
+  "parentweblinkid": "a25fbac8-2c4b-42e5-a48f-9c2091921581",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance Settings</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="1e22b907-35bf-4645-ba92-296e50d33215">
+  <content>{
+  "displayorder": 80,
+  "pageid": "bcb7fc25-d919-98a6-50c3-c057d5c1f6a2",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Invoice Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

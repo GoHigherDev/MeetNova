@@ -1,0 +1,265 @@
+<powerpagecomponent powerpagecomponentid="893412e8-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "copy": "&lt;div id=\"iheni\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px; background-color: #dbdddd;\"&gt;\n  &lt;div id=\"ii70z\" class=\"container\" style=\"padding: 0px; display: flex; flex-wrap: wrap;\"&gt;\n    &lt;div id=\"it2ri\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px; background-color: white; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;\"&gt;\n      &lt;form id=\"availabilityForm\" style=\"padding: 16px;\"&gt;\n        &lt;div class=\"week-selector\" style=\"margin-bottom: 16px;\"&gt;\n          &lt;label for=\"weekStart\" style=\"display: block; font-size: 18px;\"&gt;Select the start of the week:&lt;/label&gt;\n          &lt;input type=\"text\" id=\"weekStart\" name=\"weekStart\" autocomplete=\"off\" style=\"width: 100%; padding: 8px; border: 1px solid #ccc; background-color: #fff; margin-top: 10px; border-radius: 50px;\" required placeholder=\"Please select a week\" /&gt;\n        &lt;/div&gt;\n        &lt;div id=\"weekdays\" style=\"margin: 0; padding: 0;\"&gt;\n          &lt;!-- Repeat this block for each day of the week --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Monday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"mondayAvailable\" name=\"monday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"mondayUnavailable\" name=\"monday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n          &lt;!-- Tuesday --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Tuesday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"tuesdayAvailable\" name=\"tuesday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"tuesdayUnavailable\" name=\"tuesday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n          &lt;!-- Wednesday --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Wednesday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"wednesdayAvailable\" name=\"wednesday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"wednesdayUnavailable\" name=\"wednesday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n          &lt;!-- Thursday --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Thursday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"thursdayAvailable\" name=\"thursday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"thursdayUnavailable\" name=\"thursday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n          &lt;!-- Friday --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Friday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"fridayAvailable\" name=\"friday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"fridayUnavailable\" name=\"friday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n          &lt;!-- Saturday --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Saturday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"saturdayAvailable\" name=\"saturday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"saturdayUnavailable\" name=\"saturday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n          &lt;!-- Sunday --&gt;\n          &lt;div class=\"day-row\" style=\"margin-bottom: 8px; font-size: 18px;\"&gt;\n            &lt;label style=\"display: block;\"&gt;Sunday:&lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"sundayAvailable\" name=\"sunday\" value=\"available\" /&gt; Available &lt;/label&gt;\n            &lt;label class=\"radio-inline\"&gt; &lt;input type=\"radio\" id=\"sundayUnavailable\" name=\"sunday\" value=\"unavailable\" checked /&gt; Unavailable &lt;/label&gt;\n          &lt;/div&gt;\n        &lt;/div&gt;\n        &lt;button\n          type=\"submit\"\n          id=\"itecsb\"\n          style=\"\n          border-color: #006680;\n          border-radius: 2px;\n          margin-top: 10px;\n          font-family: Arial;\n          font-weight: 600;\n          font-size: 15px;\n          padding: 6px 20px;\n          width: fit-content;\n          border-style: solid;\n          background-color: #006680;\n          color: #FFFFFF;\"\n        &gt;\n          Submit\n        &lt;/button&gt;\n      &lt;/form&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n&lt;/div&gt;\n\n{% if request.params['contactid']%}\n{% assign contactid = request.params['contactid']  %}\n{% endif %}\n\n&lt;style&gt;\n  .ui-datepicker .ui-state-hover {\n    background: none !important;\n    border: none !important;\n    cursor: default !important;\n  }\n\n  .ui-datepicker .ui-state-active,\n  .ui-datepicker .ui-state-highlight {\n    background: none !important;\n    border: none !important;\n  }\n\n  .ui-datepicker-calendar a:hover {\n    text-decoration: none !important;\n  }\n\n\n  .ui-datepicker .ui-datepicker-prev span,\n  .ui-datepicker .ui-datepicker-next span {\n    color: #0000 !important;\n  }\n  .ui-datepicker .ui-datepicker-prev:hover,\n  .ui-datepicker .ui-datepicker-next:hover {\n    background-color: #83E8F2 !important;\n  }\n  .ui-datepicker .ui-datepicker-calendar tr:hover {\n    background-color: #83E8F2 !important;\n  }\n  .radio-inline {\n    margin-left: 5px;\n    font-family: wf_segoe-ui, 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', 'Arial', sans-serif;\n    margin-right: 10px; /* Adjust spacing as needed */\n  }\n&lt;/style&gt;\n&lt;script&gt;\n  $(document).ready(function() {\n    var startDate, endDate;\n\n    // Function to update tooltips for each day of the week\n    function updateTooltips(startDate) {\n      var currentDate = new Date(startDate);\n      $('#weekdays .day-row').each(function(index, element) {\n        var day = $(element).find('input[type=\"radio\"]').first().attr('name');\n        var formattedDate = $.datepicker.formatDate('MM d, yy', currentDate);\n        $(element).find('label').attr('title', formattedDate); // Applying tooltip to the label\n        currentDate.setDate(currentDate.getDate() + 1);\n      });\n    }\n\n    // Initialize the datepicker\n    $(\"#weekStart\").datepicker({\n      showOtherMonths: true,\n      selectOtherMonths: true,\n      showWeek: true,\n      firstDay: 1,\n      changeMonth: true,\n      changeYear: true,\n      onSelect: function(dateText, inst) {\n        var date = $(this).datepicker('getDate');\n        startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);\n        endDate = new Date(startDate);\n        endDate.setDate(startDate.getDate() + 6);\n        $(this).val($.datepicker.formatDate('yy-mm-dd', startDate) + ' - ' + $.datepicker.formatDate('yy-mm-dd', endDate));\n        updateTooltips(startDate);\n      },\n      beforeShowDay: function(date) {\n        var cssClass = '';\n        if(date &gt;= startDate &amp;&amp; date &lt;= endDate) {\n          cssClass = 'selected-week'; // this class can be styled in the customStyles\n        }\n        return [true, cssClass];\n      }\n    });\n\n    // Handle the form submission\n    $(\"#availabilityForm\").submit(function(e) {\n      e.preventDefault();\n\n      var availabilityArray = [];\n      var allFilled = true;\n      var currentDate = new Date(startDate);\n\n      var days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];\n\n      days.forEach(function(day) {\n        var isAvailable = $('#' + day + 'Available').is(':checked');\n        if (!$('input[name=\"' + day + '\"]:checked').val()) {\n          alert('Please select an option for ' + day + '.');\n          allFilled = false;\n          return false; // Break out of the forEach loop\n        }\n        availabilityArray.push({\n          availability: isAvailable,\n          day: day,\n          date: $.datepicker.formatDate('yy-mm-dd', currentDate)\n        });\n        currentDate.setDate(currentDate.getDate() + 1);\n      });\n\n      if (allFilled) {\n        console.log(availabilityArray);\n        ProcessSubmit(availabilityArray);\n      }\n    });\n  });\n\n  function ProcessSubmit(availabilityArray) {\n    // Get the current page's URL\n    var currentPageUrl = window.location.href;\n    // Extract the base URL\n    var baseUrl = currentPageUrl.split('/').slice(0, 3).join('/');\n    // Define the relative path to your API endpoint\n    //shift candidate availability insert\n    var relativePath = \"_api/cloudflow/v1.0/trigger/a6f9c9af-c850-ef11-a316-002248cb952b\";\n    // Construct the full URL by concatenating the base URL and the relative path\n    var flowUrl = baseUrl + \"/\" + relativePath;\n    console.log('flowUrl ', flowUrl);\n\n    var flowData = {\n      requestarray: JSON.stringify(availabilityArray),\n      contactid: `{{contactid}}`\n    };\n\n    console.log(JSON.stringify(flowData));\n\n    shell.ajaxSafePost({\n        type: \"POST\",\n        contentType: \"application/json\",\n        url: flowUrl,\n        data: JSON.stringify({ \"eventData\": JSON.stringify(flowData) }),\n        global: false\n    })\n    .done(function(response) {\n        console.log('Response:', response);\n        // Parse the response\n        var result = JSON.parse(response);\n        if (result.processed != \"True\") {\n            // Display specific error message\n            alert(result.errormessage || 'Process failed. Please try again.');\n        } else {\n            console.log('Processed successfully');\n\n            var partialurl = \"/shifts/candidateavailability/?contactid={{contactid}}\";\n            var nextPageUrl = new URL(window.location.origin + partialurl);\n            window.location.href = nextPageUrl.toString();\n        }\n    })\n    .fail(function(jqXHR, textStatus, errorThrown) {\n        console.error('Error: ', textStatus, ', Details: ', errorThrown);\n        console.error('Response: ', jqXHR.responseText);\n    });\n  }\n&lt;/script&gt;\n",
+  "displayorder": 12,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "5e397052-3a83-f011-b4cc-6045bd69f0ab",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "setavailability",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "79f71c4f-8853-a1f9-4f4b-10ccae8dfd34",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Set Availability"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Set Availability</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Set Availability&lt;div id="iheni" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px; background-color: #dbdddd;"&gt;
+  &lt;div id="ii70z" class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"&gt;
+    &lt;div id="it2ri" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px; background-color: white; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"&gt;
+      &lt;form id="availabilityForm" style="padding: 16px;"&gt;
+        &lt;div class="week-selector" style="margin-bottom: 16px;"&gt;
+          &lt;label for="weekStart" style="display: block; font-size: 18px;"&gt;Select the start of the week:&lt;/label&gt;
+          &lt;input type="text" id="weekStart" name="weekStart" autocomplete="off" style="width: 100%; padding: 8px; border: 1px solid #ccc; background-color: #fff; margin-top: 10px; border-radius: 50px;" required placeholder="Please select a week" /&gt;
+        &lt;/div&gt;
+        &lt;div id="weekdays" style="margin: 0; padding: 0;"&gt;
+          &lt;!-- Repeat this block for each day of the week --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Monday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="mondayAvailable" name="monday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="mondayUnavailable" name="monday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;!-- Tuesday --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Tuesday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="tuesdayAvailable" name="tuesday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="tuesdayUnavailable" name="tuesday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;!-- Wednesday --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Wednesday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="wednesdayAvailable" name="wednesday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="wednesdayUnavailable" name="wednesday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;!-- Thursday --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Thursday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="thursdayAvailable" name="thursday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="thursdayUnavailable" name="thursday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;!-- Friday --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Friday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="fridayAvailable" name="friday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="fridayUnavailable" name="friday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;!-- Saturday --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Saturday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="saturdayAvailable" name="saturday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="saturdayUnavailable" name="saturday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+          &lt;!-- Sunday --&gt;
+          &lt;div class="day-row" style="margin-bottom: 8px; font-size: 18px;"&gt;
+            &lt;label style="display: block;"&gt;Sunday:&lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="sundayAvailable" name="sunday" value="available" /&gt; Available &lt;/label&gt;
+            &lt;label class="radio-inline"&gt; &lt;input type="radio" id="sundayUnavailable" name="sunday" value="unavailable" checked /&gt; Unavailable &lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          id="itecsb"
+          style="
+          border-color: #006680;
+          border-radius: 2px;
+          margin-top: 10px;
+          font-family: Arial;
+          font-weight: 600;
+          font-size: 15px;
+          padding: 6px 20px;
+          width: fit-content;
+          border-style: solid;
+          background-color: #006680;
+          color: #FFFFFF;"
+        &gt;
+          Submit
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+{% if request.params['contactid']%}
+{% assign contactid = request.params['contactid']  %}
+{% endif %}
+
+&lt;style&gt;
+  .ui-datepicker .ui-state-hover {
+    background: none !important;
+    border: none !important;
+    cursor: default !important;
+  }
+
+  .ui-datepicker .ui-state-active,
+  .ui-datepicker .ui-state-highlight {
+    background: none !important;
+    border: none !important;
+  }
+
+  .ui-datepicker-calendar a:hover {
+    text-decoration: none !important;
+  }
+
+
+  .ui-datepicker .ui-datepicker-prev span,
+  .ui-datepicker .ui-datepicker-next span {
+    color: #0000 !important;
+  }
+  .ui-datepicker .ui-datepicker-prev:hover,
+  .ui-datepicker .ui-datepicker-next:hover {
+    background-color: #83E8F2 !important;
+  }
+  .ui-datepicker .ui-datepicker-calendar tr:hover {
+    background-color: #83E8F2 !important;
+  }
+  .radio-inline {
+    margin-left: 5px;
+    font-family: wf_segoe-ui, 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', 'Arial', sans-serif;
+    margin-right: 10px; /* Adjust spacing as needed */
+  }
+&lt;/style&gt;
+&lt;script&gt;
+  $(document).ready(function() {
+    var startDate, endDate;
+
+    // Function to update tooltips for each day of the week
+    function updateTooltips(startDate) {
+      var currentDate = new Date(startDate);
+      $('#weekdays .day-row').each(function(index, element) {
+        var day = $(element).find('input[type="radio"]').first().attr('name');
+        var formattedDate = $.datepicker.formatDate('MM d, yy', currentDate);
+        $(element).find('label').attr('title', formattedDate); // Applying tooltip to the label
+        currentDate.setDate(currentDate.getDate() + 1);
+      });
+    }
+
+    // Initialize the datepicker
+    $("#weekStart").datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      showWeek: true,
+      firstDay: 1,
+      changeMonth: true,
+      changeYear: true,
+      onSelect: function(dateText, inst) {
+        var date = $(this).datepicker('getDate');
+        startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+        endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        $(this).val($.datepicker.formatDate('yy-mm-dd', startDate) + ' - ' + $.datepicker.formatDate('yy-mm-dd', endDate));
+        updateTooltips(startDate);
+      },
+      beforeShowDay: function(date) {
+        var cssClass = '';
+        if(date &gt;= startDate &amp;&amp; date &lt;= endDate) {
+          cssClass = 'selected-week'; // this class can be styled in the customStyles
+        }
+        return [true, cssClass];
+      }
+    });
+
+    // Handle the form submission
+    $("#availabilityForm").submit(function(e) {
+      e.preventDefault();
+
+      var availabilityArray = [];
+      var allFilled = true;
+      var currentDate = new Date(startDate);
+
+      var days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+      days.forEach(function(day) {
+        var isAvailable = $('#' + day + 'Available').is(':checked');
+        if (!$('input[name="' + day + '"]:checked').val()) {
+          alert('Please select an option for ' + day + '.');
+          allFilled = false;
+          return false; // Break out of the forEach loop
+        }
+        availabilityArray.push({
+          availability: isAvailable,
+          day: day,
+          date: $.datepicker.formatDate('yy-mm-dd', currentDate)
+        });
+        currentDate.setDate(currentDate.getDate() + 1);
+      });
+
+      if (allFilled) {
+        console.log(availabilityArray);
+        ProcessSubmit(availabilityArray);
+      }
+    });
+  });
+
+  function ProcessSubmit(availabilityArray) {
+    // Get the current page's URL
+    var currentPageUrl = window.location.href;
+    // Extract the base URL
+    var baseUrl = currentPageUrl.split('/').slice(0, 3).join('/');
+    // Define the relative path to your API endpoint
+    //shift candidate availability insert
+    var relativePath = "_api/cloudflow/v1.0/trigger/a6f9c9af-c850-ef11-a316-002248cb952b";
+    // Construct the full URL by concatenating the base URL and the relative path
+    var flowUrl = baseUrl + "/" + relativePath;
+    console.log('flowUrl ', flowUrl);
+
+    var flowData = {
+      requestarray: JSON.stringify(availabilityArray),
+      contactid: `{{contactid}}`
+    };
+
+    console.log(JSON.stringify(flowData));
+
+    shell.ajaxSafePost({
+        type: "POST",
+        contentType: "application/json",
+        url: flowUrl,
+        data: JSON.stringify({ "eventData": JSON.stringify(flowData) }),
+        global: false
+    })
+    .done(function(response) {
+        console.log('Response:', response);
+        // Parse the response
+        var result = JSON.parse(response);
+        if (result.processed != "True") {
+            // Display specific error message
+            alert(result.errormessage || 'Process failed. Please try again.');
+        } else {
+            console.log('Processed successfully');
+
+            var partialurl = "/shifts/candidateavailability/?contactid={{contactid}}";
+            var nextPageUrl = new URL(window.location.origin + partialurl);
+            window.location.href = nextPageUrl.toString();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.error('Error: ', textStatus, ', Details: ', errorThrown);
+        console.error('Response: ', jqXHR.responseText);
+    });
+  }
+&lt;/script&gt;
+Set Availability</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

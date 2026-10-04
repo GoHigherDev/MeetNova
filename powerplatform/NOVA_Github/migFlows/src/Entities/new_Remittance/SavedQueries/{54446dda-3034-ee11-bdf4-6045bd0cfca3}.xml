@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{54446dda-3034-ee11-bdf4-6045bd0cfca3}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="new_name" select="1" icon="1" preview="1">
+        <row name="result" id="new_remittanceid">
+          <cell name="new_name" width="100" imageproviderfunctionname="" imageproviderwebresource="$webresource:" />
+          <cell name="new_supplierid" width="100" />
+          <cell name="new_batchid" width="100" />
+          <cell name="new_total" width="100" />
+          <cell name="new_pdfurl" width="100" />
+          <cell name="statuscode" width="119" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+        <entity name="new_remittance">
+          <attribute name="new_name" />
+          <attribute name="createdon" />
+          <attribute name="new_total" />
+          <attribute name="new_supplierid" />
+          <attribute name="new_batchid" />
+          <order attribute="createdon" descending="true" />
+          <attribute name="new_pdfurl" />
+          <attribute name="new_remittanceid" />
+          <attribute name="statuscode" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.3</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Report Self Bills" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

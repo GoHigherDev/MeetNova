@@ -1,0 +1,146 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_Fees_is_added_or_modfied": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "new_fees",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_feestatus",
+              "subscriptionRequest/filterexpression": "new_isthisafeesplit ne true"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "fe2f8ffc-ad4e-4b4e-aa6b-57f0b2856c2c"
+          }
+        }
+      },
+      "actions": {
+        "Initialize_Week_end_(eg_next_Sunday)": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week end Sunday",
+                "type": "string",
+                "value": "@body('Run_a_Child_Flow__Calc_Weekend')?['weekend']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Run_a_Child_Flow__Calc_Weekend": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d924c9b1-62f9-47e6-a088-14fd0f51b8af"
+          }
+        },
+        "Update_a_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_feeses",
+              "recordId": "@triggerBody()?['new_feesid']",
+              "item/new_weekend": "@variables('Week end Sunday')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_Week_end_(eg_next_Sunday)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow__Calc_Weekend": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "129c3211-0a41-ef11-a316-6045bd15aee8"
+            },
+            "body": {
+              "text": "@triggerBody()?['_new_managingaccountid_value']",
+              "text_1": "@triggerBody()?['new_datecreated']"
+            }
+          },
+          "runAfter": {}
+        },
+        "Condition_if_feestatus_eq_paid": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/new_feestatus']",
+                  100000002
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Run_a_Child_Flow": {
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "842a7b95-8629-ef11-840a-6045bd14f37f"
+                },
+                "body": {
+                  "text": "@triggerOutputs()?['body/_new_consultantid_value']",
+                  "date": "@body('Run_a_Child_Flow__Calc_Weekend')?['weekend']"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "d1ed71fa-3d0c-4984-932b-43a7eb32125e"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Update_a_row": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

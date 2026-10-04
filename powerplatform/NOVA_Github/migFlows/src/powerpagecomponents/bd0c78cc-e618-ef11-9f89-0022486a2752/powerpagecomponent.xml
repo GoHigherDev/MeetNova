@@ -1,0 +1,52 @@
+<powerpagecomponent powerpagecomponentid="bd0c78cc-e618-ef11-9f89-0022486a2752">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": true,
+  "attachfileallowmultiple": true,
+  "attachfilelabel": "[{\"LCID\":1025,\"Value\":\"\"},{\"LCID\":1033,\"Value\":\"Include evidence of expenses\"}]",
+  "attachfilemaxsize": 500,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "attachfilesaveoption": 756150000,
+  "attachfilestoragelocation": 756150000,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_timesheetcost",
+  "entitypermissionsenabled": false,
+  "entitysourcetype": 756150001,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000002,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordidquerystringparametername": "id",
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "$(document).ready(function() { \r\n     $('#new_percentofbill').closest('td').hide();\r\n     $('#new_expensebilltotal').closest('td').hide();\r\n     $('#new_expensepaytotal').closest('td').hide();\r\n     $('#new_assignmentid').closest('td').hide();\r\n     $('#new_modifiedbycontactid').closest('td').hide();\r\n     $('#new_expensecostscurrency').on('input',calculateExpenseTotal);\r\n }); ",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "editdetailedexpense",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Detailed Expense Readonly QP</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

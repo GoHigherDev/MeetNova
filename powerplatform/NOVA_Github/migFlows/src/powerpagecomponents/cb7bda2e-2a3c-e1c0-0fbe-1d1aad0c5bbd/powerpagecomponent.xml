@@ -1,0 +1,38 @@
+<powerpagecomponent powerpagecomponentid="cb7bda2e-2a3c-e1c0-0fbe-1d1aad0c5bbd">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"min-height: auto; padding: 8px;\"&gt;\n    &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;\n      &lt;div class=\"col-md-12 columnBlockLayout\" style=\"padding: 16px; margin: 60px 0px; min-height: 200px;\"&gt;{% entityform name: 'Invoice Credit note' %}&lt;/div&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n  ",
+  "displayorder": 201,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "f1478c39-8064-f011-bec2-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "60b83257-8d64-f011-bec2-6045bd69f0ab",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "invoicecreditnotedetails",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "be653361-efb6-0a73-9aca-6463fcb44f01",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Credit Note Details"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Invoice Credit Note Details</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9694bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Credit Note Details&lt;div class="row sectionBlockLayout text-left" style="min-height: auto; padding: 8px;"&gt;
+    &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;
+      &lt;div class="col-md-12 columnBlockLayout" style="padding: 16px; margin: 60px 0px; min-height: 200px;"&gt;{% entityform name: 'Invoice Credit note' %}&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  Invoice Credit Note Details</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

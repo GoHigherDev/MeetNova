@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="7f033a03-4d5f-412c-b0f8-18264e43af0a">
+  <content>{
+  "displayorder": 177,
+  "pageid": "165c6200-c975-826f-ce9e-ac3c35196f16",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Payment</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

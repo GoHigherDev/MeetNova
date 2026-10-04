@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="fc12d10a-fb00-4822-8367-0f7efb6c4a82">
+  <content>{
+  "displayorder": 90,
+  "pageid": "876faf15-08d4-c67b-8c54-7fe5bd67540b",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "06fdb42b-f394-4563-a266-60a794b1992d"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Applications</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

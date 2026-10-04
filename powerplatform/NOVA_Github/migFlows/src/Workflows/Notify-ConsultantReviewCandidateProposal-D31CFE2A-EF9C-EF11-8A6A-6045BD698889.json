@@ -1,0 +1,286 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Timesheets url (new_Timesheetsurl)": {
+          "defaultValue": "https://quickshifts-dev.powerappsportals.com/",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_Timesheetsurl"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "new_recruitmentprocessstage",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_stagestatus",
+              "subscriptionRequest/filterexpression": "new_stagestatus eq 100000000 or new_stagestatus eq 100000001"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "85d5f554-8bea-4551-a2e3-e514373b7c04"
+          }
+        }
+      },
+      "actions": {
+        "Get_a_Consultant_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_consultantid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "aaa37b9c-6e37-46c9-9737-aae7fdd5c264"
+          }
+        },
+        "Condition_-_Proposal": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/new_stagestatus']",
+                  100000000
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Send_Consultant_an_email_-_Approved": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@outputs('Get_a_Consultant_row_by_ID')?['body/emailaddress1']",
+                  "emailMessage/Subject": " Client has approved Candidate proposal",
+                  "emailMessage/Body": "<p>User Name: @{outputs('Get_a_Consultant_row_by_ID')?['body/adx_identity_username']}<br>\n<br>\nDear @{outputs('Get_a_Consultant_row_by_ID')?['body/firstname']},<br>\n<br>\nThe @{outputs('Get_a_Candidate_row_by_ID')?['body/firstname']} proposal stage status has been updated and approved by the client for the @{outputs('Get_a_Job_row_by_ID')?['body/new_name']} position and is ready to move to the next recruitment stage.</p>\n<p><br>\nDetails:<br>\nJob Role: @{outputs('Get_a_Job_Roles_row_by_ID_')?['body/new_name']}</p>\n<p>Stage Type: @{outputs('Get_a_stage_type_row_by_ID_')?['body/new_name']}</p>\n<p>Approval Reasons: @{triggerOutputs()?['body/new_comments']}<br>\n<br>\nTo review this approval and take any required action, please click the link below:<br>\n@{parameters('Timesheets url (new_Timesheetsurl)')}jobapplications/?id=@{triggerOutputs()?['body/_new_jobid_value']}<br>\n<br>\n<br>\nBest regards,<br>\nJob Vendor System</p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365-1"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "07da7d5c-f7b7-44b0-afdf-c323b1e55035"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Send_Consultant_an_email_-_Rejected": {
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "parameters": {
+                    "emailMessage/To": "@outputs('Get_a_Consultant_row_by_ID')?['body/emailaddress1']",
+                    "emailMessage/Subject": " Client has Rejected Candidate's proposal",
+                    "emailMessage/Body": "<p>User Name: @{outputs('Get_a_Consultant_row_by_ID')?['body/adx_identity_username']}<br>\n<br>\nDear @{outputs('Get_a_Consultant_row_by_ID')?['body/firstname']},<br>\n<br>\nThe @{outputs('Get_a_Candidate_row_by_ID')?['body/firstname']} proposal stage status has been updated and rejected by the client for the @{outputs('Get_a_Job_row_by_ID')?['body/new_name']} position.<br>\n<br>\nDetails:<br>\nJob Role: @{outputs('Get_a_Job_Roles_row_by_ID_')?['body/new_name']}<br>\nStage Type: @{outputs('Get_a_stage_type_row_by_ID_')?['body/new_name']}<br>\nRejected Reasons: @{triggerOutputs()?['body/new_comments']}<br>\n<br>\nTo review this approval and take any required action, please click the link below:<br>\n@{parameters('Timesheets url (new_Timesheetsurl)')}jobapplications/?id=@{triggerOutputs()?['body/_new_jobid_value']}<br>\n<br>\nBest regards,<br>\nJob Vendor System</p>",
+                    "emailMessage/Importance": "Normal"
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                    "operationId": "SendEmailV2",
+                    "connectionName": "shared_office365-1"
+                  }
+                },
+                "metadata": {
+                  "operationMetadataId": "49119819-a4b1-4913-a1e6-aec49a18964a"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8e9c51e9-cd61-494b-b82a-1cd3c77418b7"
+          }
+        },
+        "Get_a_Applicanton_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobapplicants",
+              "recordId": "@triggerOutputs()?['body/_new_jobapplicantid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_Consultant_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6c962182-61a6-4312-9659-4c86957c69fd"
+          }
+        },
+        "Get_a_Candidate_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_Applicanton_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6896254f-60e3-4bf7-bfb1-f37887b95bb2"
+          }
+        },
+        "Get_a_Job_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobs",
+              "recordId": "@triggerOutputs()?['body/_new_jobid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_Candidate_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "57c699d7-df09-4deb-b478-fe7f8fcfe2cd"
+          }
+        },
+        "Get_a_stage_type_row_by_ID_": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_recruitmentstagetypes",
+              "recordId": "@triggerOutputs()?['body/_new_stagetypeid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_Job_Roles_row_by_ID_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a0a2aa51-d813-442b-ad41-a17fcda4f259"
+          }
+        },
+        "Get_a_Job_Roles_row_by_ID_": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobroles",
+              "recordId": "@outputs('Get_a_Job_row_by_ID')?['body/_new_jobroleid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_Job_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9e147d19-b42c-4699-91b1-24c226a6b8a7"
+          }
+        },
+        "Compose": {
+          "type": "Compose",
+          "inputs": "@outputs('Get_a_Applicanton_row_by_ID')?['body/new_nextinterviewdate']",
+          "runAfter": {
+            "Get_a_stage_type_row_by_ID_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a24f701a-3268-4935-8c34-6f717f1f610a"
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

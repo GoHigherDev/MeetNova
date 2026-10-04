@@ -1,0 +1,651 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "contactid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "date": {
+                  "description": "Please enter or select a date (YYYY-MM-DD)",
+                  "format": "date",
+                  "title": "Weekend",
+                  "type": "string",
+                  "x-ms-content-hint": "DATE",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "date"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "39e1cf3c-2183-4453-b143-0dba44843568"
+          }
+        }
+      },
+      "actions": {
+        "Get_all_margins_for_week": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_margins",
+              "fetchXml": "<fetch aggregate='true'>\n  <entity name=\"new_margin\">\n    <attribute name=\"new_amount\"\n      alias='Sum'\n      aggregate='sum' />\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{outputs('Get_a_consultant_by_ID')?['body/contactid']}\" />\n      <condition attribute=\"new_weekend\" operator=\"on\" value=\"@{triggerBody()?['date']}\" />\n   </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_managing_account_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b5d8b0c8-f302-4001-8f10-c0988ce68dab"
+          }
+        },
+        "Get_all_deductions_sum": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_deductionses",
+              "fetchXml": "<fetch aggregate='true'>\n  <entity name=\"new_deductions\">\n    <attribute name=\"new_deduction\"\n      alias='Sum'\n      aggregate='sum' />\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{outputs('Get_a_consultant_by_ID')?['body/contactid']}\" />\n      <condition attribute=\"new_weekend\" operator=\"on\" value=\"@{triggerBody()?['date']}\" />\n     <condition attribute=\"new_isthisafeesplit\" operator=\"ne\" value=\"1\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "List_Fee_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf87a703-70b4-4c7b-9e0c-21384f797172"
+          }
+        },
+        "Set_TotalMargin": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "TotalMargin",
+            "value": "@if(\r\n  empty(outputs('Get_all_margins_for_week')?['body/value']), \r\n  0, \r\n  if(\r\n    not(contains(string(outputs('Get_all_margins_for_week')?['body/value'][0]), 'Sum')), \r\n    0, \r\n    if(\r\n      less(outputs('Get_all_margins_for_week')?['body/value'][0]['Sum'], 0), \r\n      0, \r\n      outputs('Get_all_margins_for_week')?['body/value'][0]['Sum']\r\n    )\r\n  )\r\n)"
+          },
+          "runAfter": {
+            "List_Deduction_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4d31c5f2-b464-4ec8-9f82-2882e569ee80"
+          }
+        },
+        "Set_TotalDeduction": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "TotalDeduction",
+            "value": "@if(empty(outputs('Get_all_deductions_sum')?['body/value']), 0, if(not(contains(string(outputs('Get_all_deductions_sum')?['body/value'][0]), 'Sum')), 0, outputs('Get_all_deductions_sum')?['body/value'][0]['Sum']))"
+          },
+          "runAfter": {
+            "Set_TotalFees": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "972ceba0-3d3d-4cd0-9f91-187b6d8ad560"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "processed": {
+                  "title": "processed",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "processed": "@{true}"
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Set_Bonus_with_Net_Total": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0a17dcb8-31c7-4862-92c4-5aa493ae08b8"
+          }
+        },
+        "Condition_-_Does_Bonus_not_exist": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@length(outputs('List_consultant_Bonus_row')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Add_a_new_bonus_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_consultantbonuses",
+                  "item/new_name": "@concat(outputs('Get_a_consultant_by_ID')?['body/fullname'], ' - ', formatDateTime(triggerBody()?['date'], 'yyyy-MM'))",
+                  "item/new_consultantid@odata.bind": "@{outputs('Get_a_consultant_by_ID')?['body/@odata.id']}",
+                  "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{body('Get_managing_account_row_by_ID')?['_transactioncurrencyid_value']})",
+                  "item/new_date": "@outputs('ComposeBonusDate')",
+                  "item/new_managingaccountid@odata.bind": "/accounts(@{outputs('Get_a_consultant_by_ID')?['body/_msa_managingpartnerid_value']})",
+                  "item/new_totaldeductions": "@variables('TotalDeduction')",
+                  "item/new_totalfees": "@variables('TotalFees')",
+                  "item/new_totalmargin": "@variables('TotalMargin')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "0671ecee-63f9-45be-9132-f30c28c54629"
+              }
+            },
+            "Set_ConsultantBonusId": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "ConsultantBonusId",
+                "value": "@{body('Add_a_new_bonus_row')?['new_consultantbonusid']}"
+              },
+              "runAfter": {
+                "Add_a_new_bonus_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4f5d7db9-d9c7-45f4-9941-8d6df7d974a2"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Apply_to_each": {
+                "type": "Foreach",
+                "foreach": "@outputs('List_consultant_Bonus_row')?['body/value']",
+                "actions": {
+                  "Set_ConsultantBonusId_2": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "ConsultantBonusId",
+                      "value": "@item()?['new_consultantbonusid']"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "73c61072-df1f-444f-a75a-1366475f0fef"
+                    }
+                  }
+                },
+                "runtimeConfiguration": {
+                  "concurrency": {
+                    "repetitions": 1
+                  }
+                },
+                "metadata": {
+                  "operationMetadataId": "677bf81f-b51a-40bc-a757-136abeac3cd6"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_consultant_Bonus_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5b7e361f-d15a-427d-85f4-492568a5186a"
+          }
+        },
+        "List_consultant_Bonus_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_consultantbonuses",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_consultantbonus\">\n<attribute name=\"new_consultantbonusid\"/>\n<attribute name=\"new_name\"/>\n<attribute name=\"createdon\"/>\n<attribute name=\"new_totalmargin\"/>\n<attribute name=\"new_totalfees\"/>\n<attribute name=\"new_totaldeductions\"/>\n<order attribute=\"new_name\" descending=\"false\"/>\n<filter type=\"and\">\n<condition attribute=\"new_date\" operator=\"on\" value=\"@{outputs('ComposeBonusDate')}\"/>\n<condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{outputs('Get_a_consultant_by_ID')?['body/contactid']}\"/>\n</filter>\n</entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "ComposeBonusDate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f024aba3-1416-4634-b7ee-abbdca57dea7"
+          }
+        },
+        "Get_managing_account_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@body('Get_a_consultant_by_ID')?['_msa_managingpartnerid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_consultant_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "59d07dfb-9829-4b36-b9d6-4a30d6289d30"
+          }
+        },
+        "Get_a_consultant_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_TotalDeduction": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4ae01eec-0908-4243-a5bf-d8f6225d9df0"
+          }
+        },
+        "Initialize_ConsultantBonusId": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ConsultantBonusId",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "dd6b9a97-3c62-4a50-bf85-735f4b4bf012"
+          }
+        },
+        "Initialize_TotalMargin": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalMargin",
+                "type": "float"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_ConsultantBonusId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ee3ba7cc-fe5f-4f05-8ed3-f17f2d61ddc4"
+          }
+        },
+        "Initialize_TotalFees": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalFees",
+                "type": "float"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TotalMargin": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ee3ba7cc-fe5f-4f05-8ed3-f17f2d61ddc4"
+          }
+        },
+        "Initialize_TotalDeduction": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalDeduction",
+                "type": "float"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TotalFees": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "045eae51-2478-4935-a8c6-630a2724dea3"
+          }
+        },
+        "Get_fees_sum": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_feeses",
+              "fetchXml": "<fetch aggregate='true'>\n  <entity name=\"new_fees\">\n    <attribute name=\"new_fee\"\n      alias='Sum'\n      aggregate='sum' />\n    <filter type=\"and\">\n<condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{outputs('Get_a_consultant_by_ID')?['body/contactid']}\"/>\n      <condition attribute=\"new_weekend\" operator=\"on\" value=\"@{triggerBody()?['date']}\" />\n <condition attribute=\"new_isthisafeesplit\" operator=\"ne\" value=\"1\" />\n</filter>\n</entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "List_Margin_rows_for_week": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf87a703-70b4-4c7b-9e0c-21384f797172"
+          }
+        },
+        "Set_TotalFees": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "TotalFees",
+            "value": "@if(empty(outputs('Get_fees_sum')?['body/value']), 0, if(not(contains(string(outputs('Get_fees_sum')?['body/value'][0]), 'Sum')), 0, outputs('Get_fees_sum')?['body/value'][0]['Sum']))"
+          },
+          "runAfter": {
+            "Set_TotalMargin": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "972ceba0-3d3d-4cd0-9f91-187b6d8ad560"
+          }
+        },
+        "List_Margin_rows_for_week": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_margins",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_margin\">\n    <attribute name=\"new_name\" />\n    <order attribute=\"createdon\" descending=\"true\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{outputs('Get_a_consultant_by_ID')?['body/contactid']}\" />\n      <condition attribute=\"new_weekend\" operator=\"on\" value=\"@{triggerBody()?['date']}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 5000
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_all_margins_for_week": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0e94cbeb-b3c7-46e7-9528-6454ceb3614c"
+          }
+        },
+        "List_Fee_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_feeses",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_fees\">\n<attribute name=\"new_feesid\"/>\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{body('Get_a_consultant_by_ID')?['contactid']}\"/>\n      <condition attribute=\"new_weekend\" operator=\"on\" value=\"@{triggerBody()?['date']}\" />\n <condition attribute=\"new_isthisafeesplit\" operator=\"ne\" value=\"1\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_fees_sum": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7a1bf679-e31b-49ea-a57c-ff39484ca659"
+          }
+        },
+        "List_Deduction_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_deductionses",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_deductions\">\n    <attribute name=\"new_deductionsid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{body('Get_a_consultant_by_ID')?['contactid']}\" />\n      <condition attribute=\"new_weekend\" operator=\"on\" value=\"@{triggerBody()?['date']}\" />\n     <condition attribute=\"new_isthisafeesplit\" operator=\"ne\" value=\"1\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_all_deductions_sum": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "32002706-db5b-4a48-bc92-b3f3e9fed49e"
+          }
+        },
+        "For_each_Fee": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_Fee_rows')?['body/value']",
+          "actions": {
+            "Update_a_fee_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_feeses",
+                  "recordId": "@items('For_each_Fee')?['new_feesid']",
+                  "item/new_consultantbonusid@odata.bind": "/new_consultantbonuses(@{variables('ConsultantBonusId')})",
+                  "item/statecode": 1,
+                  "item/statuscode": 2
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "246bb4c1-d78a-48ec-a20f-4d60472c1ab5"
+              }
+            }
+          },
+          "runAfter": {
+            "For_each_Margin": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "For_each_Deduction": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_Deduction_rows')?['body/value']",
+          "actions": {
+            "Update_a_deduction_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_deductionses",
+                  "recordId": "@items('For_each_Deduction')?['new_deductionsid']",
+                  "item/new_consultantbonusid@odata.bind": "/new_consultantbonuses(@{variables('ConsultantBonusId')})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "cbfc77f5-307b-4831-a87c-c8fc847ae478"
+              }
+            }
+          },
+          "runAfter": {
+            "For_each_Fee": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "For_each_Margin": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_Margin_rows_for_week')?['body/value']",
+          "actions": {
+            "Update_a_margin_row_": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_margins",
+                  "recordId": "@items('For_each_Margin')?['new_marginid']",
+                  "item/new_consultantbonusid@odata.bind": "/new_consultantbonuses(@{variables('ConsultantBonusId')})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "cb128fc5-41a4-4664-b2ba-b0ff97a07a7d"
+              }
+            }
+          },
+          "runAfter": {
+            "Condition_-_Does_Bonus_not_exist": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "Initialize_net_Total_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NetTotal",
+                "type": "float",
+                "value": "@sub(add(variables('TotalMargin'),variables('TotalFees')),variables('TotalDeduction') )"
+              }
+            ]
+          },
+          "runAfter": {
+            "Set_TotalDeduction": [
+              "Succeeded"
+            ]
+          }
+        },
+        "ComposeBonusDate": {
+          "type": "Compose",
+          "inputs": "@startOfMonth(triggerBody()?['date'])",
+          "runAfter": {
+            "Initialize_net_Total_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_Set_Bonus_with_Net_Total": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "905a763e-753f-ef11-a316-6045bd14f37f"
+            },
+            "body": {
+              "text": "@variables('ConsultantBonusId')",
+              "text_1": "@triggerBody()?['text']",
+              "date": "@triggerBody()?['date']"
+            }
+          },
+          "runAfter": {
+            "For_each_Deduction": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

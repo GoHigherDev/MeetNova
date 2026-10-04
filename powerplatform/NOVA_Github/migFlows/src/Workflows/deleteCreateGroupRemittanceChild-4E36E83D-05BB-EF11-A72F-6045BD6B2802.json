@@ -1,0 +1,608 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "timesheetid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "assignmentid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "branchid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "candidateid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter your input",
+                  "title": "supplierid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "description": "Please enter your input",
+                  "title": "currencyid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "description": "Please enter your input",
+                  "title": "remittancedate",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_7": {
+                  "description": "Please enter your input",
+                  "title": "managingaccountid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_9": {
+                  "description": "Please enter your input",
+                  "title": "poid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "number": {
+                  "description": "Please enter a number",
+                  "title": "paymentterms",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                },
+                "text_8": {
+                  "description": "Please enter your input",
+                  "title": "FetchXMLCondition",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_3",
+                "text_4",
+                "text_5",
+                "text_6",
+                "text_7",
+                "text_8"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "5b935aec-de2a-4b00-a1a9-d27d4b47a7fd"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "remittanceid": {
+                  "title": "remittanceid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "remittanceid": "@{variables('Remittanceid')}"
+            }
+          },
+          "runAfter": {
+            "Handle_Failure": [
+              "Succeeded",
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+          }
+        },
+        "Scope": {
+          "type": "Scope",
+          "actions": {
+            "Get_DRAFT__remittance_by_FetchXMLConditions": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "fetchXml": "@triggerBody()?['text_8']",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "4b0204c8-4437-4967-aad3-59af793b23cb"
+              }
+            },
+            "Condition_if_remittance_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('Get_DRAFT__remittance_by_FetchXMLConditions')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Respond_to_a_Power_App_or_flow-copy-copy": {
+                  "type": "Response",
+                  "kind": "PowerApp",
+                  "inputs": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "remittanceid": {
+                          "title": "remittanceid",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {}
+                    },
+                    "statusCode": 200,
+                    "body": {
+                      "remittanceid": "@{variables('Remittanceid')}"
+                    }
+                  },
+                  "runAfter": {
+                    "For_each": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                  }
+                },
+                "For_each": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('Get_DRAFT__remittance_by_FetchXMLConditions')?['body/value']",
+                  "actions": {
+                    "Set_remittanceid_from_existing_remittance": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Remittanceid",
+                        "value": "@items('For_each')?['new_remittanceid']"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6c57ffc0-c22e-4a42-a12b-c7697ee3d0ad"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Add_a_new_new_remittance_row": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_remittances",
+                        "item/new_name": "new",
+                        "item/new_BranchId@odata.bind": "@if(not(equals(triggerBody()?['text_2'], '')), concat('/new_branchs(', triggerBody()?['text_2'], ')'), null)",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerBody()?['text_5']})",
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['text_7']})",
+                        "item/new_paymentterms": "@triggerBody()?['number']",
+                        "item/new_assignmentid@odata.bind": "@triggerBody()?['text_1']",
+                        "item/new_purchaseorderid@odata.bind": "@if(not(equals(triggerBody()?['text_9'], '')), concat('/new_purchaseorders(', triggerBody()?['text_9'], ')'), null)\r\n",
+                        "item/new_remittancedate": "@triggerBody()?['text_6']",
+                        "item/statuscode": 100000001,
+                        "item/new_supplierid@odata.bind": "/accounts(@{triggerBody()?['text_4']})"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      },
+                      "retryPolicy": {
+                        "type": "exponential",
+                        "count": 5,
+                        "interval": "PT30S",
+                        "minimumInterval": "PT10S",
+                        "maximumInterval": "PT1H"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "da765fd6-eba1-44c2-91db-2ad30d7876d4"
+                    }
+                  },
+                  "Set_new_remittanceid_variable": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Remittanceid",
+                      "value": "@outputs('Add_a_new_new_remittance_row')?['body/new_remittanceid']"
+                    },
+                    "runAfter": {
+                      "Add_a_new_new_remittance_row": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "f838a7fe-c3d6-48bb-8f0d-e1c073927930"
+                    }
+                  },
+                  "Respond_to_a_Power_App_or_flow-copy": {
+                    "type": "Response",
+                    "kind": "PowerApp",
+                    "inputs": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "remittanceid": {
+                            "title": "remittanceid",
+                            "x-ms-dynamically-added": true,
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {}
+                      },
+                      "statusCode": 200,
+                      "body": {
+                        "remittanceid": "@{variables('Remittanceid')}"
+                      }
+                    },
+                    "runAfter": {
+                      "Set_new_remittanceid_variable": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_DRAFT__remittance_by_FetchXMLConditions": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cdc44a36-9c0d-4625-9236-150d0006c6a2"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Remittanceid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3cb494ab-44de-470a-b036-5a2b70a169ea"
+          }
+        },
+        "Handle_Failure": {
+          "type": "Scope",
+          "actions": {
+            "Update_a_row_set_timesheet_to_awaiting_authorisation": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['text']",
+                  "item/statuscode": 100000003
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "0e8e2246-bc3a-402a-ac15-d30b1f3bfe39"
+              }
+            },
+            "Respond_to_a_Power_App_or_flow1": {
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "remittanceid": {
+                      "title": "remittanceid",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": {}
+                },
+                "statusCode": 200,
+                "body": {
+                  "remittanceid": "@{variables('Remittanceid')}"
+                }
+              },
+              "runAfter": {
+                "Update_a_row_set_timesheet_to_awaiting_authorisation": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope-fail1": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "93e7d829-ed49-40ff-8c1b-e94b1565036b"
+          }
+        },
+        "Initialize_Remittanceid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Remittanceid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c9918cbf-f167-431e-aca4-52d49636db8b"
+          }
+        },
+        "Scope-fail1": {
+          "type": "Scope",
+          "actions": {
+            "Get_DRAFT__remittance_by_FetchXMLConditions_1": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "fetchXml": "@triggerBody()?['text_8']",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "4b0204c8-4437-4967-aad3-59af793b23cb"
+              }
+            },
+            "Condition_if_remittance_exists_1": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('Get_DRAFT__remittance_by_FetchXMLConditions_1')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Respond_to_a_Power_App_or_flow-copy-copy_1": {
+                  "type": "Response",
+                  "kind": "PowerApp",
+                  "inputs": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "remittanceid": {
+                          "title": "remittanceid",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {}
+                    },
+                    "statusCode": 200,
+                    "body": {
+                      "remittanceid": "@{variables('Remittanceid')}"
+                    }
+                  },
+                  "runAfter": {
+                    "For_each_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                  }
+                },
+                "For_each_1": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('Get_DRAFT__remittance_by_FetchXMLConditions_1')?['body/value']",
+                  "actions": {
+                    "Set_remittanceid_from_existing_remittance_1": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Remittanceid",
+                        "value": "@items('For_each_1')?['new_remittanceid']"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0e171f10-f971-47c2-a8c0-aa57033a0920"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Add_a_new_new_remittance_row_1": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_remittances",
+                        "item/new_name": "new",
+                        "item/new_BranchId@odata.bind": "@if(not(equals(triggerBody()?['text_2'], '')), concat('/new_branchs(', triggerBody()?['text_2'], ')'), null)",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerBody()?['text_5']})",
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['text_7']})",
+                        "item/new_paymentterms": "@triggerBody()?['number']",
+                        "item/new_assignmentid@odata.bind": "@triggerBody()?['text_1']",
+                        "item/new_purchaseorderid@odata.bind": "@if(not(equals(triggerBody()?['text_9'], '')), concat('/new_purchaseorders(', triggerBody()?['text_9'], ')'), null)\r\n\r\n",
+                        "item/new_remittancedate": "@triggerBody()?['text_6']",
+                        "item/statuscode": 100000001,
+                        "item/new_supplierid@odata.bind": "/accounts(@{triggerBody()?['text_4']})"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      },
+                      "retryPolicy": {
+                        "type": "exponential",
+                        "count": 5,
+                        "interval": "PT30S",
+                        "minimumInterval": "PT10S",
+                        "maximumInterval": "PT1H"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "da765fd6-eba1-44c2-91db-2ad30d7876d4"
+                    }
+                  },
+                  "Set_new_remittanceid_variable_1": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Remittanceid",
+                      "value": "@outputs('Add_a_new_new_remittance_row_1')?['body/new_remittanceid']"
+                    },
+                    "runAfter": {
+                      "Add_a_new_new_remittance_row_1": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "0065034e-1127-47c5-8725-acfa2adb61d9"
+                    }
+                  },
+                  "Respond_to_a_Power_App_or_flow-copy_1": {
+                    "type": "Response",
+                    "kind": "PowerApp",
+                    "inputs": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "remittanceid": {
+                            "title": "remittanceid",
+                            "x-ms-dynamically-added": true,
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {}
+                      },
+                      "statusCode": 200,
+                      "body": {
+                        "remittanceid": "@{variables('Remittanceid')}"
+                      }
+                    },
+                    "runAfter": {
+                      "Set_new_remittanceid_variable_1": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_DRAFT__remittance_by_FetchXMLConditions_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cdc44a36-9c0d-4625-9236-150d0006c6a2"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e1b530c4-f658-4583-aa72-cb911c49becc"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

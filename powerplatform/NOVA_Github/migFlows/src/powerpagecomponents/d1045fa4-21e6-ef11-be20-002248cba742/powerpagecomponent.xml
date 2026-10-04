@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="d1045fa4-21e6-ef11-be20-002248cba742">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_batchdate",
+  "descriptionposition": 100000000,
+  "entityform": "13e795af-c609-ee11-8f6e-6045bd0cfca3",
+  "entityformforcreate": "13e795af-c609-ee11-8f6e-6045bd0cfca3",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000001,
+  "prepopulatetype": 100000001,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bulk Invoice Insert new_batchdate</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

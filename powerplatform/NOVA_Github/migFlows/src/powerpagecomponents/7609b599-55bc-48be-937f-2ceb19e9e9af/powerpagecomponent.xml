@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="7609b599-55bc-48be-937f-2ceb19e9e9af">
+  <content>{
+  "displayorder": 155,
+  "pageid": "d57ac789-2ff3-9bbf-1bec-79f0bbcfe0ea",
+  "parentweblinkid": "8b70c9de-149a-42dc-9429-60a2ba1b82a6",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>New Recruitment Stage List</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

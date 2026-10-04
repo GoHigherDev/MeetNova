@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="87a4e796-d85c-ef11-bfe4-002248cb952b">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_approverid",
+  "controlstyle": 756150000,
+  "descriptionposition": 100000000,
+  "entityform": "913ae56b-8213-ef11-9f89-0022486a2752",
+  "entityformforcreate": "913ae56b-8213-ef11-9f89-0022486a2752",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "label": "[{\"LCID\":1025,\"Value\":\"الموافق\"},{\"LCID\":1033,\"Value\":\"\"}]",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Timesheet Details QP new_approverid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

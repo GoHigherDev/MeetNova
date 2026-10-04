@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="66d66f3d-1ef0-ee11-904c-002248c6f4e8">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_managingaccountid",
+  "descriptionposition": 100000000,
+  "entityform": "2ebe1591-84dc-ee11-904c-000d3a86a889",
+  "entityformforcreate": "2ebe1591-84dc-ee11-904c-000d3a86a889",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "msa_managingpartnerid",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Staff Insert new_managingaccountid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="b2376f89-ab1c-4209-964d-14e3cbaeac6b">
+  <content>{
+  "displayorder": 21,
+  "pageid": "75286b05-32b1-5405-599a-0aeda39e4d04",
+  "parentweblinkid": "daac1d69-df50-4479-9422-8af42239bca6",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Auditor</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

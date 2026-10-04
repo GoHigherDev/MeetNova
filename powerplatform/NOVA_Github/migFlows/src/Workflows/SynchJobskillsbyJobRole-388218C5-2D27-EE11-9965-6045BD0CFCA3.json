@@ -1,0 +1,163 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_11963"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "bde777a3-7ac9-4516-a422-2f6ce0c51fb5"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "new_job",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_jobroleid",
+              "subscriptionRequest/filterexpression": "_new_jobroleid_value ne null",
+              "subscriptionRequest/name": "388218c5-2d27-ee11-9965-6045bd0cfca3"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        }
+      },
+      "actions": {
+        "skills_type_for_a_job_role": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1a13a3e4-41bc-44b0-b25a-2ee69dfd9f36"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_skilltypes",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_skilltype\">\n    <attribute name=\"new_skilltypeid\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <link-entity name=\"new_jobrole\" from=\"new_jobroleid\" to=\"new_jobroleid\" link-type=\"inner\" alias=\"ac\">\n      <filter type=\"and\">\n        <condition attribute=\"new_jobroleid\" operator=\"eq\"  uitype=\"new_jobrole\" value=\"@{triggerOutputs()?['body/_new_jobroleid_value']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('skills_type_for_a_job_role')?['body/value']",
+          "actions": {
+            "Relate_Job_to_skills": {
+              "metadata": {
+                "operationMetadataId": "e3284bac-502b-467b-bfe1-294051abf05e"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_jobs",
+                  "recordId": "@triggerOutputs()?['body/new_jobid']",
+                  "associationEntityRelationship": "new_job__skillsrequired",
+                  "item/@odata.id": "@items('Apply_to_each')?['@odata.id']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "AssociateEntities",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              }
+            },
+            "List_Candidates_rows_by_skill_type": {
+              "runAfter": {
+                "Relate_Job_to_skills": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "151bcce7-99da-4af5-8031-13973fe94ded"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "contacts",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"contact\">\n    <attribute name=\"fullname\" />\n    <attribute name=\"telephone1\" />\n    <attribute name=\"contactid\" />\n    <order attribute=\"fullname\" descending=\"false\" />\n    <link-entity name=\"new_skills\" from=\"new_candidateid\" to=\"contactid\" link-type=\"inner\" alias=\"af\">\n      <filter type=\"and\">\n        <condition attribute=\"new_skillstypeid\" operator=\"eq\" uitype=\"new_skilltype\" value=\"@{items('Apply_to_each')?['new_skilltypeid']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              }
+            },
+            "Apply_to_each_2": {
+              "foreach": "@outputs('List_Candidates_rows_by_skill_type')?['body/value']",
+              "actions": {
+                "Relate_Candidate_to_skills": {
+                  "metadata": {
+                    "operationMetadataId": "f39368b4-8b69-4cef-9528-eef235f1de95"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_jobs",
+                      "recordId": "@triggerOutputs()?['body/new_jobid']",
+                      "associationEntityRelationship": "new_job_skillmatching_candidate",
+                      "item/@odata.id": "@items('Apply_to_each_2')?['@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "AssociateEntities",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Candidates_rows_by_skill_type": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c268225e-414e-4d9d-9602-d53bcf9916c7"
+              },
+              "type": "Foreach"
+            }
+          },
+          "runAfter": {
+            "skills_type_for_a_job_role": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "80719113-e542-4473-be13-7067b12a8dfd"
+          },
+          "type": "Foreach"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

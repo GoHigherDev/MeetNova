@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="18de0603-d719-ef11-9f89-0022486a2752">
+  <content>{
+  "isdefault": false,
+  "type": 756150001,
+  "usewebsiteheaderandfooter": true,
+  "webtemplateid": "0c97d0e4-d619-ef11-9f89-0022486a2752"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Default Client Portal</name>
+  <powerpagecomponenttype>6</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

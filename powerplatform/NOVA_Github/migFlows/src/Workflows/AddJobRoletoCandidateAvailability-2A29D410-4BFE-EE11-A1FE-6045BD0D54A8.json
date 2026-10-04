@@ -1,0 +1,246 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_11963"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added_to_candidate_availability": {
+          "metadata": {
+            "operationMetadataId": "24161fdb-9b66-4c3c-bc62-1102b16ceea3"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_candidateavailability",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/name": "2a29d410-4bfe-ee11-a1fe-6045bd0d54a8"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Initialize_job_role": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "ec130fa0-018c-4c08-b9fa-1d09c70813c3"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "JobRole",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "List_rows": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4c616eb7-cabb-4e11-8197-3442495f9bbf"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobrolecandidates",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_jobrolecandidate\">\n<attribute name=\"new_jobrolecandidateid\"/>\n<attribute name=\"new_name\"/>\n<attribute name=\"createdon\"/>\n<attribute name=\"new_jobroleid\"/>\n<order attribute=\"new_name\" descending=\"false\"/>\n<filter type=\"and\">\n<condition attribute=\"new_candidateid\" operator=\"eq\" uitype=\"contact\" value=\"@{outputs('Get_a_candidate_by_ID')?['body/contactid']}\"/>\n</filter>\n</entity>\n</fetch>"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_a_candidate_by_ID": {
+          "runAfter": {
+            "Initialize_job_role": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2c79acb6-ce7d-4292-8cdd-23397404f75b"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Get_a_candidate_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "04f3d099-46eb-49d3-bf41-9bd4daea0429"
+          },
+          "type": "Compose",
+          "inputs": "@outputs('Get_a_candidate_by_ID')?['body/contactid']"
+        },
+        "Apply_to_each_2": {
+          "foreach": "@outputs('List_rows')?['body/value']",
+          "actions": {
+            "Get_a_job_role_by_ID_": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "08e17d43-9dba-4c45-95a9-3a8134f2ebe8"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_jobroles",
+                  "recordId": "@items('Apply_to_each_2')?['_new_jobroleid_value']"
+                },
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps-1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_string_variable_2": {
+              "runAfter": {
+                "Get_a_job_role_by_ID_": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "493fef52-4037-4b65-b184-0d7b6a60de2e"
+              },
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "JobRole",
+                "value": "@{outputs('Get_a_job_role_by_ID_')?['body/new_name']},"
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8fc90ae8-e471-472b-992d-23ebc3db6e6d"
+          },
+          "type": "Foreach"
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Apply_to_each_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b2ae9621-2e20-4c3e-b9df-6de2114d11fc"
+          },
+          "type": "Compose",
+          "inputs": "@variables('JobRole')"
+        },
+        "Update_a_row": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "70fa6b03-95f8-4e68-ac0f-f95c7719987d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_candidateavailabilities",
+              "recordId": "@triggerOutputs()?['body/new_candidateavailabilityid']",
+              "item/new_jobroles": "@variables('JobRole')"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "UpdateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Update_a_row_1": {
+          "runAfter": {
+            "Update_a_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8f41f0d9-eb06-4684-bfbc-eab1eec7c6f3"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@body('Get_a_candidate_by_ID')?['contactid']",
+              "item/new_jobroles": "@variables('JobRole')"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

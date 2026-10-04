@@ -1,0 +1,966 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "remittanceid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "fa041e38-6453-4df4-9d46-050b238062f3"
+          }
+        }
+      },
+      "actions": {
+        "Get_a_remittance_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_remittances",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "3bbded74-43fb-49b9-8a24-e905893b16a6"
+          }
+        },
+        "Initialize_Self_Bill_DETAILS_ARRAY": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SelfBillDetailsArray",
+                "type": "string",
+                "value": "@outputs('Get_a_remittance_by_ID')?['body/new_detailsarray']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Download_MANAGING_ACCOUNT_LOGO": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "Parse_JSON": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@variables('SelfBillDetailsArray')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Candidate Name": {
+                    "type": "string"
+                  },
+                  "Rate": {
+                    "type": "string"
+                  },
+                  "Date": {
+                    "type": "string"
+                  },
+                  "Unit": {
+                    "type": "string"
+                  },
+                  "Unit Price": {
+                    "type": "string"
+                  },
+                  "VAT": {
+                    "type": "string"
+                  },
+                  "Sub-Total": {
+                    "type": "string"
+                  },
+                  "Tax": {
+                    "type": "string"
+                  },
+                  "Total Amount": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Candidate Name",
+                  "Rate",
+                  "Date",
+                  "Unit",
+                  "Unit Price",
+                  "VAT",
+                  "Sub-Total",
+                  "Tax",
+                  "Total Amount"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Self_Bill_DETAILS_ARRAY": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c6790bdf-158f-4b60-9814-acf338e7dafc"
+          }
+        },
+        "Get_a_Currency_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "transactioncurrencies",
+              "recordId": "@outputs('Get_a_remittance_by_ID')?['body/_transactioncurrencyid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_a_remittance_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "12b7719d-6dd7-4d51-8d35-7b2783ca375c"
+          }
+        },
+        "Get_a_Supplier_Row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_a_remittance_by_ID')?['body/_new_supplierid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_a_Currency_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6965f85d-4a17-4aa7-a1ce-add6a38ac543"
+          }
+        },
+        "Get_a_managing_account_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_a_remittance_by_ID')?['body/_new_managingaccountid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Condition_bulk_import_exists": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f54752e7-779e-4ff5-a9a4-a0355380b9f8"
+          }
+        },
+        "Download_MANAGING_ACCOUNT_LOGO": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_a_managing_account_row_by_ID')?['body/accountid']",
+              "fileImageFieldName": "entityimage"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetEntityFileImageFieldContent",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_a_managing_account_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "680f735b-1e5d-47c2-80a1-d02914550f88"
+          }
+        },
+        "Compose_date_of_sending": {
+          "type": "Compose",
+          "inputs": "@formatDateTime(utcNow(),'dd/MM/yyyy')\n",
+          "runAfter": {
+            "Initialize_timesheets_summary_ARRAY": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5eab0a2b-06a9-480b-9c5f-3039dc3bd905"
+          }
+        },
+        "HTTP": {
+          "type": "Http",
+          "inputs": {
+            "uri": "https://docs.brics.tech/api/generate_remittance",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "Summarizingtype": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/new_summarizingtype']}",
+              "Region": "@{outputs('Get_a_managing_account_row_by_ID')?['body/_new_regionid_name']}",
+              "SubjectFolder": "Remittances",
+              "FolderName": "@{outputs('Get_a_managing_account_row_by_ID')?['body/accountid']}",
+              "AppName": "Quickshifts",
+              "Description": "@{variables('Description')}",
+              "Template": "@{variables('Template')}",
+              "IncludeAttachmenstOnPdf": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/new_expensestobeattachedtoinvoiceschoice']}",
+              "attachments": "@coalesce(outputs('Select'), json('[]'))",
+              "SupplierCountry": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/_new_countryid_name']}",
+              "Currency": "@{outputs('Get_a_Currency_row_by_ID')?['body/isocurrencycode']}",
+              "ManagingAccountName": "@{outputs('Get_a_managing_account_row_by_ID')?['body/name']}",
+              "DetailsArray": "@variables('DetailsArrayJson')",
+              "TimesheetsSummaryArray": "@variables(' TimesheetsSummaryArray')",
+              "Date": "@{formatDateTime(parseDateTime(outputs('Get_a_remittance_by_ID')?['body/new_remittancedate']), 'dd/MM/yyyy', 'en-GB')}",
+              "SupplierAddressLine3": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/address1_line3']}",
+              "ManagingAccountState": "@{outputs('Get_a_managing_account_row_by_ID')?['body/address1_stateorprovince']}",
+              "ManagingAccountPostCode": "@{outputs('Get_a_managing_account_row_by_ID')?['body/address1_postalcode']}",
+              "CompanyNumber": "@{outputs('Get_a_managing_account_row_by_ID')?['body/accountnumber']}",
+              "ManagingAccountAddress2": "@{outputs('Get_a_managing_account_row_by_ID')?['body/address1_line2']}",
+              "RemittanceRef": "@{outputs('Get_a_remittance_by_ID')?['body/new_name']}",
+              "ManagingAccountAddress1": "@{outputs('Get_a_managing_account_row_by_ID')?['body/address1_line1']}",
+              "SupplierName": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/name']}",
+              "SupplierAddressLine1": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/address1_line1']}",
+              "Logo": "@{base64(outputs('Download_MANAGING_ACCOUNT_LOGO')?['body'])}",
+              "SupplierAddressLine2": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/address1_line2']}",
+              "SupplierAddressCity": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/address1_city']}",
+              "SupplierState/Province": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/address1_stateorprovince']}",
+              "SupplierPostCode": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/address1_postalcode']}",
+              "ManagingAccountAddress3": "@{outputs('Get_a_managing_account_row_by_ID')?['body/address1_line3']}",
+              "ManagingAccountCity": "@{outputs('Get_a_managing_account_row_by_ID')?['body/address1_city']}",
+              "ManagingAccountCountry": "@{outputs('Get_a_managing_account_row_by_ID')?['body/_new_countryid_name']}",
+              "ManagingAccountVATNumber": "@{outputs('Get_a_managing_account_row_by_ID')?['body/new_taxnumber']}",
+              "RemittanceNumber": "@{outputs('Get_a_remittance_by_ID')?['body/new_name']}",
+              "VATNumber": "@{outputs('Get_a_Supplier_Row_by_ID')?['body/new_taxnumber']}",
+              "SubTotal": "@{formatNumber(coalesce(outputs('Get_a_remittance_by_ID')?['body/new_paytotal'], 0), '0.00')}",
+              "VATAmount": "@{formatNumber(coalesce(outputs('Get_a_remittance_by_ID')?['body/new_totaltax'], 0), '0.00')}",
+              "TotalSum": "@{formatNumber(coalesce(outputs('Get_a_remittance_by_ID')?['body/new_total'], 0), '0.00')}",
+              "Remittance Status": "@{outputs('Get_a_remittance_by_ID')?['body/statuscode']}",
+              "EndDate": "@{formatDateTime(parseDateTime(outputs('Get_a_remittance_by_ID')?['body/new_duedate']), 'dd/MM/yyyy', 'en-GB')}"
+            }
+          },
+          "runAfter": {
+            "Condition_supplier_has_template": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "28e67302-1998-42c4-9652-c77633875a04"
+          }
+        },
+        "Initialize_DetailsArrayJson_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DetailsArrayJson",
+                "type": "array",
+                "value": "@body('Parse_JSON')"
+              }
+            ]
+          },
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9be5b22c-457c-4ab8-83ab-8806b39271f6"
+          }
+        },
+        "Compose_sharelink": {
+          "type": "Compose",
+          "inputs": "@outputs('HTTP')?['body']['result']['sharelink']\r\n",
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "db7f32fe-be07-48b1-a36f-c42ced644341"
+          }
+        },
+        "Update_a_Remittance_row_with_sharelink": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_remittances",
+              "recordId": "@outputs('Get_a_remittance_by_ID')?['body/new_remittanceid']",
+              "item/new_pdfurl": "@outputs('Compose_sharelink')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Compose_sharelink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8ce69087-57b9-47ea-bb87-71368130664f"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sucess": {
+                  "title": "sucess",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "sucess": "@true"
+            }
+          },
+          "runAfter": {
+            "Update_a_Remittance_row_with_sharelink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9d9dbbfa-9be2-43f3-93d2-2755f04b31b7"
+          }
+        },
+        "List_rows_attachments_Timesheets": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "annotations",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"annotation\">\n    <attribute name=\"subject\" />\n    <attribute name=\"notetext\" />\n    <attribute name=\"filename\" />\n    <attribute name=\"annotationid\" />\n    <attribute name=\"documentbody\" />\n    <attribute name=\"mimetype\" />\n    <order attribute=\"subject\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"isdocument\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"mimetype\" operator=\"in\">\n        <value>image/jpeg</value>\n        <value>image/png</value>\n      </condition>\n    </filter>\n    <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"objectid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_remittanceid\" operator=\"eq\" uitype=\"new_remittance\" value=\"@{triggerBody()?['text']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>\n"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Compose_date_of_sending": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "01b721a1-31ef-4879-9f84-1d91b79b5cbb"
+          }
+        },
+        "Compose": {
+          "type": "Compose",
+          "inputs": {
+            "attachments": "@body('Select')"
+          },
+          "runAfter": {
+            "Select": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ffab708a-ece8-4d09-b111-9cae4f19cffa"
+          }
+        },
+        "List_rows_attachments_Timesheetscosts": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "annotations",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"annotation\">\n    <attribute name=\"subject\" />\n    <attribute name=\"notetext\" />\n    <attribute name=\"filename\" />\n    <attribute name=\"annotationid\" />\n    <attribute name=\"documentbody\" />\n    <attribute name=\"mimetype\" />\n    <order attribute=\"subject\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"isdocument\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"mimetype\" operator=\"in\">\n        <value>image/png</value>\n        <value>image/jpeg</value>\n      </condition>\n    </filter>\n    <link-entity name=\"new_timesheetcost\" from=\"new_timesheetcostid\" to=\"objectid\" link-type=\"inner\" alias=\"ab\">\n      <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"new_timesheetid\" link-type=\"inner\" alias=\"ac\">\n        <filter type=\"and\">\n          <condition attribute=\"new_remittanceid\" operator=\"eq\" uitype=\"new_remittance\" value=\"@{triggerBody()?['text']}\" />\n        </filter>\n      </link-entity>\n    </link-entity>\n  </entity>\n</fetch>\n"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "List_rows_attachments_Timesheets": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3bc57d2f-b101-42fb-a64b-7e86b7ad1a7f"
+          }
+        },
+        "Initialize_CombinedAttachments_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CombinedAttachments",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "List_rows_attachments_Timesheetscosts": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "190aa0d2-aafb-4e0e-b0f5-ca8984123b3d"
+          }
+        },
+        "Apply_to_each_Timesheetcost_attachments": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_rows_attachments_Timesheetscosts')?['body/value']",
+          "actions": {
+            "Append_to_array_variable": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "CombinedAttachments",
+                "value": "@item()"
+              },
+              "metadata": {
+                "operationMetadataId": "fe55abec-3a9c-4b32-8513-35166adf73fb"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_CombinedAttachments_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dcfceb55-d4ea-4b69-b948-25c97c904ec9"
+          }
+        },
+        "Apply_to_each-TIMESHEETS": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_rows_attachments_Timesheets')?['body/value']",
+          "actions": {
+            "Append_to_array_variable_1": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "CombinedAttachments",
+                "value": "@item()"
+              },
+              "metadata": {
+                "operationMetadataId": "d0619808-ab06-4930-a46e-965bcd500d26"
+              }
+            }
+          },
+          "runAfter": {
+            "Apply_to_each_Timesheetcost_attachments": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "efd630e7-aa7a-4358-827d-b23aa52b480b"
+          }
+        },
+        "Select": {
+          "type": "Select",
+          "inputs": {
+            "from": "@variables('CombinedAttachments')",
+            "select": {
+              "name": "@item()?['Name']",
+              "content": "@item()?['ContentBytes']"
+            }
+          },
+          "runAfter": {
+            "For_each_Appsdocs": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "279c27b2-3120-46e8-b2fa-4c46f705e9a8"
+          }
+        },
+        "Condition_bulk_import_exists": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_remittance_by_ID')?['body/_new_batchid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Description_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Description",
+                "value": "@outputs('Get_a_bulk_import_row_by_ID')?['body/new_comment']"
+              },
+              "runAfter": {
+                "Get_a_bulk_import_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "00ba6281-fe3b-40fd-adc4-0336da5b7b25"
+              }
+            },
+            "Get_a_bulk_import_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_batchs",
+                  "recordId": "@outputs('Get_a_remittance_by_ID')?['body/_new_batchid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "bfa65503-1773-40f3-bae2-c679f2e09d3e"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_Description_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fa5e0bba-f483-4e10-8361-73ca1dd57b27"
+          }
+        },
+        "Initialize_Description_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Description",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_Supplier_Row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1b764e0f-6ff4-42e5-8032-54531f342e28"
+          }
+        },
+        "Initialize_Template_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Template",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a7d00827-8db7-43c0-8120-79ed378d5413"
+          }
+        },
+        "Condition_supplier_has_template": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_Supplier_Row_by_ID')?['body/_new_selfbillcustomtemplateid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Template__variable-_template": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Template",
+                "value": "@outputs('Get_a_Supplier_Row_by_ID')?['body/_new_selfbillcustomtemplateid_value']"
+              },
+              "metadata": {
+                "operationMetadataId": "0cc08a71-e326-4f0f-ad75-037e2217d99f"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Run_a_Child_Flow_Get_managing_account_Template": {
+                "type": "Workflow",
+                "inputs": {
+                  "host": {
+                    "workflowReferenceName": "d5a324e7-2d50-f011-877b-6045bd69f0ab"
+                  },
+                  "body": {
+                    "text": "@outputs('Get_a_managing_account_row_by_ID')?['body/accountid']",
+                    "number": 100000002
+                  }
+                },
+                "metadata": {
+                  "operationMetadataId": "4a075147-bebd-48d1-8e17-c23e60eba638"
+                }
+              },
+              "Condition_if_managing_account_default_template": {
+                "type": "If",
+                "expression": {
+                  "and": [
+                    {
+                      "not": {
+                        "equals": [
+                          "@body('Run_a_Child_Flow_Get_managing_account_Template')?['documenttemplateid']",
+                          "@null"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": {
+                  "Set_Template__variable-managingaccountdefault": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Template",
+                      "value": "@body('Run_a_Child_Flow_Get_managing_account_Template')?['documenttemplateid']"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "0cc08a71-e326-4f0f-ad75-037e2217d99f"
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {
+                    "Set_Template__variable-lamp_default": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Template",
+                        "value": "cbd445dc-2650-f011-877b-6045bd69f0ab"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "0cc08a71-e326-4f0f-ad75-037e2217d99f"
+                      }
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Run_a_Child_Flow_Get_managing_account_Template": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "ae61f3be-6ca9-4a75-9c9c-9ecbb0a16245"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Template_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c7a4501c-1f66-4f60-b414-ffef0bbe1f20"
+          }
+        },
+        "Initialize_timesheets_summary": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": " TimesheetsSummary",
+                "type": "string",
+                "value": "@outputs('Get_a_remittance_by_ID')?['body/new_timesheetsummary']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_DetailsArrayJson_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "Initialize_timesheets_summary_ARRAY": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": " TimesheetsSummaryArray",
+                "type": "array",
+                "value": "@body('ParseTimesheetJSON_')"
+              }
+            ]
+          },
+          "runAfter": {
+            "Condition_if_Automatic_Summarization": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "Condition_if_Automatic_Summarization": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_a_Supplier_Row_by_ID')?['body/new_summarizingtype']",
+                  100000000
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Set_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DetailsArrayJson",
+                "value": "@body('SelectSummary')"
+              },
+              "runAfter": {
+                "SelectSummary": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "ParseTimesheetJSON_": {
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@variables(' TimesheetsSummary')",
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Description": {
+                        "type": "string"
+                      },
+                      "Candidate Name": {
+                        "type": "string"
+                      },
+                      "Rate": {
+                        "type": "string"
+                      },
+                      "Date": {
+                        "type": "string"
+                      },
+                      "Unit": {
+                        "type": "string"
+                      },
+                      "Unit Price": {
+                        "type": "string"
+                      },
+                      "VAT": {
+                        "type": "string"
+                      },
+                      "Sub-Total": {
+                        "type": "string"
+                      },
+                      "Tax": {
+                        "type": "string"
+                      },
+                      "Total Amount": {
+                        "type": "string"
+                      }
+                    },
+                    "required": []
+                  }
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "6fadadd6-b8f9-4370-a235-11dd60ff094b"
+              }
+            },
+            "SelectSummary": {
+              "type": "Select",
+              "inputs": {
+                "from": "@body('ParseTimesheetJSON_')",
+                "select": {
+                  "Description": "@item()?['Description']",
+                  "Date": "@formatDateTime(outputs('Get_a_remittance_by_ID')?['body/new_remittancedate'], 'dd/MM/yyyy')",
+                  "Timesheet": "@item()?['Timesheet']",
+                  "Candidate Name": "@item()?['Candidate Name']",
+                  "Rate": "@item()?['Rate']",
+                  "Unit": "@item()?['Unit']",
+                  "Unit Price": "@item()?['Unit Price']",
+                  "Sub-Total": "@item()?['Sub-Total']",
+                  "Tax": "@item()?['Tax']",
+                  "Total Amount": "@item()?['Total Amount']",
+                  "VAT": "@item()?['VAT']",
+                  "Period": "@item()?['Period']"
+                }
+              },
+              "runAfter": {
+                "ParseTimesheetJSON_": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_timesheets_summary": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5464e90c-bbc6-4ce7-84be-d297c0cb2592"
+          }
+        },
+        "List_rows_AppsDocsByTimesheet": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_appdocses",
+              "$select": "new_docurl",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_appdocs\">\n    <attribute name=\"new_appdocsid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_docurl\" />\n    <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"new_timesheetid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{triggerBody()?['text']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Apply_to_each-TIMESHEETS": [
+              "Succeeded"
+            ]
+          }
+        },
+        "For_each_Appsdocs": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_rows_AppsDocsByTimesheet')?['body/value']",
+          "actions": {
+            "Append_to_array_variable_4": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "CombinedAttachments",
+                "value": "@json(body('Run_a_Child_Flow')?['arrayjson'])"
+              },
+              "runAfter": {
+                "Run_a_Child_Flow": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Run_a_Child_Flow": {
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "172a349e-a708-f111-8407-6045bd69c28c"
+                },
+                "body": {
+                  "text": "@item()?['new_docurl']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows_AppsDocsByTimesheet": [
+              "SUCCEEDED"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

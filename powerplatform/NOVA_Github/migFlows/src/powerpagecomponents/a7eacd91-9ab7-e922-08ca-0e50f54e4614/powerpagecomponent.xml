@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="a7eacd91-9ab7-e922-08ca-0e50f54e4614">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 139,
+  "enablerating": false,
+  "enabletracking": false,
+  "entitylist": "dd27046f-2ce5-ee11-904c-000d3a8714d9",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "5f7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "candidateavailability",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Candidate Availability"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Availability</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Candidate AvailabilityundefinedCandidate Availability</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="8aed44b1-5306-ef11-9f89-0022481bbf4e">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_candidateid",
+  "descriptionposition": 100000000,
+  "entityform": "2bd9a083-5306-ef11-9f89-0022481bbf4e",
+  "entityformforcreate": "2bd9a083-5306-ef11-9f89-0022481bbf4e",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "contactid",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Skill Insert new_candidateid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

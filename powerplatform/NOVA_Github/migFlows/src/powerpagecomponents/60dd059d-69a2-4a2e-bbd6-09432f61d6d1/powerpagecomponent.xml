@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="60dd059d-69a2-4a2e-bbd6-09432f61d6d1">
+  <content>{
+  "displayorder": 100,
+  "pageid": "3101e921-2592-613b-c93f-082acac4688c",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "4a5e8d97-2223-4ef2-b5f0-42b4ce6cc95f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>ReadCriminalConvictions</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

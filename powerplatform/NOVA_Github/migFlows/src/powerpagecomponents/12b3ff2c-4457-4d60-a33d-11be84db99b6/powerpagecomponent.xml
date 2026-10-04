@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="12b3ff2c-4457-4d60-a33d-11be84db99b6">
+  <content>{
+  "displayorder": 32,
+  "pageid": "06e0b881-9b13-e656-a767-653b3da156c9",
+  "parentweblinkid": "860f6adb-102b-4428-8ea4-725e333b8ce5",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Consultants</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

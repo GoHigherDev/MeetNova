@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="d994d6ac-7e06-826a-d853-2bb0080f2ba1">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "43aebedc-37f0-a764-a2fd-af1dc52e91b4",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Bulk Invoices Insert</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

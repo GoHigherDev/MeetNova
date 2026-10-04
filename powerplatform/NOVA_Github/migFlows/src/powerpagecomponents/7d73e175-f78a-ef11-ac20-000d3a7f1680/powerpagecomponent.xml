@@ -1,0 +1,11 @@
+<powerpagecomponent powerpagecomponentid="7d73e175-f78a-ef11-ac20-000d3a7f1680">
+  <content>{"adx_flowapiurl":"/_api/cloudflow/v1.0/trigger/46d4ac26-b67c-ef11-ac20-6045bd6a5beb","adx_flowtriggerurl":"https://uk-001.azure-apim.net:443/apim/logicflows/64EFE0AC4BCD41487C4F00EE4A37517A-E49C6A165BE2CCEB/triggers/manual/run?api-version=2016-06-01","adx_metadata":"64efe0ac-4bcd-4148-7c4f-00ee4a37517a","adx_CloudFlowConsumer_adx_webrole":["b5b6db58-bfdb-ee11-904c-000d3a86a889","cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3","a189215f-0e05-ee11-8f6d-6045bd12f8f9"],"_adx_processid_value":"46d4ac26-b67c-ef11-ac20-6045bd6a5beb"}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheet Cost Hours Upsert Array</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

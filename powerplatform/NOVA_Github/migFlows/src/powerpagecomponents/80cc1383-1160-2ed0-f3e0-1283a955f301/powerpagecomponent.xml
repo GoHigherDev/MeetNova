@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="80cc1383-1160-2ed0-f3e0-1283a955f301">
+  <content>{
+  "description": "This is the default studio template. Please do not modify.",
+  "isdefault": false,
+  "type": 756150001,
+  "usewebsiteheaderandfooter": true,
+  "webtemplateid": "5d2add3c-4da5-195e-f4ad-5fb5753a0106"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Default studio template</name>
+  <powerpagecomponenttype>6</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

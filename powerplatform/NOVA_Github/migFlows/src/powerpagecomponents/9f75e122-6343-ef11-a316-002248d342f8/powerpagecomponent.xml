@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="9f75e122-6343-ef11-a316-002248d342f8">
+  <content>{
+  "flowapiurl": "https://quickshiftsportal.powerappsportals.com/_api/cloudflow/v1.0/trigger/3b1519ef-a445-f025-741f-ddc09f158119",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/3B1519EFA445F025741FDDC09F158119-E0183C3B6C77F252/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "3b1519ef-a445-f025-741f-ddc09f158119",
+  "processid": "62872eff-6243-ef11-a316-002248d342f8",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Send Reset Code to Email Forgot Password</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

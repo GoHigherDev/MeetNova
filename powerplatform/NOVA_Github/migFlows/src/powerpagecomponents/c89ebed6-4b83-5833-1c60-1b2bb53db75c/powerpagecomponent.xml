@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="c89ebed6-4b83-5833-1c60-1b2bb53db75c">
+  <content>{
+  "displayorder": 207,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "27bb6b76-97b9-f011-bbd2-0022480d9a88",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8cb3e2a9-9be6-180f-c10c-04ed23d43c49",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Manual-Invoice-Edit",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Manual Invoice Edit"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Manual Invoice Edit</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Manual Invoice EditManual Invoice Edit</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

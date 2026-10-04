@@ -1,0 +1,935 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "recordarray",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            },
+            "headersSchema": {
+              "x-ms-user-timestamp": {
+                "title": "Timestamp",
+                "type": "string",
+                "x-ms-dynamically-added": false
+              }
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "d578e628-f303-41f6-8aa4-d0a0a13e486f"
+          }
+        }
+      },
+      "actions": {
+        "Add_a_new_invoice_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_invoices",
+              "item/new_name": "tempmanual",
+              "item/new_invoicedate": "@utcNow()",
+              "item/new_invoicingtype": 100000001,
+              "item/statuscode": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "43289839-51be-4c34-aacb-c1566a6d83a4"
+          }
+        },
+        "ComposeSplitGuid": {
+          "type": "Compose",
+          "inputs": "@split(triggerBody()['text'], ',')",
+          "runAfter": {
+            "Add_a_new_invoice_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "def05686-439f-431c-8aef-af841a4c63fc"
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('ComposeSplitGuid')",
+          "actions": {
+            "Compose": {
+              "type": "Compose",
+              "inputs": "@trim(replace(replace(replace(items('Apply_to_each'), '\"', ''), '[', ''), ']', ''))",
+              "runAfter": {
+                "Set_variable_timesheetid": [
+                  "SUCCEEDED"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "147ca94b-8ad3-4c3d-ae5e-ba8e24e2ff23"
+              }
+            },
+            "Condition_tax_types_not_null": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_billtaxtypeid_value']",
+                        "@null"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "equals": [
+                        "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_paytaxtypeid_value']",
+                        "@null"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "equals": [
+                        "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_isexpense']",
+                        "@true"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Get_a_BILLtaxrate_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_billtaxtypes",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_billtaxtypeid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e1da81bf-70fb-4116-8c6e-4fc55b3342b3"
+                  }
+                },
+                "Update_a_invoices_details_row_with_tax_type": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_invoicedetails",
+                      "recordId": "@variables('Invoicedetailsid')",
+                      "item/new_BillTAXTypeid@odata.bind": "@coalesce(if(not(empty(outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_billtaxtypeid_value'])), concat('/new_billtaxtypes(', outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_billtaxtypeid_value'], ')'), null), null)",
+                      "item/new_tax": "@mul(div(body('Get_a_BILLtaxrate_row_by_ID')?['new_percentage'], 100),body('Get_a_timesheet_cost_row_by_ID')?['new_billtotal'])",
+                      "item/new_total": "@add(body('Get_a_timesheet_cost_row_by_ID')?['new_billtotal'], mul(div(body('Get_a_paytaxrate_row_by_ID')?['new_percentage'], 100), body('Get_a_timesheet_cost_row_by_ID')?['new_billtotal']))"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_paytaxrate_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "a2e6b90b-8c61-44f8-a6ac-37751722cf0a"
+                  }
+                },
+                "Get_a_paytaxrate_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_billtaxtypes",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_paytaxtypeid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_a_BILLtaxrate_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e1da81bf-70fb-4116-8c6e-4fc55b3342b3"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_if_timehseetcost_invoice_is_null_-_hasnot_not_been_previously_invoiced": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "13c896d4-ab7d-4912-8778-d1b3c0e661d6"
+              }
+            },
+            "Set_currency_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Currencyid",
+                "value": "@outputs('Get_a_placement_row_by_ID')?['body/_transactioncurrencyid_value']"
+              },
+              "runAfter": {
+                "Condition_is_timesheet_cost_or_false_is_expense": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "65e572f6-96e3-4836-a96b-348ef7b006f2"
+              }
+            },
+            "Set_clientid_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "clientid",
+                "value": "@outputs('Get_a_placement_row_by_ID')?['body/_new_clientid_value']"
+              },
+              "runAfter": {
+                "Set_currency_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "063bd173-412a-413d-a092-be4744e8ec17"
+              }
+            },
+            "Condition_if_timehseetcost_invoice_is_null_-_hasnot_not_been_previously_invoiced": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_invoiceid_value']",
+                      "@null"
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Add_a_new_row_invoice_details": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_invoicedetails",
+                      "item/new_name": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_name']",
+                      "item/new_bill": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_bill']",
+                      "item/new_billtotal": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_billtotal']",
+                      "item/new_billunit": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_billunit']",
+                      "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{outputs('Get_a_timesheet_cost_row_by_ID')?['body/_transactioncurrencyid_value']})",
+                      "item/new_date": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_date']",
+                      "item/new_description": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_description']",
+                      "item/new_invoiceid@odata.bind": "@outputs('Add_a_new_invoice_row')?['body/@odata.id']",
+                      "item/new_assignmentid@odata.bind": "@outputs('Get_a_placement_row_by_ID')?['body/@odata.id']",
+                      "item/new_assignmentrateid@odata.bind": "@coalesce(if(not(empty(outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_assignmentrateid_value'])), concat('/new_ratetypes(', outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_assignmentrateid_value'], ')'), null), null)",
+                      "item/new_ratetypeid@odata.bind": "@coalesce(if(not(empty(outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_ratetypeid_value'])),concat('/new_ratetypes(', outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_ratetypeid_value'], ')'), null), null)",
+                      "item/new_timesheetid@odata.bind": "@if(empty(variables('Timesheetid')), null, variables('Timesheetid'))",
+                      "item/new_timesheetcostid@odata.bind": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/@odata.id']",
+                      "item/new_units": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_units']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "a523d8de-4034-4298-b750-2d39e6d99021"
+                  }
+                },
+                "Update_at_timsheet_costs__row": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_timesheetcostid']",
+                      "item/new_invoiceid@odata.bind": "/new_invoices(@{outputs('Add_a_new_invoice_row')?['body/new_invoiceid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Set_Invoicedetailsid_variable": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e1c0dcd7-c853-4125-befb-fa4908003979"
+                  }
+                },
+                "Relate_rows_invoices_and_candidates": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "contacts",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_candidateid_value']",
+                      "associationEntityRelationship": "new_invoice_candidate",
+                      "item/@odata.id": "@outputs('Add_a_new_invoice_row')?['body/@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "AssociateEntities",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Update_at_timsheet_costs__row": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+                  }
+                },
+                "Relate_rows_placement_and_invoices_n_to_n": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_assignments",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_assignmentid_value']",
+                      "associationEntityRelationship": "new_invoice_placement",
+                      "item/@odata.id": "@outputs('Add_a_new_invoice_row')?['body/@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "AssociateEntities",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Relate_rows_invoices_and_candidates": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "043a5440-c199-47dd-8a6e-53e171c311be"
+                  }
+                },
+                "Set_Invoicedetailsid_variable": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Invoicedetailsid",
+                    "value": "@outputs('Add_a_new_row_invoice_details')?['body/new_invoicedetailid']"
+                  },
+                  "runAfter": {
+                    "Add_a_new_row_invoice_details": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "f1c3bc41-1550-46a8-959e-82acec48538d"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Set_variable-Invoicedetailsid": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Invoicedetailsid",
+                      "value": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_invoicedetailid_value']"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "1a3fced2-1810-4d8a-9f77-c2236d26d79e"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Set_clientid_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "00998350-e0a3-4ef7-ad42-c758a19acf17"
+              }
+            },
+            "Condition_is_timesheet_cost_or_false_is_expense": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/new_isexpense']",
+                        "@true"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Get_a_timesheet_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheets",
+                      "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_timesheetid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c4a2c3e6-7a8b-45c6-9967-f2fa979e7f6c"
+                  }
+                },
+                "Condition_po_exists_": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "not": {
+                          "equals": [
+                            "@outputs('Get_a_timesheet_row_by_ID')?['body/_new_purchaseorderid_value']",
+                            "@null"
+                          ]
+                        }
+                      },
+                      {
+                        "equals": [
+                          "@variables('PO')",
+                          ""
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Set_po_variable": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "PO",
+                        "value": "@outputs('Get_a_timesheet_row_by_ID')?['body/_new_purchaseorderid_value']"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "368986b8-5900-4455-8339-f6ca07500dbb"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "Set_Timesheetid_variable": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "cf3f8090-ee4e-4f6e-a0df-1ca1f3cfacb6"
+                  }
+                },
+                "Condition_if_timehseet_invoice_is_null_and_different_": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@outputs('Get_a_timesheet_row_by_ID')?['body/_new_invoiceid_value']",
+                          "@null"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Update_a_timesheet_row_": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_timesheets",
+                          "recordId": "@outputs('Get_a_timesheet_row_by_ID')?['body/new_timesheetid']",
+                          "item/new_invoiceid@odata.bind": "/new_invoices(@{outputs('Add_a_new_invoice_row')?['body/new_invoiceid']})"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "connectionName": "shared_commondataserviceforapps-1"
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "704eb3d7-b306-4fd0-8088-c90d8be07e48"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {
+                      "Condition_its_a_diffrent_invoice": {
+                        "type": "If",
+                        "expression": {
+                          "and": [
+                            {
+                              "not": {
+                                "equals": [
+                                  "@outputs('Get_a_timesheet_row_by_ID')?['body/_new_invoiceid_value']",
+                                  "@outputs('Add_a_new_invoice_row')?['body/new_invoiceid']"
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "actions": {
+                          "Update_a_timesheet_row-copy": {
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "parameters": {
+                                "entityName": "new_timesheets",
+                                "recordId": "@outputs('Get_a_timesheet_row_by_ID')?['body/new_timesheetid']",
+                                "item/new_invoiceid@odata.bind": "/new_invoices(@{outputs('Add_a_new_invoice_row')?['body/new_invoiceid']})"
+                              },
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                "operationId": "UpdateOnlyRecord",
+                                "connectionName": "shared_commondataserviceforapps-1"
+                              }
+                            },
+                            "metadata": {
+                              "operationMetadataId": "704eb3d7-b306-4fd0-8088-c90d8be07e48"
+                            }
+                          }
+                        },
+                        "else": {
+                          "actions": {}
+                        },
+                        "metadata": {
+                          "operationMetadataId": "af8a0fb4-8b11-4b9a-a5de-9927ae1127e5"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Condition_po_exists_": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "16efd327-0cd3-4992-b8ea-918f597a622f"
+                  }
+                },
+                "Set_Timesheetid_variable": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Timesheetid",
+                    "value": "@outputs('Get_a_timesheet_row_by_ID')?['body/@odata.id']"
+                  },
+                  "runAfter": {
+                    "Get_a_timesheet_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Condition_po_exists_-on_placement": {
+                    "type": "If",
+                    "expression": {
+                      "and": [
+                        {
+                          "not": {
+                            "equals": [
+                              "@outputs('Get_a_placement_row_by_ID')?['body/_new_purchaseorderid_value']",
+                              "@null"
+                            ]
+                          }
+                        },
+                        {
+                          "equals": [
+                            "@variables('PO')",
+                            ""
+                          ]
+                        }
+                      ]
+                    },
+                    "actions": {
+                      "Set_po_variable_from_placement": {
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "PO",
+                          "value": "@outputs('Get_a_placement_row_by_ID')?['body/_new_purchaseorderid_value']"
+                        },
+                        "metadata": {
+                          "operationMetadataId": "368986b8-5900-4455-8339-f6ca07500dbb"
+                        }
+                      }
+                    },
+                    "else": {
+                      "actions": {}
+                    },
+                    "metadata": {
+                      "operationMetadataId": "cf3f8090-ee4e-4f6e-a0df-1ca1f3cfacb6"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_a_placement_row_by_ID": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Get_a_timesheet_cost_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheetcosts",
+                  "recordId": "@outputs('Compose')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Compose": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "33939bf3-135e-47c2-b3f5-5b00ec52a7a0"
+              }
+            },
+            "Get_a_placement_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@outputs('Get_a_timesheet_cost_row_by_ID')?['body/_new_assignmentid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps-1"
+                }
+              },
+              "runAfter": {
+                "Get_a_timesheet_cost_row_by_ID": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition_timesheetid": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@variables('Timesheetid')",
+                        ""
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Run_a_Child_Flow_set_Timesheet_status_processed_": {
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "6c7989b7-41f0-ef11-be1f-6045bd69f0ab"
+                    },
+                    "body": {
+                      "text": "@outputs('Get_a_timesheet_row_by_ID')?['body/new_timesheetid']"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "05215570-6bad-40cc-8637-d6ece77d77b3"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_tax_types_not_null": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Set_variable_timesheetid": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Timesheetid",
+                "value": "@null"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Timesheetid_variable": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "46700529-3f47-4a70-8dff-ed0e8a2f95a5"
+          }
+        },
+        "Initialize_currencyid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Currencyid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "ComposeSplitGuid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fc334225-a89c-47f0-981f-67e248d15dfe"
+          }
+        },
+        "Initialize_clientid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "clientid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_currencyid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "77c53c2a-1b01-4805-85c6-d05d100721aa"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "invoiceid": {
+                  "title": "invoiceid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "invoiceid": "@{outputs('Add_a_new_invoice_row')?['body/new_invoiceid']}"
+            }
+          },
+          "runAfter": {
+            "Condition_clientid_not_null": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e1ac3b65-8088-4811-97e8-6d25ff59702c"
+          }
+        },
+        "Initialize_PO_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PO",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_clientid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "214bbcbd-40ab-4816-978e-57f1bfaeff75"
+          }
+        },
+        "Condition_clientid_not_null": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@variables('clientid')",
+                    ""
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Get_a_client_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "accounts",
+                  "recordId": "@variables('clientid')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "1227200e-3355-4805-bf3d-389e474acf34"
+              }
+            },
+            "Update_invoice_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@outputs('Add_a_new_invoice_row')?['body/new_invoiceid']",
+                  "item/new_clientid@odata.bind": "/accounts(@{variables('clientid')})",
+                  "item/transactioncurrencyid@odata.bind": "@concat('/transactioncurrencies(', variables('Currencyid'), ')')",
+                  "item/new_managingaccountid@odata.bind": "/accounts(@{outputs('Get_a_client_row_by_ID')?['body/_new_managingaccountid_value']})",
+                  "item/new_paymentterms": "@outputs('Get_a_client_row_by_ID')?['body/new_paymentterms']",
+                  "item/new_purchaseorderid@odata.bind": "@coalesce(\r\n    if(\r\n      not(empty(variables('PO'))),\r\n       concat('/new_purchaseorders(', variables('PO'), ')')\r\n      , null    ),    null  )",
+                  "item/statuscode": 100000004
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Get_a_client_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d8945fdc-9128-4475-8359-13d6a9a89cc7"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4811962d-e137-4d53-a3b0-979f3b874db4"
+          }
+        },
+        "Initialize_Invoicedetailsid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Invoicedetailsid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_PO_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "46994a48-c24c-462c-aa43-43097425300c"
+          }
+        },
+        "Initialize_Timesheetid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Timesheetid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Invoicedetailsid_variable": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

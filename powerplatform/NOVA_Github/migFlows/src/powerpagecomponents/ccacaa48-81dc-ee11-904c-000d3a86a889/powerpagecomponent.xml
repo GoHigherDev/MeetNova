@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="ccacaa48-81dc-ee11-904c-000d3a86a889">
+  <content>{
+  "isdefault": false,
+  "type": 756150001,
+  "usewebsiteheaderandfooter": false,
+  "webtemplateid": "14eeb71d-81dc-ee11-904c-000d3a86a889"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Xero Response Modal</name>
+  <powerpagecomponenttype>6</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

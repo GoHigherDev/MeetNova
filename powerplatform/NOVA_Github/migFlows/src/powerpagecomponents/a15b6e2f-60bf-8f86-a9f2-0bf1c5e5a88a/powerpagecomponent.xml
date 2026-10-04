@@ -1,0 +1,38 @@
+<powerpagecomponent powerpagecomponentid="a15b6e2f-60bf-8f86-a9f2-0bf1c5e5a88a">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"min-height: auto; padding: 8px;\"&gt;\n    &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;\n      &lt;div class=\"col-md-12 columnBlockLayout\" style=\"padding: 16px; margin: 60px 0px; min-height: 200px;\"&gt;&lt;/div&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n  ",
+  "displayorder": 171,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "e8a9dc99-ad10-f011-998a-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "8cb3e2a9-9be6-180f-c10c-04ed23d43c49",
+  "parentpageid": "cdb94a16-18c9-28e6-660a-8776d289e6ce",
+  "partialurl": "adjustmentoptions",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "rootwebpageid": "cd771633-434a-2e8d-9bf8-0878e4d04807",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Adjustment Options"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Adjustment Options</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9179b7b5-28a2-ef11-8a69-6045bd69e577</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Adjustment Options&lt;div class="row sectionBlockLayout text-left" style="min-height: auto; padding: 8px;"&gt;
+    &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;
+      &lt;div class="col-md-12 columnBlockLayout" style="padding: 16px; margin: 60px 0px; min-height: 200px;"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  Adjustment Options</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

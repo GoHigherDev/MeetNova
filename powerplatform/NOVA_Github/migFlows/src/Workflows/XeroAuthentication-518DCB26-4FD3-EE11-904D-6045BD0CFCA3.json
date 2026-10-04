@@ -1,0 +1,265 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "SiteURL (new_SiteURL)": {
+          "defaultValue": "https://offshoretimesheet.powerappsportals.com/",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_SiteURL"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "43b7738e-3239-4ee3-85b0-f409d6069bd0"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "ResponseCode",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "XeroClientId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP_Get_Token": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "4023ef6c-e735-49c2-9e06-4a46178e4945"
+          },
+          "type": "Http",
+          "inputs": {
+            "uri": "https://identity.xero.com/connect/token",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Connection": "keep-alive",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Accept": "*/*"
+            },
+            "body": "grant_type=authorization_code&client_id=@{triggerBody()['text_1']}&code=@{triggerBody()['text']}&redirect_uri=@{parameters('SiteURL (new_SiteURL)')}/xeroresponse&code_verifier=cEwR3MacxFWpsJsMIq64yjH45PhHrZZtW8_rUt53F80"
+          }
+        },
+        "Parse_JSON_Token": {
+          "runAfter": {
+            "HTTP_Get_Token": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e112db0-9ab3-4a06-af89-c667519464da"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_Get_Token')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_token": {
+                  "type": "string"
+                },
+                "access_token": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "integer"
+                },
+                "token_type": {
+                  "type": "string"
+                },
+                "refresh_token": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Initialize_variable_Authorization": {
+          "runAfter": {
+            "Parse_JSON_Token": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "afcfcdda-db50-4389-ba8e-7bf71cf04032"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Authorization",
+                "type": "string",
+                "value": "Bearer @{body('Parse_JSON_Token')?['access_token']}"
+              }
+            ]
+          }
+        },
+        "HTTP_get_Connections": {
+          "runAfter": {
+            "Initialize_variable_Authorization": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f741193b-f57e-4b0d-bc48-591ef7b8ef2c"
+          },
+          "type": "Http",
+          "inputs": {
+            "uri": "https://api.xero.com/connections",
+            "method": "GET",
+            "headers": {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "@{variables('Authorization')}",
+              "Connection": "keep-alive"
+            }
+          }
+        },
+        "Parse_JSON_Connection": {
+          "runAfter": {
+            "HTTP_get_Connections": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e112db0-9ab3-4a06-af89-c667519464da"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_get_Connections')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "authEventId": {
+                    "type": "string"
+                  },
+                  "tenantId": {
+                    "type": "string"
+                  },
+                  "tenantType": {
+                    "type": "string"
+                  },
+                  "tenantName": {
+                    "type": "string"
+                  },
+                  "createdDateUtc": {
+                    "type": "string"
+                  },
+                  "updatedDateUtc": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "authEventId",
+                  "tenantId",
+                  "tenantType",
+                  "tenantName"
+                ]
+              }
+            }
+          }
+        },
+        "Initialize_variable_XeroTenant-Id": {
+          "runAfter": {
+            "Parse_JSON_Connection": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6ca2ac8e-1870-4992-9d5b-9f79c392de16"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "XeroTenant-Id",
+                "type": "string",
+                "value": "@{outputs('Parse_JSON_Connection')?['body'][0]['tenantId']}"
+              }
+            ]
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Initialize_variable_XeroTenant-Id": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "746c7b47-179c-4e97-9b14-357357825e54"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "xeroaccestoken": {
+                  "title": "XeroAccesToken",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "xerotenantid": {
+                  "title": "XeroTenantId",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "xeroaccestoken": "@variables('Authorization')",
+              "xerotenantid": "@variables('XeroTenant-Id')"
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

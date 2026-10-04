@@ -1,0 +1,155 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Quickshifts Portal (new_QuickshiftsPortal)": {
+          "defaultValue": "https://quickshiftsportal.powerappsportals.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_QuickshiftsPortal",
+            "description": "used by candidates and clients"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_candidateregistration",
+              "subscriptionRequest/scope": 4
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "4d69d1db-7e1e-4a67-9515-e83d00f78a6d"
+          }
+        }
+      },
+      "actions": {
+        "Compose_url_link": {
+          "type": "Compose",
+          "inputs": "@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/registration/?registrationid=@{triggerOutputs()?['body/new_candidateregistrationid']}&contactid=@{body('Add_a_new_candidate_contact_row')?['contactid']}",
+          "runAfter": {
+            "Update_a_candidate_registrations_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1eced891-9f22-46ae-ad6a-56b8d2bfee4e"
+          }
+        },
+        "Send_an_email_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@triggerOutputs()?['body/new_primarycontactemail']",
+              "emailMessage/Subject": "Request for compliance ",
+              "emailMessage/Body": "<p>Please click on the link to start the compliance process:<br>\n@{outputs('Compose_url_link')}</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365-1"
+            }
+          },
+          "runAfter": {
+            "Compose_url_link": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "40142f94-6828-4111-b67f-86c8fbebf8aa"
+          }
+        },
+        "Update_a_candidate_registrations_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_candidateregistrations",
+              "recordId": "@triggerBody()?['new_candidateregistrationid']",
+              "item/new_candidateid@odata.bind": "@{body('Add_a_new_candidate_contact_row')?['@odata.id']}"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Add_a_new_candidate_contact_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "430fe72d-4ba1-480c-a25d-85e28a47f849"
+          }
+        },
+        "Add_a_new_candidate_contact_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "item/lastname": "@triggerOutputs()?['body/new_lastname']",
+              "item/emailaddress1": "@triggerBody()?['new_primarycontactemail']",
+              "item/firstname": "@triggerOutputs()?['body/new_firstname']",
+              "item/mobilephone": "@triggerOutputs()?['body/new_primarycontactphone']",
+              "item/new_candidateregistrationid@odata.bind": "/new_candidateregistrations(@{triggerBody()?['new_candidateregistrationid']})",
+              "item/new_consultant": "/contacts(@{triggerBody()?['_new_consultantid_value']})",
+              "item/new_iscandidate": true,
+              "item/msa_managingpartnerid@odata.bind": "/accounts(@{triggerBody()?['_new_managingaccountid_value']})",
+              "item/adx_identity_username": "@triggerBody()?['new_primarycontactemail']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c657f6ca-92b1-4c83-b624-927dd17fc04a"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

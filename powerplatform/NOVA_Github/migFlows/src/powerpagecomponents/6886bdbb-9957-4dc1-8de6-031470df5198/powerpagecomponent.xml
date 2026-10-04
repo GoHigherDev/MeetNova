@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="6886bdbb-9957-4dc1-8de6-031470df5198">
+  <content>{
+  "displayorder": 82,
+  "pageid": "43aebedc-37f0-a764-a2fd-af1dc52e91b4",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bulk Invoices Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

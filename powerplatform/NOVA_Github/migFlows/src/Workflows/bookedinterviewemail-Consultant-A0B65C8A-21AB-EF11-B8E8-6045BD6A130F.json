@@ -1,0 +1,207 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Timesheets url (new_Timesheetsurl)": {
+          "defaultValue": "https://quickshifts-dev.powerappsportals.com/",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_Timesheetsurl"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "new_recruitmentprocessstage",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_stagetypeid"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "conditions": [],
+          "metadata": {
+            "operationMetadataId": "27ca15c8-b906-4b8c-98b6-08405a83ecb9"
+          }
+        }
+      },
+      "actions": {
+        "Get_Job_row_by_ID_": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobs",
+              "recordId": "@triggerOutputs()?['body/_new_jobid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        },
+        "Get_a_Client_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_Job_row_by_ID_')?['body/_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_Job_row_by_ID_": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_Candidate_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_Client_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_-_New_date_is_null": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/new_date']",
+                  "@null"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Send_an_email_(V2)_-_No_Date_Selected": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@outputs('Get_a_Client_row_by_ID')?['body/emailaddress1']",
+                  "emailMessage/Subject": "Action Required: Confirm Interview Date for  – @{outputs('Get_Job_row_by_ID_')?['body/new_name']}",
+                  "emailMessage/Body": "<p class=\"editor-paragraph\">Dear @{outputs('Get_a_Client_row_by_ID')?['body/name']},</p><br><p class=\"editor-paragraph\">You have a pending action for the candidate proposal:</p><p class=\"editor-paragraph\"><br>Candidate Name: @{outputs('Get_a_Candidate_row_by_ID')?['body/firstname']}<br>Job Title: @{outputs('Get_Job_row_by_ID_')?['body/new_name']}<br>Proposed Interview Date: No Date was selected</p><p class=\"editor-paragraph\">Comments: @{triggerOutputs()?['body/new_comments']}</p><p class=\"editor-paragraph\"><br>Next Steps:<br>Please confirm the interview date or request changes. Access the link below for the next steps:<br><br>@{parameters('Timesheets url (new_Timesheetsurl)')}jobapplications/?id=@{triggerOutputs()?['body/_new_jobid_value']}<br><br>Please take action as soon as possible to ensure the recruitment process progresses smoothly.<br><br>Best regards,<br>Job Vendor System</p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365-1"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Condition_-_New_Stage_Interview_Booked": {
+                "type": "If",
+                "expression": {
+                  "and": [
+                    {
+                      "equals": [
+                        "@triggerOutputs()?['body/_new_stagetypeid_value']",
+                        "232960b5-ec86-ef11-9443-6045bd6b4269"
+                      ]
+                    }
+                  ]
+                },
+                "actions": {
+                  "Send_an_email_(V2)_-_Confirm_Interview_Booking_Date": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "emailMessage/To": "@outputs('Get_a_Client_row_by_ID')?['body/emailaddress1']",
+                        "emailMessage/Subject": "Action Required: Confirm Interview Date for  – @{outputs('Get_Job_row_by_ID_')?['body/new_name']}",
+                        "emailMessage/Body": "<p class=\"editor-paragraph\">Dear @{outputs('Get_a_Client_row_by_ID')?['body/name']},<br><br>You have a pending action for the candidate proposal:<br><br>Candidate Name: @{outputs('Get_a_Candidate_row_by_ID')?['body/firstname']}<br>Job Title: @{outputs('Get_Job_row_by_ID_')?['body/new_name']}<br>Proposed Interview Date: @{outputs('Compose_-_Convert_Date_Time_-_GMT')} GMT</p><p class=\"editor-paragraph\">Comments: @{triggerOutputs()?['body/new_comments']}</p><p class=\"editor-paragraph\"><br>Next Steps:<br>Please confirm the interview date or request changes. Access the link below for the next steps: @{parameters('Timesheets url (new_Timesheetsurl)')}jobapplications/?id=@{triggerOutputs()?['body/_new_jobid_value']}<br><br>Please take action as soon as possible to ensure the recruitment process progresses smoothly.<br><br>Best regards,<br>Job Vendor System</p>",
+                        "emailMessage/Importance": "Normal"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                        "operationId": "SendEmailV2",
+                        "connectionName": "shared_office365-1"
+                      }
+                    },
+                    "runAfter": {
+                      "Compose_-_Convert_Date_Time_-_GMT": [
+                        "Succeeded"
+                      ]
+                    }
+                  },
+                  "Compose_-_Convert_Date_Time_-_GMT": {
+                    "type": "Compose",
+                    "inputs": "@convertTimeZone(triggerOutputs()?['body/new_date'], 'UTC', 'GMT Standard Time')\r\n"
+                  }
+                },
+                "else": {
+                  "actions": {}
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Get_a_Candidate_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

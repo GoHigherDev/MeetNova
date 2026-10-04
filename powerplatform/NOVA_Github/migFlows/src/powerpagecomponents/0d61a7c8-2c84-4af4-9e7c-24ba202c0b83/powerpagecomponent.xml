@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="0d61a7c8-2c84-4af4-9e7c-24ba202c0b83">
+  <content>{
+  "displayorder": 33,
+  "pageid": "3d0b0d6f-da5d-e3eb-d18a-38f8c3fb0c7d",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "4a5e8d97-2223-4ef2-b5f0-42b4ce6cc95f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Proof of Address</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

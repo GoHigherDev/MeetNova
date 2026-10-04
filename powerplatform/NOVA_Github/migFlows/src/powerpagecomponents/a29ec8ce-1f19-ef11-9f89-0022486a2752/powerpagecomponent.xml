@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="a29ec8ce-1f19-ef11-9f89-0022486a2752">
+  <content>{
+  "flowapiurl": "https://quickshifts-dev.powerappsportals.com/_api/cloudflow/v1.0/trigger/7567ee6e-a375-248c-1ce6-d36b4a77fd4b",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/7567EE6EA375248C1CE6D36B4A77FD4B-47B60381B5A2A2B6/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "7567ee6e-a375-248c-1ce6-d36b4a77fd4b",
+  "processid": "e8079465-52d3-ee11-904d-6045bd0cfca3",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "198c028f-e0d0-ee11-9079-6045bd0cfca3",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Xero Authenticate by PowerPage</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

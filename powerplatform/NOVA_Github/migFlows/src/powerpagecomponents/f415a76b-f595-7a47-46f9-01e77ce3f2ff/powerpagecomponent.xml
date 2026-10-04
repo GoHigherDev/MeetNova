@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="f415a76b-f595-7a47-46f9-01e77ce3f2ff">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 143,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "92e36dd4-1dc5-e5de-dc24-076a0fd09a1e",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Proof of Address Doc</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

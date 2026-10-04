@@ -1,0 +1,35 @@
+<powerpagecomponent powerpagecomponentid="b2ef1fee-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "copy": "&lt;div class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; text-align: left; min-height: auto; padding: 8px;\"&gt;\n  &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Client Actions' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "a22cd86a-13af-ef11-b8e8-6045bd6a130f",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "fb77a491-b71d-f011-9989-6045bd69f0ab",
+  "parentpageid": "19efd4ec-c6d9-0ef7-ae5e-64008b0ac6a1",
+  "partialurl": "recruitmentstages",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "79e88227-f057-0025-2f39-b01fa8cb708f",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "الإجراءات"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Actions</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>الإجراءات&lt;div class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; text-align: left; min-height: auto; padding: 8px;"&gt;
+  &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Client Actions' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Actions</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

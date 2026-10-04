@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="59cbb8bc-ac16-886b-009e-0d97de080372">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "ecbcff54-c75a-32f0-44c2-5274eccef64c",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "2ad918ea-ee43-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Timesheet Client</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

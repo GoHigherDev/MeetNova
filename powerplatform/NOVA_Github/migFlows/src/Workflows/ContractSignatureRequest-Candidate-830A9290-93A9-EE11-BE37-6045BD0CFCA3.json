@@ -1,0 +1,132 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_scriveesign": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedscriveesign_48e77"
+        },
+        "api": {
+          "name": "shared_scriveesign"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "e98ce660-a1a3-4e13-8238-5c7940963183"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_assignment",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_iscontractrequested",
+              "subscriptionRequest/filterexpression": "new_iscontractrequested eq true",
+              "subscriptionRequest/name": "830a9290-93a9-ee11-be37-6045bd0cfca3"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        }
+      },
+      "actions": {
+        "Create_new_document_from_template": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "652d8c5c-2047-4f11-bc3f-09d218455354"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "templateId-dynamic": "9222115557507796334"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_scriveesign",
+              "operationId": "NewDocumentFromTemplate",
+              "connectionName": "shared_scriveesign"
+            }
+          }
+        },
+        "Update_fields_based_on_template": {
+          "runAfter": {
+            "Create_new_document_from_template": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a05febad-365b-4520-90da-fb8ae70b1c7c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "templateID-dynamic": "9222115557507796334",
+              "dynamicTemplateSchema/Document ID to update": "@body('Create_new_document_from_template')",
+              "dynamicTemplateSchema/Party 1 full_name": "adam@go-higher.co.uk",
+              "dynamicTemplateSchema/Party 2 first_name": "Adam",
+              "dynamicTemplateSchema/Party 2 last_name": "Higgins",
+              "dynamicTemplateSchema/Party 2 email": "adam@go-higher.co.uk",
+              "dynamicTemplateSchema/Party 2 full_name": "Adam Higgins",
+              "dynamicTemplateSchema/Party 2 text Candidate Name": "CANDIDATE NAME",
+              "dynamicTemplateSchema/Party 2 text Candidate Date of Birth": "DATE OF BIRTH",
+              "dynamicTemplateSchema/Party 2 text Client Address": "CLIENT ADDRESS",
+              "dynamicTemplateSchema/Party 2 text Client Name": "CLIENT NAME"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_scriveesign",
+              "operationId": "UpdatePartiesFields",
+              "connectionName": "shared_scriveesign"
+            }
+          }
+        },
+        "Start_signing_process": {
+          "runAfter": {
+            "Update_fields_based_on_template": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "body/documentId": "@body('Create_new_document_from_template')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_scriveesign",
+              "operationId": "StartSigning",
+              "connectionName": "shared_scriveesign"
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

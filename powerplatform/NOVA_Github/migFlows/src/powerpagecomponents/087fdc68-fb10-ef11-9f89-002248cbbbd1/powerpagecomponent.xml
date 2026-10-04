@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="087fdc68-fb10-ef11-9f89-002248cbbbd1">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "statuscode",
+  "descriptionposition": 100000000,
+  "entityform": "52c3874c-8f0e-ef11-9f89-002248cbbbd1",
+  "entityformforcreate": "52c3874c-8f0e-ef11-9f89-002248cbbbd1",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "100000009",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Declarations statuscode</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

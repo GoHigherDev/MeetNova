@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="5905142b-361f-ef11-840a-0022486a2752">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 2,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "ebc790ea-362e-bc09-8377-b0f8268c5f30",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "70ed0d42-ef1c-ef11-840a-0022486a2752"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Placements</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

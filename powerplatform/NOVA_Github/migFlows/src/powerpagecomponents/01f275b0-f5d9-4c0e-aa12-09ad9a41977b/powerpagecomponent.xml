@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="01f275b0-f5d9-4c0e-aa12-09ad9a41977b">
+  <content>{
+  "displayorder": 25,
+  "pageid": "a6c7c285-db71-3b4b-0a0d-f1c039ccea0a",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job category Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="9482f841-6d1f-b391-d649-13646e8895c2">
+  <content>{
+  "right": 2,
+  "scope": 2,
+  "webpageid": "3a9b2241-f6af-81d0-9012-5d7c32b6f37d",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "02fc0d54-701f-f011-9989-6045bd69f0ab",
+    "066f7c2f-4572-ee11-8179-6045bd0cfca3",
+    "0e90c088-3441-ef11-a316-6045bd15aee8",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+    "ee5aa67c-cc84-ef11-ac20-6045bd6a5beb",
+    "f7b50f32-9e03-ef11-9f89-0022481bbf4e"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Settings</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

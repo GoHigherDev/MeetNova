@@ -1,0 +1,73 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "contact",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_isadmin",
+              "subscriptionRequest/filterexpression": "new_isadmin eq true",
+              "subscriptionRequest/name": "7b0c5a6d-42ec-ee11-a1fd-6045bd0d54a8"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "f27de49c-5a56-4710-b7a2-c97fb90afabe"
+          }
+        }
+      },
+      "actions": {
+        "Run_a_Child_Flow": {
+          "type": "Workflow",
+          "description": "add the web role for admin\ncd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "7933de12-3cec-ee11-a1fd-6045bd0d54a8"
+            },
+            "body": {
+              "text": "@triggerOutputs()?['body/contactid']",
+              "text_1": "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f67adf3f-5c01-4813-a157-30db13b7528f"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

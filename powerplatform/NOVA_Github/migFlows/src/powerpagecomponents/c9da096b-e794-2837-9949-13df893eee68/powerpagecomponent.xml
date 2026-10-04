@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="c9da096b-e794-2837-9949-13df893eee68">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "0f4b0371-bbad-0bf4-71ce-d1b7487dc776",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Candidate Edit</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

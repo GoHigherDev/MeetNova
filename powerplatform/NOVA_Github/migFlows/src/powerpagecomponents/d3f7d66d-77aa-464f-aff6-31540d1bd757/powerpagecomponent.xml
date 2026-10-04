@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="d3f7d66d-77aa-464f-aff6-31540d1bd757">
+  <content>{
+  "displayorder": 179,
+  "pageid": "36dde252-e873-50d7-662c-7b540ed0f5f2",
+  "parentweblinkid": "c39b6c6f-e75a-482f-b8f2-e0ed0de76c05",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Remittance Credit Note</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

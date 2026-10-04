@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="e6224f0a-c8bd-3b78-71f2-25d16e7c1762">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 34,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "500b3a99-b46f-f9ee-2de6-358e36f8615a",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Right to Work</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

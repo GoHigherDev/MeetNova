@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="1f9ba352-d5b5-4e75-bf80-3212b0581996">
+  <content>{
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_referece",
+  "entityname": "Reference",
+  "parententitypermission": null,
+  "read": true,
+  "scope": 756150000,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e",
+    "f7b50f32-9e03-ef11-9f89-0022481bbf4e"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Reference</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

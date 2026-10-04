@@ -1,0 +1,420 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "bf44fe9b-2b2a-4dee-90aa-66a3fed4aecb"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/name": "98132534-64a9-ee11-be37-6045bd0cfca3"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Get_Client_Name_by_ID": {
+          "runAfter": {
+            "Get_a_placement_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7df6ea75-d94e-4f4c-ba10-844019fdbccc"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_login_required": {
+          "actions": {
+            "Condition-_send_email": {
+              "actions": {
+                "Run_a_Child_Flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "f1ca7e59-da43-4c19-ab8d-dc0f1d9b7603"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "ebc7467d-5b81-ef11-ac20-6045bd6a5beb"
+                    },
+                    "body": {
+                      "text": "@outputs('Get_Candidate_row_by_ID')?['body/emailaddress1']",
+                      "text_1": "@outputs('Get_Candidate_row_by_ID')?['body/firstname']",
+                      "text_2": "@outputs('Get_a_placement_row_by_ID')?['body/_new_managingaccountid_value@Microsoft.Dynamics.CRM.lookuplogicalname']",
+                      "text_3": "@triggerOutputs()?['body/new_periodstart']",
+                      "text_4": "@triggerOutputs()?['body/new_periodend']",
+                      "text_5": "@outputs('Get_Candidate_row_by_ID')?['body/contactid']",
+                      "text_6": "complete your registration",
+                      "text_7": "@triggerOutputs()?['body/new_timesheetid']"
+                    }
+                  }
+                }
+              },
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "Send_an_email_(V2)": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "a0ea2784-2d67-4f7d-9150-28a80f76ffba"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_office365-1",
+                        "operationId": "SendEmailV2",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                      },
+                      "parameters": {
+                        "emailMessage/To": "@body('Get_Candidate_row_by_ID')?['emailaddress1']",
+                        "emailMessage/Subject": "New Timesheet Open for Submission",
+                        "emailMessage/Body": "<p class=\"editor-paragraph\">@{variables('Message')}</p>",
+                        "emailMessage/Importance": "Normal"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@body('Get_Candidate_row_by_ID')?['adx_identity_username']",
+                      "@null"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ff5e7c2a-05a9-458b-bf4b-d36db4e169ed"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Get_Client_Name_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_Candidate_row_by_ID')?['body/new_loginrequiredcandidate']",
+                  "@true"
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Get_a_placement_row_by_ID')?['body/new_istimesheetpreapproved']",
+                  "@false"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7b72b759-b1f6-4826-8b64-b068de705aed"
+          },
+          "type": "If"
+        },
+        "Get_a_placement_row_by_ID": {
+          "runAfter": {
+            "Condition_if_message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5cc88c3f-2c0c-4781-913a-e78905492641"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerOutputs()?['body/_new_assignmentid_value']"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "0d350f0b-899d-443a-8a2b-a05b1e1b4e5b"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          }
+        },
+        "Condition_if_global_notification_is_true": {
+          "actions": {},
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Terminate": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "be28fa01-b3c3-491c-bac7-e41a172ae76c"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5b0c001-767f-47ff-b871-3b4f8efa6979"
+          },
+          "type": "If"
+        },
+        "Run_a_Child_Flow_Enable": {
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ba4fb525-cebd-4b70-a949-13157d894f4b"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "108fb5d5-aa88-f011-b4cb-6045bdfc0113"
+            }
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "actions": {},
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "96164201-4ebb-488f-8889-9e453b78a7a6"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Enable')?['sucess']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b80186a0-8d2a-4c29-b03c-de31a8568b6f"
+          },
+          "type": "If"
+        },
+        "Initialize_Message_variable": {
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "db2f35be-32d6-4b85-94b7-32d831fb1e81"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "\nUser Name:  @{outputs('Get_Candidate_row_by_ID')?['body/adx_identity_username']} <div> \n </div>\n<p class=\"editor-paragraph\">Hello @{outputs('Get_Candidate_row_by_ID')?['body/firstname']},</p>\n<p class=\"editor-paragraph\">This is confirmation that your timesheet has been approved by the client and processed by Archer for payment.</p><p class=\"editor-paragraph\">For any enquiries, please contact the payroll team.</p>\n<p class=\"editor-paragraph\">Thank you, Timesheets System</p>"
+              }
+            ]
+          }
+        },
+        "Get_a_notification_row_by_ID": {
+          "runAfter": {
+            "Get_Candidate_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "08b22b9e-ccff-46d3-88d0-c8fba54f75e6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "108fb5d5-aa88-f011-b4cb-6045bdfc0113"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_if_message_not_empty": {
+          "actions": {
+            "Set_Message_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "178f30dc-d26c-414b-99da-c21fe60627de"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "125f23af-a1fd-446f-b2d2-aca435081267"
+          },
+          "type": "If"
+        },
+        "Get_Candidate_row_by_ID": {
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e47e333b-1e07-4914-b884-50ac8d400058"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

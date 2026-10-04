@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="79f71c4f-8853-a1f9-4f4b-10ccae8dfd34">
+  <content>{
+  "displayorder": 55,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "d7ca2aa7-3983-f011-b4cc-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "5e397052-3a83-f011-b4cc-6045bd69f0ab",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "setavailability",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Set Availability"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Set Availability</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Set AvailabilitySet Availability</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

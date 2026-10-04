@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="ae3b7ccf-809e-4914-b773-0f91cf7f8806">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 26,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "a5bfaf3b-7fdd-5ffe-b34f-fec84d019d09",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job category Edit</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

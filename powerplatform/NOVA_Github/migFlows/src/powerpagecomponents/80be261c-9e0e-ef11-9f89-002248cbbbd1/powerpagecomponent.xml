@@ -1,0 +1,11 @@
+<powerpagecomponent powerpagecomponentid="80be261c-9e0e-ef11-9f89-002248cbbbd1">
+  <content>{}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Authenticate UserSession</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,19 @@
+<powerpagesites>
+  <powerpagesite powerpagesiteid="4b03660c-1dad-419b-85b9-1c1539e47438">
+    <content>{"defaultlanguage":"f26e79ae-8236-438d-8948-fa035828e0db","footerwebtemplateid":"4a73e273-cb82-417c-9035-dacd2e6fe188","headerwebtemplateid":"bcfd8e03-5c1f-4b90-9533-10f04e88176c","website_language":1033}</content>
+    <datamodelversion>2.0</datamodelversion>
+    <iscustomizable>1</iscustomizable>
+    <name>Blank Page</name>
+    <statecode>0</statecode>
+    <statuscode>1</statuscode>
+  </powerpagesite>
+  <powerpagesite powerpagesiteid="536be9ca-009b-46b5-936a-b88303ab83bd">
+    <content>{"defaultlanguage":"86b46d28-ba30-418b-a133-2c63fbb8f25d","footerwebtemplateid":"d394b67b-5196-4bc2-a53a-71aad7c87e7d","headerwebtemplateid":"fa8cd09b-82f9-49c4-a55c-00f178e71716","website_language":1033}</content>
+    <datamodelversion>2.0</datamodelversion>
+    <iscustomizable>1</iscustomizable>
+    <name>testsiteQS - testsiteQS</name>
+    <primarydomainname>testsiteQS.powerappsportals.com</primarydomainname>
+    <statecode>0</statecode>
+    <statuscode>1</statuscode>
+  </powerpagesite>
+</powerpagesites>

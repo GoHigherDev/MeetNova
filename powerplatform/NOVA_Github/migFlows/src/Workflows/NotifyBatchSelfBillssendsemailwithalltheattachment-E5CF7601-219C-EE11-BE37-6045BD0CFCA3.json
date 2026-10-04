@@ -1,0 +1,882 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-2": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_batch",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_sendselfbill ",
+              "subscriptionRequest/filterexpression": "new_sendselfbill eq true",
+              "subscriptionRequest/name": "e5cf7601-219c-ee11-be37-6045bd0cfca3"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "38dc9f7f-14bd-408d-b049-8343d3d009c3"
+          }
+        }
+      },
+      "actions": {
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_remittances_rows_by_bulk_import')?['body/value']",
+          "actions": {
+            "get_a_supplier_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "accounts",
+                  "recordId": "@items('Apply_to_each')?['_new_supplierid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Reset_Set_array_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c7c89a20-e608-41a9-b10d-d358125f466b"
+              }
+            },
+            "get_a_primary_contact_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "contacts",
+                  "recordId": "@body('get_a_supplier_row_by_ID')?['_primarycontactid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "get_a_supplier_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c3fe75a1-78ef-47b6-a427-746cdcece5ff"
+              }
+            },
+            "Update_a_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@items('Apply_to_each')?['new_remittanceid']",
+                  "item/statecode": 1,
+                  "item/statuscode": 100000000
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Send_an_email_(V2)": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c5f945cc-f545-45b0-baa4-6b872ed918ec"
+              }
+            },
+            "Condition_that_self_bill_contains_pdf": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@item()?['new_pdfurl']",
+                        "@null"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Compose_content": {
+                  "type": "Compose",
+                  "inputs": "@base64(body('HTTP'))",
+                  "runAfter": {
+                    "HTTP": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "28b8029a-ca91-4c0a-a9f8-edc5e991aae9"
+                  }
+                },
+                "Append_to_array_variable": {
+                  "type": "AppendToArrayVariable",
+                  "inputs": {
+                    "name": "attachments",
+                    "value": {
+                      "Name": "@outputs('Compose_filename')",
+                      "ContentBytes": "@outputs('Compose_content')"
+                    }
+                  },
+                  "runAfter": {
+                    "Compose_content": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "3beee4f9-9690-49f1-849c-83814c37e422"
+                  }
+                },
+                "Compose_filename": {
+                  "type": "Compose",
+                  "inputs": "@concat(items('Apply_to_each')?['new_name'], '.pdf')",
+                  "metadata": {
+                    "operationMetadataId": "b48df6e9-d894-4723-bba3-0cc7c17702a2"
+                  }
+                },
+                "HTTP": {
+                  "type": "Http",
+                  "inputs": {
+                    "uri": "@items('Apply_to_each')?['new_pdfurl']",
+                    "method": "GET"
+                  },
+                  "runAfter": {
+                    "Compose_filename": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "dfe3f2de-e1d6-451c-94bc-be767f39ff4c"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "get_a_primary_contact_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ba4db7ac-435a-4528-bb6d-39a62e50f363"
+              }
+            },
+            "Send_an_email_(V2)": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@{body('get_a_primary_contact_row_by_ID')?['emailaddress1']}, hala.hassouna96@gmail.com",
+                  "emailMessage/Subject": "Self Bill",
+                  "emailMessage/Body": "<br><p class=\"editor-paragraph\">@{variables('Message')}</p><br><p class=\"editor-paragraph\">@{variables('PDFURLS')}</p>",
+                  "emailMessage/Cc": "@body('get_a_supplier_row_by_ID')?['new_invoiceccemails']",
+                  "emailMessage/Attachments": "@variables('attachments')",
+                  "emailMessage/Importance": "Normal"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365-1"
+                }
+              },
+              "runAfter": {
+                "Append_to_string_variablepdfurls_ul": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2a21075a-cd28-4e64-96d9-186ba4003a55"
+              }
+            },
+            "Reset_Set_array_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "attachments",
+                "value": []
+              },
+              "runAfter": {
+                "Reset_Set_pdf": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cbcebfc9-feb8-461a-ae61-07443c70f87d"
+              }
+            },
+            "Condition_length(variables('attachments')": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(variables('attachments'))",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Append_to_string_variable_1": {
+                  "type": "AppendToStringVariable",
+                  "inputs": {
+                    "name": "PDFURLS",
+                    "value": "@concat('<a href=\"', items('Apply_to_each')?['new_pdfurl'], '\">', items('Apply_to_each')?['new_name'], '</a><br>')"
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c6991886-8a19-4cc3-994d-d405667e8894"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Set_variable-copy_2": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "PDFURLS",
+                      "value": "no PDF Links attached"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "583b8e99-aa08-4b56-a4dd-2741104e9bb8"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Condition_that_self_bill_contains_pdf": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1cd20e17-2673-4dfc-8581-e806f18b0b55"
+              }
+            },
+            "Reset_Set_pdf": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "PDFURLS",
+                "value": "<ul>"
+              },
+              "metadata": {
+                "operationMetadataId": "cbcebfc9-feb8-461a-ae61-07443c70f87d"
+              }
+            },
+            "Append_to_string_variablepdfurls_ul": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "PDFURLS",
+                "value": "</ul>"
+              },
+              "runAfter": {
+                "Condition_length(variables('attachments')": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bc268f29-de0f-4744-8754-a7c6302ce331"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "7f3ed146-f767-4aaf-9992-c9cc80ebcc85"
+          }
+        },
+        "List_remittances_rows_by_bulk_import": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_remittances",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <attribute name=\"new_name\" />\n<attribute name=\"new_pdf\" />\n    <attribute name=\"new_pdfurl\" />\n <attribute name=\"new_supplierid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{triggerBody()?['new_batchid']}\" />\n    </filter>\n    <link-entity name=\"account\" from=\"accountid\" to=\"new_supplierid\" link-type=\"inner\" alias=\"a_account\">\n      <attribute name=\"new_invoicepdfgeneration\" />\n      <filter type=\"and\">\n        <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000001\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+          }
+        },
+        "Initialize_attachments_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "attachments",
+                "type": "array",
+                "value": null
+              }
+            ]
+          },
+          "runAfter": {
+            "Compose_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b7dfff8a-f222-4521-8349-6530666a4a70"
+          }
+        },
+        "ListRemittancesRowsByBulkImport-1Email": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_remittances",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <attribute name=\"new_name\" />\n<attribute name=\"new_pdf\" />\n    <attribute name=\"new_pdfurl\" />\n <attribute name=\"new_supplierid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{triggerBody()?['new_batchid']}\" />\n    </filter>\n    <link-entity name=\"account\" from=\"accountid\" to=\"new_supplierid\" link-type=\"inner\" alias=\"a_account\">\n      <attribute name=\"new_invoicepdfgeneration\" />\n      <filter type=\"and\">\n        <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000002\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+          }
+        },
+        "Condition_all_on_1_email": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('ListRemittancesRowsByBulkImport-1Email')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "List_suppliers_with_1_per_PDF_-_All_on_1_Email": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "accounts",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"account\">\n    <attribute name=\"name\" />\n    <attribute name=\"primarycontactid\" />\n    <attribute name=\"telephone1\" />\n    <attribute name=\"accountid\" />\n    <order attribute=\"name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000002\" />\n    </filter>\n    <link-entity name=\"new_remittance\" from=\"new_supplierid\" to=\"accountid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_batchid\" operator=\"eq\"  uitype=\"new_batch\" value=\"@{triggerBody()?['new_batchid']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+              }
+            },
+            "For_eachSupplier": {
+              "type": "Foreach",
+              "foreach": "@outputs('List_suppliers_with_1_per_PDF_-_All_on_1_Email')?['body/value']",
+              "actions": {
+                "get_a_primary_contact_row_by_ID_1": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "contacts",
+                      "recordId": "@body('Get_accountrow_by_ID')?['_primarycontactid_value']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_accountrow_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c3fe75a1-78ef-47b6-a427-746cdcece5ff"
+                  }
+                },
+                "List_remittance_rows_by_bulk_import-by_supplier": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_remittances",
+                      "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittance\">\n    <attribute name=\"new_remittanceid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_supplierid\" />\n    <attribute name=\"new_pdfurl\" />\n    <attribute name=\"new_selfbillreference\" />\n    <attribute name=\"new_remittancedate\" />\n    <attribute name=\"new_assignmentid\" />\n    <attribute name=\"new_managingaccountid\" />\n    <attribute name=\"new_batchid\" />\n    <attribute name=\"new_branchid\" />\n    <attribute name=\"new_pdf\" />\n    <order attribute=\"new_remittancedate\" descending=\"true\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_batchid\" operator=\"eq\" uitype=\"new_batch\" value=\"@{triggerOutputs()?['body/new_batchid']}\" />\n      <condition attribute=\"new_supplierid\" operator=\"eq\" uitype=\"account\" value=\"@{outputs('Get_accountrow_by_ID')?['body/accountid']}\" />\n    </filter>\n    <link-entity name=\"account\" from=\"accountid\" to=\"new_supplierid\" link-type=\"inner\" alias=\"a_account\">\n      <attribute name=\"new_invoicepdfgeneration\" />\n      <filter type=\"and\">\n        <condition attribute=\"new_invoicepdfgeneration\" operator=\"eq\" value=\"100000002\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "ListRecords",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "get_a_primary_contact_row_by_ID_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "64e5b399-bca1-4e95-8dad-8e962d4bd0c0"
+                  }
+                },
+                "Apply_to_each2": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('List_remittance_rows_by_bulk_import-by_supplier')?['body/value']",
+                  "actions": {
+                    "Update_a_row_1": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_remittances",
+                          "recordId": "@outputs('ComposeRemittance')",
+                          "item/statecode": 1,
+                          "item/statuscode": 100000000
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateRecord",
+                          "connectionName": "shared_commondataserviceforapps"
+                        }
+                      },
+                      "runAfter": {
+                        "Condition_that_remittance_contains_pdf_1": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c5f945cc-f545-45b0-baa4-6b872ed918ec"
+                      }
+                    },
+                    "Condition_that_remittance_contains_pdf_1": {
+                      "type": "If",
+                      "expression": {
+                        "and": [
+                          {
+                            "not": {
+                              "equals": [
+                                "@item()?['new_pdfurl']",
+                                "@null"
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      "actions": {
+                        "Append_to_array_variable_1": {
+                          "type": "AppendToArrayVariable",
+                          "inputs": {
+                            "name": "attachments",
+                            "value": {
+                              "Name": "@item()?['new_name']",
+                              "URL": "@item()?['new_pdfurl']"
+                            }
+                          },
+                          "metadata": {
+                            "operationMetadataId": "3beee4f9-9690-49f1-849c-83814c37e422"
+                          }
+                        }
+                      },
+                      "else": {
+                        "actions": {}
+                      },
+                      "runAfter": {
+                        "ComposeRemittanceRef": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "43678e87-efea-4c55-9f4d-5e72db35a3d0"
+                      }
+                    },
+                    "ComposeRemittance": {
+                      "type": "Compose",
+                      "inputs": "@item()?['new_remittanceid']",
+                      "metadata": {
+                        "operationMetadataId": "4216b9cf-278f-4a15-8847-5c80b2815a5d"
+                      }
+                    },
+                    "ComposeRemittanceRef": {
+                      "type": "Compose",
+                      "inputs": "@item()?['new_name']",
+                      "runAfter": {
+                        "ComposeRemittance": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "ed0bf321-85e8-4d28-b2b1-1306b24767d3"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "List_remittance_rows_by_bulk_import-by_supplier": [
+                      "Succeeded"
+                    ]
+                  },
+                  "runtimeConfiguration": {
+                    "concurrency": {
+                      "repetitions": 1
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7f3ed146-f767-4aaf-9992-c9cc80ebcc85"
+                  }
+                },
+                "Composesupplierid": {
+                  "type": "Compose",
+                  "inputs": "@item()?['accountid']",
+                  "runAfter": {
+                    "Reset_Set_array_variable_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7493130d-aacd-407a-b1b2-53d2a007dedc"
+                  }
+                },
+                "Get_accountrow_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "accounts",
+                      "recordId": "@outputs('Composesupplierid')"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps-2"
+                    }
+                  },
+                  "runAfter": {
+                    "Composesupplierid": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4806a69a-eefd-4278-bf85-34ff54f988ba"
+                  }
+                },
+                "Send_an_email_(V2)_1": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "emailMessage/To": "@body('get_a_primary_contact_row_by_ID_1')?['emailaddress1']",
+                      "emailMessage/Subject": "Remittance",
+                      "emailMessage/Body": "<br><p class=\"editor-paragraph\">@{variables('Message')}</p><br><p class=\"editor-paragraph\">@{variables('PDFURLS')}</p>",
+                      "emailMessage/Cc": "@body('Get_accountrow_by_ID')?['new_invoiceccemails']",
+                      "emailMessage/Importance": "Normal"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                      "operationId": "SendEmailV2",
+                      "connectionName": "shared_office365-1"
+                    }
+                  },
+                  "runAfter": {
+                    "Compose-copy": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c7f3fb0b-886a-4623-9a32-3d5d646f256f"
+                  }
+                },
+                "Reset_Set_array_variable_1": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "attachments",
+                    "value": []
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4e9f56ac-40a6-4b45-a6b1-f62f34a2cd90"
+                  }
+                },
+                "Condition-copy-copy": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "greater": [
+                          "@length(variables('attachments'))",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Apply_to_each1": {
+                      "type": "Foreach",
+                      "foreach": "@variables('attachments')",
+                      "actions": {
+                        "Append_to_string_variable": {
+                          "type": "AppendToStringVariable",
+                          "inputs": {
+                            "name": "PDFURLS",
+                            "value": "@concat('<a href=\"', items('Apply_to_each1')?['URL'], '\">', items('Apply_to_each1')?['Name'], '</a><br>')\r\n\r\n"
+                          },
+                          "metadata": {
+                            "operationMetadataId": "c7c6b3f7-a873-4f55-9cee-e5a38fbb0056"
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "39c35c26-4126-4431-8650-29a0df325fb1"
+                      }
+                    },
+                    "Append_to_string_variable_1-copy": {
+                      "type": "AppendToStringVariable",
+                      "inputs": {
+                        "name": "PDFURLS",
+                        "value": "</ul>"
+                      },
+                      "runAfter": {
+                        "Apply_to_each1": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c450d572-243b-4a39-9167-8b395552d4a4"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {
+                      "Set_variable-copy_1": {
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "PDFURLS",
+                          "value": "no PDF Links attached"
+                        },
+                        "metadata": {
+                          "operationMetadataId": "34b6833b-bfa3-49a5-a42a-98878a755899"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Apply_to_each2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c5eb43cd-3247-4ea5-b2fb-a6d8ffe58279"
+                  }
+                },
+                "Compose-copy": {
+                  "type": "Compose",
+                  "inputs": "@variables('PDFURLS')",
+                  "runAfter": {
+                    "Condition-copy-copy": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "60e29ffc-e64b-46e4-969a-197c3b2f2ed7"
+                  }
+                }
+              },
+              "runAfter": {
+                "List_suppliers_with_1_per_PDF_-_All_on_1_Email": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6ace48c4-24bd-4d23-a467-bf7350185297"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a701936b-ad63-468a-a2d4-82cf94797481"
+          }
+        },
+        "Initialize_PDFURL_variable-copy": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PDFURLS",
+                "type": "string",
+                "value": "<ul>"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_attachments_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "305e4d87-9bb1-4478-9890-ac84490190e6"
+          }
+        },
+        "Set_variable_2-copy": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "PDFURLS",
+            "value": "<ul>"
+          },
+          "runAfter": {
+            "ListRemittancesRowsByBulkImport-1Email": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8c0b349b-afa0-45be-8177-331b46622ed1"
+          }
+        },
+        "Compose": {
+          "type": "Compose",
+          "inputs": "@length(outputs('ListRemittancesRowsByBulkImport-1Email')?['body/value'])",
+          "runAfter": {
+            "Set_variable_2-copy": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_1": {
+          "type": "Compose",
+          "inputs": "@length(outputs('List_remittances_rows_by_bulk_import')?['body/value'])",
+          "runAfter": {
+            "List_remittances_rows_by_bulk_import": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {}
+        },
+        "Condition_if_global_notification_is_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Message_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "Please find your Remittance links below:\n"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_PDFURL_variable-copy": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,11 @@
+<powerpagecomponent powerpagecomponentid="7489ac79-f5b0-ef11-b8e8-000d3ad5195d">
+  <content>{"adx_flowapiurl":"/_api/cloudflow/v1.0/trigger/d4ce2718-84a7-ef11-a72f-6045bd6b1c05","adx_flowtriggerurl":"https://c61047c8-5fef-e189-913c-90734656dda6.10.common.uk.azure-apihub.net:443/apim/logicflows/F75A487A2051E6618F134D9CA613910D-E49C6A165BE2CCEB/triggers/manual/run?api-version=2016-06-01","adx_metadata":"f75a487a-2051-e661-8f13-4d9ca613910d","adx_CloudFlowConsumer_adx_webrole":["b5b6db58-bfdb-ee11-904c-000d3a86a889","cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3","a189215f-0e05-ee11-8f6d-6045bd12f8f9"],"_adx_processid_value":"d4ce2718-84a7-ef11-a72f-6045bd6b1c05"}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Set Primary Approver</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

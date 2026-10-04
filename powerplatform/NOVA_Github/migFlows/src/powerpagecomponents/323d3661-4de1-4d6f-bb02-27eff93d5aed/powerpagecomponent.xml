@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="323d3661-4de1-4d6f-bb02-27eff93d5aed">
+  <content>{
+  "displayorder": 8,
+  "pageid": "b836c7fe-e2c0-b930-9b34-eed70b327e29",
+  "parentweblinkid": "17954926-90e1-427d-b40b-0f72a9e8ce4d",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Staff Availability</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="a8fa562e-80fa-4c4d-837e-1d4a4ea07d49">
+  <content>{
+  "displayorder": 38,
+  "pageid": "f8ec70ec-5901-23f8-3c4a-75defa9322dd",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Rate Type Edit</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

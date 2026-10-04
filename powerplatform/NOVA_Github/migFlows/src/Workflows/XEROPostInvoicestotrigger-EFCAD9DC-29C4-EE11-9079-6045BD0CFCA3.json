@@ -1,0 +1,168 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "ab27ac10-3b80-42c9-9a9b-1c25f429554d"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "ResponseCode",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "XeroClientId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "BatchId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_3": {
+                  "title": "XeroTenantId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_4": {
+                  "title": "XeroAccessToken",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2",
+                "text_3",
+                "text_4"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Condition": {
+          "actions": {
+            "Respond_to_a_PowerApp_or_flow": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "5a887d06-0f66-4898-beaa-589c713fb6e7"
+              },
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "statusCode": 200,
+                "body": {
+                  "processed": "True"
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed": {
+                      "title": "processed",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Respond_to_a_PowerApp_or_flow_2": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "0d1227c0-d7b7-4734-bfd9-f7f46d74fbc1"
+                },
+                "type": "Response",
+                "kind": "PowerApp",
+                "inputs": {
+                  "statusCode": 200,
+                  "body": {
+                    "processed": "False"
+                  },
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "processed": {
+                        "title": "processed",
+                        "x-ms-dynamically-added": true,
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@body('Run_a_Child_Flow')?['resultbool']",
+              "@true"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "138d80e8-4387-476c-a3d6-d929972aa9c8"
+          },
+          "type": "If"
+        },
+        "Run_a_Child_Flow": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "fd0132c3-5027-48a9-a120-030e5822d7dc"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "0e0d50dd-8dbf-ee11-9079-6045bd0cfca3"
+            },
+            "body": {
+              "text_1": "@triggerBody()['text']",
+              "text_3": "@triggerBody()['text_1']",
+              "text_4": "@triggerBody()['text_2']",
+              "text": "@triggerBody()['text_3']",
+              "text_2": "@triggerBody()['text_4']"
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

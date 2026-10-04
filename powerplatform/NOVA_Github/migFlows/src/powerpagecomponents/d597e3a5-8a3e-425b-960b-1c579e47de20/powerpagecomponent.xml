@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="d597e3a5-8a3e-425b-960b-1c579e47de20">
+  <content>{
+  "displayorder": 1,
+  "pageid": "79e88227-f057-0025-2f39-b01fa8cb708f",
+  "parentweblinkid": "24da36a0-e829-4eea-b2cf-cd7ac0f960b4",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "4a5e8d97-2223-4ef2-b5f0-42b4ce6cc95f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Actions</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

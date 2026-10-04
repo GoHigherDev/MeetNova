@@ -1,0 +1,591 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_new-5fbullhorn-20placement-5f64b9d7f3ded83e2c": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharednew5fbullhorn20placement5f64b9d7f3ded83e2c_9c38e"
+        },
+        "api": {
+          "name": "shared_new-5fbullhorn-20placement-5f64b9d7f3ded83e2c",
+          "logicalName": "new_5Fbullhorn-20placement"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "05f3cee4-5a91-4cb6-94fc-a6272b2f12d4"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "TEST",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "TEST",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            },
+            "headersSchema": {
+              "x-ms-user-name-encoded": {
+                "title": "User name",
+                "type": "string",
+                "format": "byte",
+                "x-ms-dynamically-added": false
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_variable_-_Client_ID": {
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3a66ce3e-2236-4f12-ad06-8a33b73ec38f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientID",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Client_Name": {
+          "runAfter": {
+            "DOES_THE_CLIENT_ID_EXIST_ALREADY,_IF_NOT,_ADD_A_NEW_ONE": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "90f9a3a1-dd74-4143-a3b4-866b5f7d5c4c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientName",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "DOES_THE_CLIENT_ID_EXIST_ALREADY,_IF_NOT,_ADD_A_NEW_ONE": {
+          "runAfter": {
+            "Initialize_variable_-_Client_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5e19947a-4ea0-46a4-a23c-1e6f556bcc6c"
+          },
+          "type": "Compose",
+          "inputs": "TEST"
+        },
+        "Initialize_variable_-_Client_Address_Line_1": {
+          "runAfter": {
+            "DO_WE_NEED_TO_ALSO_FIND_CLIENT_ACCOUNT_DETAILS_AND_ADD": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3dcc0ff7-3f47-4488-9050-78ce41a2e194"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientAddressLine1",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Client_Address_Line_2": {
+          "runAfter": {
+            "Initialize_variable_-_Client_Address_Line_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e06c9b81-64bd-45c3-8146-ea8e4b1e5a20"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientAddressLine2",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Client_Address_Line_3": {
+          "runAfter": {
+            "Initialize_variable_-_Client_Address_Line_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0bb0b76c-ae83-429d-8ee3-3f73804bd504"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientAddressLine3",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Client_Address_Line_4": {
+          "runAfter": {
+            "Initialize_variable_-_Client_Address_Line_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ea3d130d-ec52-49a9-8e98-ff0116641b33"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientAddressLine4",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Client_Address_Line_5": {
+          "runAfter": {
+            "Initialize_variable_-_Client_Address_Line_4": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1ace0c96-73d6-4578-acc1-7c778a572534"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientAddressLine5",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Currency": {
+          "runAfter": {
+            "Initialize_variable_-_Client_Address_Line_5": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "da316659-b72b-4b41-9737-39f03e65a87f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Currency",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Primary_Contact": {
+          "runAfter": {
+            "Initialize_variable_-_Client_Name": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a893243f-4b34-4f65-8194-b6ab21b427c5"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PrimaryContact",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Payment_Terms": {
+          "runAfter": {
+            "Initialize_variable_-_Currency": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c09ec1fc-71e2-4c4a-afa8-9126672977c6"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PaymentTerms",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Invoice_Grouping": {
+          "runAfter": {
+            "Initialize_variable_-_Payment_Terms": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0c022d1f-5463-4c5e-a932-ad51a6cc2433"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "InvoiceGrouping",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Invoice_PDF_Generation": {
+          "runAfter": {
+            "Initialize_variable_-_Invoice_Grouping": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bd02a6a6-74e2-4200-9e86-d73c80f99988"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "InvoicePDFGeneration",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Expenses_Attached_to_Invoice": {
+          "runAfter": {
+            "Initialize_variable_-_Invoice_PDF_Generation": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d763d3db-8e42-4bac-8846-f9577da85502"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ExpensesAttachedToInvoice",
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Timesheet_Attached_to_Invoice": {
+          "runAfter": {
+            "Initialize_variable_-_Expenses_Attached_to_Invoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "590a4afe-7d8d-4700-8b86-5e250bfa2492"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TimesheetAttachedToInvoice",
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Bill_Frequency": {
+          "runAfter": {
+            "Initialize_variable_-_Timesheet_Attached_to_Invoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5cbc9dee-ac96-4c21-9785-78d8af797c97"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "BillFrequency",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Billing_Month": {
+          "runAfter": {
+            "Initialize_variable_-_Bill_Frequency": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1a59ae18-b831-4214-97c3-aa9b6f6926e1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "BillingMonth",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Split_Expenses_to_a_New_Invoice": {
+          "runAfter": {
+            "Initialize_variable_-_Billing_Month": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f02c460e-412f-4d8f-8242-8d98870eff9b"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SplitExpenses",
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        "DO_WE_NEED_TO_ALSO_FIND_CLIENT_ACCOUNT_DETAILS_AND_ADD": {
+          "runAfter": {
+            "Initialize_variable_-_Primary_Contact": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "14d97785-d6bf-4dac-ac83-64fa3dd0b54c"
+          },
+          "type": "Compose",
+          "inputs": "TEST"
+        },
+        "ListRows-GetClientbyBullhornID": {
+          "runAfter": {
+            "Initialize_variable_-_Split_Expenses_to_a_New_Invoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f5ce82d3-47f6-438b-9741-fbd0b1b74e30"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"account\">\n    <attribute name=\"name\" />\n    <attribute name=\"primarycontactid\" />\n    <attribute name=\"telephone1\" />\n    <attribute name=\"accountid\" />\n    <order attribute=\"name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_bullhornid\" operator=\"eq\" value=\"@{variables('ClientID')}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Add_a_new_row": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "790c4f4b-894d-4c22-862a-3f7488cf69c4"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "accounts",
+                  "item/name": "@variables('ClientName')",
+                  "item/address1_line1": "@variables('ClientAddressLine1')",
+                  "item/address1_line2": "@variables('ClientAddressLine2')",
+                  "item/address1_postalcode": "@variables('ClientAddressLine3')",
+                  "item/new_bullhornid": "@variables('ClientID')",
+                  "item/transactioncurrencyid@odata.bind": "@variables('Currency')",
+                  "item/new_expensestobeattachedtoinvoices": "@variables('ExpensesAttachedToInvoice')",
+                  "item/new_isclient": true,
+                  "item/new_paymentterms": "@variables('PaymentTerms')",
+                  "item/new_splitexpensesontoanewinvoice": "@variables('SplitExpenses')",
+                  "item/new_timesheetstobeattachedtoinvoices": "@variables('TimesheetAttachedToInvoice')"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "ListRows-GetClientbyBullhornID": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Apply_to_each": {
+                "foreach": "@outputs('ListRows-GetClientbyBullhornID')?['body/value']",
+                "actions": {
+                  "Update_a_row": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "7a585f3e-cb90-49d4-a1e9-faaca5b2e3d2"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_commondataserviceforapps",
+                        "operationId": "UpdateRecord",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                      },
+                      "parameters": {
+                        "entityName": "accounts",
+                        "recordId": "@items('Apply_to_each')?['accountid']"
+                      },
+                      "authentication": {
+                        "type": "Raw",
+                        "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                      }
+                    }
+                  }
+                },
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "a0aada9f-0ecd-4545-9246-759dbcb080df"
+                },
+                "type": "Foreach"
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@length(outputs('ListRows-GetClientbyBullhornID')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4b323552-3d82-4605-8f9f-5b2e7a051080"
+          },
+          "type": "If"
+        },
+        "HTTP": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9c8126ef-5858-45cb-936a-4a676e469586"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://auth-emea.bullhornstaffing.com/oauth/token",
+            "headers": {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "body": "grant_type=authorization_code&code=@{outputs('Compose')}&client_id=f338a013-b76f-4395-b78f-605f13ce5343&client_secret=ZziAGBaSIMCPqCQGTLnGoagz"
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "get_rest": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "852fd3d0-80ad-4228-8f33-be648975866d"
+          },
+          "type": "Compose",
+          "inputs": "@body('get_rest')"
+        },
+        "get_rest": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "0a77097d-4549-4a1e-bae8-2a4fe6533e9f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_new-5fbullhorn-20placement-5f64b9d7f3ded83e2c",
+              "operationId": "Getresturlid",
+              "apiId": ""
+            },
+            "parameters": {
+              "username": "quickshifts.api"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

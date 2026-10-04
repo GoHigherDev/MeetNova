@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="d7c721c3-644a-d596-3664-1fd797fd5162">
+  <content>{
+  "webpageid": "7bca67e1-c066-7474-1bb3-1a336986cad6",
+  "right": 2,
+  "scope": 1,
+  "adx_webpageaccesscontrolrule_webrole": [
+    "02fc0d54-701f-f011-9989-6045bd69f0ab",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+    "066f7c2f-4572-ee11-8179-6045bd0cfca3",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9",
+    "0e90c088-3441-ef11-a316-6045bd15aee8"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Suppliers</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

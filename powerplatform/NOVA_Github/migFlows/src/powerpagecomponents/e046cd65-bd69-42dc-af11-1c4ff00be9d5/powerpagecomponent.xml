@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="e046cd65-bd69-42dc-af11-1c4ff00be9d5">
+  <content>{
+  "displayorder": 61,
+  "pageid": "4891c563-5b69-f581-a0a2-7b83eeea5ee8",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Role Insert-deleted</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

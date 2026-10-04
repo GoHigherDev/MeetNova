@@ -1,0 +1,278 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "e8531bc5-c2be-4180-8802-2d85f77afad3"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "bulkimportid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "recordsarray",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "number": {
+                  "title": "bulkImporttype",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter a number",
+                  "x-ms-content-hint": "NUMBER"
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "number"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Condition_Invoice": {
+          "actions": {
+            "ComposeSplitGuid": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "def05686-439f-431c-8aef-af841a4c63fc"
+              },
+              "type": "Compose",
+              "inputs": "@split(triggerBody()['text_1'],',')"
+            },
+            "Apply_to_each": {
+              "foreach": "@outputs('ComposeSplitGuid')",
+              "actions": {
+                "Compose": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "9d6eb927-18dc-4a6b-82e9-0818be98321f"
+                  },
+                  "type": "Compose",
+                  "inputs": "@trim(replace(replace(replace(items('Apply_to_each'), '\"', ''), '[', ''), ']', ''))"
+                },
+                "Update_a_row": {
+                  "runAfter": {
+                    "Compose": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "64ddd699-4423-4c91-ba68-7bcb68b1f7f1"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_invoices",
+                      "recordId": "@outputs('Compose')",
+                      "item/new_batchid@odata.bind": "/new_batchs(@{triggerBody()['text']})",
+                      "item/statecode": 0,
+                      "item/statuscode": 100000003
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "ComposeSplitGuid": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "46700529-3f47-4a70-8dff-ed0e8a2f95a5"
+              },
+              "type": "Foreach"
+            },
+            "Respond_to_a_Power_App_or_flow": {
+              "runAfter": {
+                "Apply_to_each": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "37953e94-3160-48c9-9994-7c00123a47f3"
+              },
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "statusCode": 200,
+                "body": {
+                  "success": "@{true}"
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "title": "success",
+                      "x-ms-dynamically-added": true,
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {},
+          "expression": {
+            "equals": [
+              "@triggerBody()['number']",
+              100000000
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0d1d5885-a000-4c9f-a946-0a1b7261c349"
+          },
+          "type": "If"
+        },
+        "Condition_remittance": {
+          "actions": {
+            "ComposeSplitGuid_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "18086f23-75a0-45f0-ad68-d9d01a1affb4"
+              },
+              "type": "Compose",
+              "inputs": "@split(triggerBody()['text_1'], ',')"
+            },
+            "Apply_to_each_2": {
+              "foreach": "@outputs('ComposeSplitGuid_2')",
+              "actions": {
+                "Compose_2": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "e59bfd42-341b-4a84-98cc-7c7752a4f75e"
+                  },
+                  "type": "Compose",
+                  "inputs": "@trim(replace(replace(replace(items('Apply_to_each_2'), '\"', ''), '[', ''), ']', ''))"
+                },
+                "Update_a_row_2": {
+                  "runAfter": {
+                    "Compose_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "02ab6c4c-88a8-4835-a1d1-9b9568beafa9"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_remittances",
+                      "recordId": "@outputs('Compose_2')",
+                      "item/new_batchid@odata.bind": "/new_batchs(@{triggerBody()['text']})",
+                      "item/statecode": 0,
+                      "item/statuscode": 100000003
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "ComposeSplitGuid_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "13ee3875-98c5-4168-a519-5f95d2f25870"
+              },
+              "type": "Foreach"
+            },
+            "Respond_to_a_Power_App_or_flow_2": {
+              "runAfter": {
+                "Apply_to_each_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c8aaf4ef-726b-48c4-b07b-06fa43e3eead"
+              },
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "statusCode": 200,
+                "body": {
+                  "success": "@{true}"
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "title": "success",
+                      "x-ms-dynamically-added": true,
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Condition_Invoice": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@triggerBody()['number']",
+              100000001
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "08001d5a-96ec-4a5d-9c98-287800a34c2f"
+          },
+          "type": "If"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

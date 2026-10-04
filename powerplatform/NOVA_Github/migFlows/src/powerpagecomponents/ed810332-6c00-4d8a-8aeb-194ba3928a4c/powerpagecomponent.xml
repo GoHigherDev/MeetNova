@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="ed810332-6c00-4d8a-8aeb-194ba3928a4c">
+  <content>{
+  "displayorder": 42,
+  "pageid": "9ce3ec2f-3b5c-c8f8-fe04-af0d10a157ea",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Assignment Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

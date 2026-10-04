@@ -1,0 +1,96 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 7,
+              "subscriptionRequest/entityname": "new_remittance",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_totaltax, new_total, new_remittancedate",
+              "subscriptionRequest/filterexpression": "new_remittancedate ne null"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "cab08c0c-4ad7-4509-8110-14f4d8817fd5"
+          }
+        }
+      },
+      "actions": {
+        "List_candidates_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"contact\">\n    <attribute name=\"fullname\" />\n    <attribute name=\"contactid\" />\n    <link-entity name=\"new_timesheet\" from=\"new_candidateid\" to=\"contactid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_remittanceid\" operator=\"eq\" uiname=\"REM-1077\" uitype=\"new_remittance\" value=\"@{triggerOutputs()?['body/new_remittanceid']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d2ee1ed2-752d-4de7-9c38-6459ed3e9ea3"
+          }
+        },
+        "For_each": {
+          "type": "foreach",
+          "foreach": "@outputs('List_candidates_rows')?['body/value']",
+          "actions": {
+            "Run_a_Child_Flow": {
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "323c968e-9bb8-ef11-a72f-6045bd6b2802"
+                },
+                "body": {
+                  "text": "@triggerOutputs()?['body/new_remittanceid']",
+                  "text_1": "@item()?['contactid']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_candidates_rows": [
+              "SUCCEEDED"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="10650d32-535c-0394-867a-6fd6cd71c131">
+  <content>{
+  "displayorder": 210,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "e57796e8-56c8-f011-8544-6045bd15153f",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8cb3e2a9-9be6-180f-c10c-04ed23d43c49",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "remittanceadjustoption",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Remittance Adjust Option"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Remittance Adjust Option</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Remittance Adjust OptionRemittance Adjust Option</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

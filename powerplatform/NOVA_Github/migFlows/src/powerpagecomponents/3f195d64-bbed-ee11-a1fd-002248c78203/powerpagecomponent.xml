@@ -1,0 +1,14 @@
+<powerpagecomponent powerpagecomponentid="3f195d64-bbed-ee11-a1fd-002248c78203">
+  <content>{
+  "botschemaname": "cr0b7_a3b9d7eb-55f1-430f-aa22-d1962d797193",
+  "configjson": "{'skillConfigViewName': 'Offshore Timesheets bot Answers'}"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>botConsumer</name>
+  <powerpagecomponenttype>27</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

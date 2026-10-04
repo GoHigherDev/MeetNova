@@ -1,0 +1,54 @@
+<powerpagecomponent powerpagecomponentid="7a96a7e1-bce7-ef11-be20-002248cba742">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": true,
+  "attachfilelabel": "[{\"LCID\":1025,\"Value\":\"\"},{\"LCID\":1033,\"Value\":\"Include evidence of expenses\"}]",
+  "attachfilemaxsize": 500,
+  "attachfilerequired": false,
+  "attachfilerequirederrormessage": "[{\"LCID\":1025,\"Value\":\"\"},{\"LCID\":1033,\"Value\":\"Please attach evidence\"}]",
+  "attachfilerestrictaccept": false,
+  "attachfilesaveoption": 756150000,
+  "attachfilestoragelocation": 756150000,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_timesheetcost",
+  "entitypermissionsenabled": true,
+  "entitysourcetype": 0,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": false,
+  "mode": 100000000,
+  "onsuccess": 756150001,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": true,
+  "redirecturlquerystringname": "expenseid",
+  "redirectwebpage": "322e9f40-d034-6bea-2d63-a21d3a482ac6",
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "$(document).ready(function(){\r\n    var expenseFee=0,expenseTotal=0;\r\n    const expenseFeePercent = parseFloat(window.parent.parentExpenseFeePercent) || 0;\r\n\r\n    $('#new_expensecostscurrency').on('input',calculateExpenseTotal);\r\n    $('#new_percentofbill').closest('tr').hide();\r\n    $('#new_expensebilltotal').closest('tr').hide();\r\n    $('#new_expensepaytotal').closest('tr').hide();\r\n\r\n    function calculateExpenseTotal(){\r\n        let expenseCost = $('#new_expensecostscurrency').val();\r\n        let expense = parseFloat(expenseCost) || 0;\r\n        \r\n        expenseFee = expense * (expenseFeePercent/100);\r\n        expenseTotal = expense + expenseFee;\r\n        \r\n    $('#new_percentofbill').val(Number(expenseFee.toFixed(2)));\r\n    $('#new_expensebilltotal').val(Number(expenseTotal.toFixed(2)));\r\n    $('#new_expensepaytotal').val(Number(expense.toFixed(2)));\r\n    }\r\n});",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "insertdetailedexpense",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Detailed Expense Insert</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

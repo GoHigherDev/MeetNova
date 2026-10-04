@@ -1,0 +1,269 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "73847e50-d695-4a54-8446-e8ed8e7ec60c"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "AssignmentID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_assignment_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "bea28e6e-f138-477d-b24a-98e8cbbcee6a"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_Assignment_End_Date": {
+          "runAfter": {
+            "Initialize_Assignment_start_date": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "67796f4c-d03a-4b7b-9c1d-15403a9d0cfe"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Assignment End Date",
+                "type": "string",
+                "value": "@outputs('Get_assignment_row_by_ID')?['body/new_enddate']"
+              }
+            ]
+          }
+        },
+        "Initialize_Week_start_Monday": {
+          "runAfter": {
+            "Initialize_Week_end_Sunday": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a60e762-71d2-403b-a3b1-1729c585ada8"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week start monday",
+                "type": "string",
+                "value": "@{addHours(formatDateTime(subtractFromTime(addDays(utcNow(), 1), dayOfWeek(utcNow()), 'Day'), 'yyyy-MM-dd'),8)\r\n}"
+              }
+            ]
+          }
+        },
+        "Initialize_Assignment_start_date": {
+          "runAfter": {
+            "Get_assignment_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1ac67eb4-da8d-4236-9564-9f101433a367"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": " Assignment start date",
+                "type": "string",
+                "value": "@{addSeconds(formatDateTime(outputs('Get_assignment_row_by_ID')?['body/new_startdate'],'yyyy-MM-dd'),1)}"
+              }
+            ]
+          }
+        },
+        "Condition_assignment_dates_valid": {
+          "actions": {
+            "List_current_timesheet_this_week": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "54fbb3af-ae4f-4710-8fd3-acf41592e60e"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheet\">\n    <attribute name=\"new_timesheetid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_assignmentid\" operator=\"eq\"  uitype=\"new_assignment\" value= '@{outputs('Get_assignment_row_by_ID')?['body/new_assignmentid']}'/>\n      <condition attribute=\"new_periodend\" operator=\"on-or-before\" value='@{variables('Week end Sunday')}'/>\n      <condition attribute=\"new_periodstart\" operator=\"on-or-after\" value='@{variables('Week start monday')}' />\n    </filter>\n  </entity>\n</fetch>",
+                  "$top": 5
+                },
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Condition": {
+              "actions": {
+                "Run_a_Child_Flow_create_timesheet": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "72dcaa86-77c9-4b12-bc28-a0a13150cb11"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "b0baaca8-4144-ef11-a316-002248d342f8"
+                    },
+                    "body": {
+                      "text": "@triggerBody()?['text']"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "List_current_timesheet_this_week": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@length(outputs('List_current_timesheet_this_week')?['body/value'])",
+                  0
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0ee3308f-7dc3-4e2a-8a4e-9d39fcd16991"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Initialize_Week_start_Monday": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "lessOrEquals": [
+                  "@variables(' Assignment start date')",
+                  "@variables('Week end Sunday')"
+                ]
+              },
+              {
+                "greaterOrEquals": [
+                  "@variables('Assignment End Date')",
+                  "@variables('Week start monday')"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "09c7024b-b84e-48e2-b304-faf0b4b475e2"
+          },
+          "type": "If"
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Condition_assignment_dates_valid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f282e7ca-f347-4ccd-8a7b-5d03033da8b0"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "return": "yes"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "return": {
+                  "title": "return",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "Initialize_Week_end_Sunday": {
+          "runAfter": {
+            "Initialize_Assignment_End_Date": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d924c9b1-62f9-47e6-a088-14fd0f51b8af"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week end Sunday",
+                "type": "string",
+                "value": "@{addHours(addDays(subtractFromTime(utcNow(), dayOfWeek(utcNow()), 'Day'), 7), 8)}"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

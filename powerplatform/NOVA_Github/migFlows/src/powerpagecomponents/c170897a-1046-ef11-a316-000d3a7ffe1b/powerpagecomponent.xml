@@ -1,0 +1,11 @@
+<powerpagecomponent powerpagecomponentid="c170897a-1046-ef11-a316-000d3a7ffe1b">
+  <content>{"adx_flowapiurl":"/_api/cloudflow/v1.0/trigger/3dc28096-4be8-ee11-a203-6045bd0d54a8","adx_flowtriggerurl":"https://uk-001.azure-apim.net:443/apim/logicflows/82D65E3721EAA96868BFC4B67A863529-67F7AC550118ADF9/triggers/manual/run?api-version=2016-06-01","adx_metadata":"82d65e37-21ea-a968-68bf-c4b67a863529","adx_CloudFlowConsumer_adx_webrole":["85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"],"_adx_processid_value":"3dc28096-4be8-ee11-a203-6045bd0d54a8"}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Availability Inserts</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

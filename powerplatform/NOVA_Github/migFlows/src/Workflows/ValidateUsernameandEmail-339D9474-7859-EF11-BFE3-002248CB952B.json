@@ -1,0 +1,128 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "2c1d9212-98cd-4123-aaf4-390ddf500936"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "Username",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "Email",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Run_a_Child_Flow": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "847217bd-c3b0-4190-b0d9-819c6b817e55"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "f86e8b7d-7359-ef11-bfe3-002248cb952b"
+            },
+            "body": {
+              "text": "@triggerBody()['text_1']"
+            }
+          }
+        },
+        "Run_a_Child_Flow_2": {
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6875240f-f4a3-4696-8bd8-22f94185e6b5"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e3ccd5e7-7359-ef11-bfe3-002248cb952b"
+            },
+            "body": {
+              "text": "@triggerBody()['text']"
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Run_a_Child_Flow_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6c298deb-789f-4d2d-9da4-f70f79aaf737"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "emailexist": "@{body('Run_a_Child_Flow')?['emailexists']}",
+              "usernameexist": "@{body('Run_a_Child_Flow_2')?['usernameexists']}",
+              "success": "@{true}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "emailexist": {
+                  "title": "EmailExist",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                },
+                "usernameexist": {
+                  "title": "UsernameExist",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                },
+                "success": {
+                  "title": "Success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

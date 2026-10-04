@@ -1,0 +1,414 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "ea23d53f-af8c-4041-95e0-8ec2c6e6968a"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "new_accountingtransactionlog",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_responsecode"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "HTTP": {
+          "runAfter": {
+            "Initialize_variable_Authorization": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b8e85e7c-6912-468c-9406-ebb1f4cbd819"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://identity.xero.com/connect/token",
+            "headers": {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Connection": "keep-alive",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Accept": "*/*"
+            },
+            "body": "grant_type=authorization_code&client_id=@{outputs('Get_managing_account_row_by_ID')?['body/new_xeroclientid']}&code=@{variables('Response Code')}&redirect_uri=https://offshoretimesheet.powerappsportals.com/xeroresponse&code_verifier=cEwR3MacxFWpsJsMIq64yjH45PhHrZZtW8_rUt53F80"
+          }
+        },
+        "Initialize_variable_Response_Code": {
+          "runAfter": {
+            "Get_managing_account_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89e6f9be-6af3-4d6f-8b06-40f8514343c0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Response Code",
+                "type": "string",
+                "value": "@triggerOutputs()?['body/new_responsecode']"
+              }
+            ]
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "74f15286-a7c7-44f0-8c80-00e7973abc25"
+          },
+          "type": "Compose",
+          "inputs": "@body('HTTP')"
+        },
+        "Initialize_variable__Xero-Tenant-Id": {
+          "runAfter": {
+            "Initialize_variable_Response_Code": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8b5025e8-ca7d-40f6-95e9-fd3a2a447c21"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "XeroTenant-Id",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_Authorization": {
+          "runAfter": {
+            "Initialize_variable__Xero-Tenant-Id": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "afcfcdda-db50-4389-ba8e-7bf71cf04032"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Authorization",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e112db0-9ab3-4a06-af89-c667519464da"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('Compose')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_token": {
+                  "type": "string"
+                },
+                "access_token": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "integer"
+                },
+                "token_type": {
+                  "type": "string"
+                },
+                "refresh_token": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Set_variable_Tenantid_338f1beb-e19b-42c4-bc5c-0aa8ef834043": {
+          "runAfter": {
+            "ParseJSONConnection": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7dcca483-25c4-49ab-ad95-fc360fc64254"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "XeroTenant-Id",
+            "value": "@{outputs('ParseJSONConnection')?['body'][0]['tenantId']}"
+          }
+        },
+        "Condition_Invoice": {
+          "actions": {
+            "Run_a_Invoice_Child_Flow": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "e1dd06a0-08b1-42ff-bcd3-ab9d3b1bdfa6"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "bb4b4536-dc56-ee11-be6f-6045bd0cfca3"
+                },
+                "body": {
+                  "text": "@triggerOutputs()?['body/new_accountingtransactionlogid']",
+                  "text_1": "@variables('Authorization')",
+                  "text_2": "@variables('XeroTenant-Id')",
+                  "text_3": "@outputs('Get_managing_account_row_by_ID')?['body/new_xeroclientid']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Set_variable_Tenantid_338f1beb-e19b-42c4-bc5c-0aa8ef834043": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Get_a_Batch_row_by_ID')?['body/new_batchestype']",
+              100000000
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c9a6bbbc-317f-4933-99a5-d3a35caff484"
+          },
+          "type": "If"
+        },
+        "Condition_Self_Bill": {
+          "actions": {
+            "Run_a_SelfBill_Child_Flow": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "e1dd06a0-08b1-42ff-bcd3-ab9d3b1bdfa6"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "2234289f-449e-ee11-be37-6045bd0cfca3"
+                },
+                "body": {
+                  "text_1": "@variables('Authorization')",
+                  "text_2": "@variables('XeroTenant-Id')",
+                  "text_3": "@outputs('Get_managing_account_row_by_ID')?['body/new_xeroclientid']",
+                  "text_4": "@outputs('Get_a_Batch_row_by_ID')?['body/new_batchid']",
+                  "text": "@triggerOutputs()?['body/new_accountingtransactionlogid']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Condition_Invoice": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@outputs('Get_a_Batch_row_by_ID')?['body/new_batchestype']",
+              100000001
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "45fae58a-866b-41d1-a4d9-4338293b7a7a"
+          },
+          "type": "If"
+        },
+        "Get_a_Batch_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "bc9ddfc5-317e-4713-b090-e2e305d89ede"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_batchs",
+              "recordId": "@triggerOutputs()?['body/_new_batchid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "HTTP_get_connections": {
+          "runAfter": {
+            "Set_variable_Authorization": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f741193b-f57e-4b0d-bc48-591ef7b8ef2c"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://api.xero.com/connections",
+            "headers": {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "@{variables('Authorization')}",
+              "Connection": "keep-alive"
+            }
+          }
+        },
+        "Set_variable_Authorization": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2848552d-e643-4a4d-804a-2e9779304421"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "Authorization",
+            "value": "Bearer @{body('Parse_JSON')?['access_token']}"
+          }
+        },
+        "ParseJSONConnection": {
+          "runAfter": {
+            "Compose_connection": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e112db0-9ab3-4a06-af89-c667519464da"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('Compose_connection')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "authEventId": {
+                    "type": "string"
+                  },
+                  "tenantId": {
+                    "type": "string"
+                  },
+                  "tenantType": {
+                    "type": "string"
+                  },
+                  "tenantName": {
+                    "type": "string"
+                  },
+                  "createdDateUtc": {
+                    "type": "string"
+                  },
+                  "updatedDateUtc": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "authEventId",
+                  "tenantId",
+                  "tenantType",
+                  "tenantName"
+                ]
+              }
+            }
+          }
+        },
+        "Compose_connection": {
+          "runAfter": {
+            "HTTP_get_connections": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "74f15286-a7c7-44f0-8c80-00e7973abc25"
+          },
+          "type": "Compose",
+          "inputs": "@body('HTTP_get_connections')"
+        },
+        "Get_managing_account_row_by_ID": {
+          "runAfter": {
+            "Get_a_Batch_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5b6a6238-b210-4722-8105-fdd22055de9e"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_a_Batch_row_by_ID')?['body/_new_managingaccountid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

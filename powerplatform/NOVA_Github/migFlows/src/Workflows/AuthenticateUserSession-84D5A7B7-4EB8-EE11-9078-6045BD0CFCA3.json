@@ -1,0 +1,702 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_11963"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "86a89f35-1ab3-4516-b81b-d325c4cd8b30"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "username",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "password",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_Authenticated_variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f91df6e2-a402-41eb-b70f-8bd8daac17ce"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Authenticated",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          }
+        },
+        "Initialize_SessionId_variable": {
+          "runAfter": {
+            "Initialize_Authenticated_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f8084c31-b92e-4785-b909-b953a0e88614"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SessionId",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "InitializeErrorMessagevariable": {
+          "runAfter": {
+            "Initialize_SessionId_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "20962bf2-b53a-4d64-8740-0bcac5b7a86e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ErrorMessage",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_Expiry_variable": {
+          "runAfter": {
+            "InitializeErrorMessagevariable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ca478f73-44bc-4490-88c0-65b204626a30"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Expiry",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Condition_username_and_pasword_exist": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "63abbe42-25dd-430e-b1aa-ee05dacba323"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "errormessage": "@variables('ErrorMessage')",
+              "sessionid": "@variables('SessionId')",
+              "expiry": "@variables('Expiry')",
+              "authenticated": "@{variables('Authenticated')}",
+              "contactid": "@variables('Contactid')",
+              "fullname": "@variables('Fullname')",
+              "clientid": "@variables('Clientid')"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errormessage": {
+                  "title": "ErrorMessage",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "sessionid": {
+                  "title": "SessionId",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "expiry": {
+                  "title": "Expiry",
+                  "x-ms-dynamically-added": true,
+                  "type": "string",
+                  "format": "date"
+                },
+                "authenticated": {
+                  "title": "Authenticated",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                },
+                "contactid": {
+                  "title": "Contactid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "fullname": {
+                  "title": "fullname",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "clientid": {
+                  "title": "Clientid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "List_rowsContact": {
+          "runAfter": {
+            "Initialize_clientid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c3fa0f80-0fec-4997-9404-89f0fe1c40d6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "fetchXml": "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>\n              <entity name='contact'>\n                <attribute name='contactid' />\n                <attribute name='fullname' />\n                <attribute name='new_isclient' />\n                <attribute name='parentcustomerid' />\n                <filter type='and'>\n                  <condition attribute='adx_identity_username' operator='eq' value='@{triggerBody()['text']}'/>\n                  <condition attribute='new_qspassword' operator='eq' value='@{triggerBody()['text_1']}'/>\n                </filter>\n              </entity>\n            </fetch>",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_username_and_pasword_exist": {
+          "actions": {
+            "Set_Authenticated_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "647c2e3b-3508-4a67-910b-423525b9db01"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Authenticated",
+                "value": "@true"
+              }
+            },
+            "Apply_to_each": {
+              "foreach": "@outputs('List_rowsContact')?['body/value']",
+              "actions": {
+                "List_rowsusersession": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "bf659f28-88d9-4f1c-8cfb-c356caf3bea3"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_usersessions",
+                      "fetchXml": "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>\n                  <entity name='new_usersession'>\n                    <attribute name='new_usersessionid' />\n                    <attribute name='new_name' />\n                    <attribute name='new_expiry' />\n                    <filter type='and'>\n                      <condition attribute='new_contactid' operator='eq'  uitype='contact' value='@{items('Apply_to_each')?['contactid']}'/>\n                    </filter>\n                  </entity>\n                </fetch>",
+                      "$top": 1
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Condition": {
+                  "actions": {
+                    "Apply_to_each_2": {
+                      "foreach": "@outputs('List_rowsusersession')?['body/value']",
+                      "actions": {
+                        "Set_SessionId_variable": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "163d3a45-05f2-4870-86db-f83baa984fdd"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "SessionId",
+                            "value": "@items('Apply_to_each_2')?['new_usersessionid']"
+                          }
+                        },
+                        "Set_variable_3": {
+                          "runAfter": {
+                            "Set_SessionId_variable": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "3d2c1a40-9495-4e94-a526-3aba22b0bbb7"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "Expiry",
+                            "value": "@items('Apply_to_each_2')?['new_expiry']"
+                          }
+                        },
+                        "Condition_3": {
+                          "actions": {
+                            "Update_a_row": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "430d8a21-348e-4b2f-b7d1-0a36b352ba08"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connectionName": "shared_commondataserviceforapps_1",
+                                  "operationId": "UpdateRecord",
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                },
+                                "parameters": {
+                                  "entityName": "new_usersessions",
+                                  "recordId": "@items('Apply_to_each_2')?['new_usersessionid']",
+                                  "item/new_expiry": "@addDays(utcNow(),7)"
+                                },
+                                "authentication": "@parameters('$authentication')"
+                              }
+                            },
+                            "Set_variable_6": {
+                              "runAfter": {
+                                "Update_a_row": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "276f6d41-bdd8-4cc2-997b-34b128293000"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "Expiry",
+                                "value": "@outputs('Update_a_row')?['body/new_expiry']"
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "Set_variable_3": [
+                              "Succeeded"
+                            ]
+                          },
+                          "expression": {
+                            "less": [
+                              "@variables('Expiry')",
+                              "@utcNow()"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "ccf3e83a-abe6-4eff-8cdf-0ac777140877"
+                          },
+                          "type": "If"
+                        }
+                      },
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "4cb0a0c6-49d6-4bcc-ae93-5954e79ad562"
+                      },
+                      "type": "Foreach",
+                      "runtimeConfiguration": {
+                        "concurrency": {
+                          "repetitions": 1
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Condition_if_client": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "Add_a_new_SessionId_row": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "3a5d4028-c570-4bac-aa73-a11533de647f"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps_1",
+                            "operationId": "CreateRecord",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "new_usersessions",
+                            "item/new_name": "@items('Apply_to_each')?['fullname']",
+                            "item/new_contactid@odata.bind": "@items('Apply_to_each')?['@odata.id']",
+                            "item/new_expiry": "@addDays(utcNow(),7)"
+                          },
+                          "authentication": "@parameters('$authentication')"
+                        }
+                      },
+                      "Set_SessionId_variable_on_new_Session": {
+                        "runAfter": {
+                          "Add_a_new_SessionId_row": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "641fd286-8f20-4a90-9242-1498a07201ad"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "SessionId",
+                          "value": "@outputs('Add_a_new_SessionId_row')?['body/new_usersessionid']"
+                        }
+                      },
+                      "Set_variable_4": {
+                        "runAfter": {
+                          "Set_SessionId_variable_on_new_Session": [
+                            "Succeeded"
+                          ]
+                        },
+                        "metadata": {
+                          "operationMetadataId": "d7cfffe7-cd14-42ea-b510-6bb173709d53"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "Expiry",
+                          "value": "@outputs('Add_a_new_SessionId_row')?['body/new_expiry']"
+                        }
+                      }
+                    }
+                  },
+                  "expression": {
+                    "greater": [
+                      "@length(outputs('List_rowsusersession')?['body/value'])",
+                      0
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "320b5383-cd36-41d9-a1a7-19eb3f1cc7dc"
+                  },
+                  "type": "If"
+                },
+                "Set_variable_5": {
+                  "runAfter": {
+                    "List_rowsusersession": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "75c4c658-a28d-4a46-bea9-7d6aabd43462"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Contactid",
+                    "value": "@items('Apply_to_each')?['contactid']"
+                  }
+                },
+                "Set_variable_7": {
+                  "runAfter": {
+                    "Update_contact_row_with_loggin_date": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "4bca4e45-c912-4ecf-bb28-a3d071e5cbd0"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Fullname",
+                    "value": "@items('Apply_to_each')?['fullname']"
+                  }
+                },
+                "Condition_if_client": {
+                  "actions": {
+                    "Set_client_id": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "85916afb-3d02-474b-af7c-c5152a4771e8"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Clientid",
+                        "value": "@items('Apply_to_each')?['_parentcustomerid_value']"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Set_variable_7": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "equals": [
+                      "@items('Apply_to_each')?['new_isclient']",
+                      "@true"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "15764465-4329-469e-a4f4-79a5acbef272"
+                  },
+                  "type": "If"
+                },
+                "Update_contact_row_with_loggin_date": {
+                  "runAfter": {
+                    "Set_variable_5": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "470464fd-4fda-4384-9085-8bd284d103f4"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contacts",
+                      "recordId": "@variables('Contactid')",
+                      "item/new_logsdate": "@utcNow()"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Set_Authenticated_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "514a96c8-a46e-4897-8562-538de2138696"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_rowsContact": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Set_false_Authenticated_variable": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "94c6482d-c9be-483d-af71-e19cc205d3ff"
+                },
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "Authenticated",
+                  "value": "@false"
+                }
+              },
+              "List_rows_Contact_by_username": {
+                "runAfter": {
+                  "Set_false_Authenticated_variable": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "4b116993-7752-4ea8-81dd-a1fb76ae3d90"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps_1",
+                    "operationId": "ListRecords",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "contacts",
+                    "fetchXml": "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>\n                  <entity name='contact'>\n                    <attribute name='contactid' />\n                    <filter type='and'>\n                      <condition attribute='adx_identity_username' operator='eq' value='@{triggerBody()['text']}'/>\n                    </filter>\n                  </entity>\n  </fetch>",
+                    "$top": 1
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "Condition_2": {
+                "actions": {
+                  "Set_variable": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "5c84bcd5-f298-408c-bc61-e7d7416d7d90"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "ErrorMessage",
+                      "value": "Password is incorrect"
+                    }
+                  }
+                },
+                "runAfter": {
+                  "List_rows_Contact_by_username": [
+                    "Succeeded"
+                  ]
+                },
+                "else": {
+                  "actions": {
+                    "Set_variable_2": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "d691be3c-61ba-4f54-a016-c7828b227811"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "ErrorMessage",
+                        "value": "Username does not exist"
+                      }
+                    }
+                  }
+                },
+                "expression": {
+                  "greater": [
+                    "@length(outputs('List_rows_Contact_by_username')?['body/value'])",
+                    0
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "f6c0aaa7-5116-40f9-a973-a7b94a90539d"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs('List_rowsContact')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4ff63538-8e74-4e99-84b3-73c7891354b3"
+          },
+          "type": "If"
+        },
+        "Initialize_contactid_variable": {
+          "runAfter": {
+            "Initialize_Expiry_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "88df5e4c-079a-43f0-87d2-90e189f8edc6"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Contactid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_Fullname_variable": {
+          "runAfter": {
+            "Initialize_contactid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "827969d2-3943-42e2-aef9-9de8abe8a707"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Fullname",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_clientid_variable": {
+          "runAfter": {
+            "Initialize_Fullname_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d1042d24-12d5-4d35-a63f-ca518a6b8492"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Clientid",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

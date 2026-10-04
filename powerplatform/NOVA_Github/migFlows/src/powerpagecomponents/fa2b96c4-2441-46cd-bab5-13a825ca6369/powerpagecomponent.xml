@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="fa2b96c4-2441-46cd-bab5-13a825ca6369">
+  <content>{
+  "displayorder": 7,
+  "pageid": "392f117e-53c2-71c4-eb61-63bdcf56c31e",
+  "parentweblinkid": "3e1def58-0952-45a0-b280-2a1608dd5832",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "4a5e8d97-2223-4ef2-b5f0-42b4ce6cc95f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Jobs</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

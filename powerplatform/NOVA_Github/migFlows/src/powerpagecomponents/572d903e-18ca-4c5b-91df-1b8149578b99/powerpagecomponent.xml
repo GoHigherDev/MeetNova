@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="572d903e-18ca-4c5b-91df-1b8149578b99">
+  <content>{
+  "displayorder": 57,
+  "pageid": "2e0de220-e842-bcbc-9fc2-7ff27abeb618",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Campaign</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

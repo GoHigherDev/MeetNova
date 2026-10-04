@@ -1,0 +1,181 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "startTime": "2023-06-26T13:30:00Z",
+            "schedule": {
+              "weekDays": [
+                "Wednesday"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "362eea9a-cc29-4bff-8445-4de014262cef"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "List_active_assignments": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "a8c46e95-0f5d-4f13-817e-3c787048ede7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignments",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_assignment\">\n    <attribute name=\"new_assignmentid\" />\n    <attribute name=\"new_enddate\" />\n    <filter type=\"and\">\n      <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n      <condition attribute=\"new_startdate\" operator=\"on-or-before\" value=\"@{utcNow()}\"/>\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_active_assignments')?['body/value']",
+          "actions": {
+            "Condition_end_date_is_null": {
+              "actions": {
+                "Run_a_Child_Flow_copy": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "3fb59c50-513e-4af7-8b00-b3187810eec1"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "6fe55329-bb14-ee11-9cbe-6045bd0cfca3"
+                    },
+                    "body": {
+                      "text": "@items('Apply_to_each')?['new_assignmentid']"
+                    }
+                  }
+                }
+              },
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "Condition_end_date_is_expired": {
+                    "actions": {
+                      "Update_a_row": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "fddb7c81-3854-484c-b296-b29e92666775"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_commondataserviceforapps",
+                            "operationId": "UpdateRecord",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                          },
+                          "parameters": {
+                            "entityName": "new_assignments",
+                            "recordId": "@items('Apply_to_each')?['new_assignmentid']",
+                            "item/statecode": 1,
+                            "item/statuscode": 100000001
+                          },
+                          "authentication": "@parameters('$authentication')"
+                        }
+                      }
+                    },
+                    "runAfter": {},
+                    "else": {
+                      "actions": {
+                        "Run_a_Child_Flow_copy_1": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "3fb59c50-513e-4af7-8b00-b3187810eec1"
+                          },
+                          "type": "Workflow",
+                          "inputs": {
+                            "host": {
+                              "workflowReferenceName": "6fe55329-bb14-ee11-9cbe-6045bd0cfca3"
+                            },
+                            "body": {
+                              "text": "@items('Apply_to_each')?['new_assignmentid']"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "expression": {
+                      "and": [
+                        {
+                          "less": [
+                            "@items('Apply_to_each')?['new_enddate']",
+                            "@utcNow()"
+                          ]
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "425358d0-7308-4646-97c8-91c0c23fc36a"
+                    },
+                    "type": "If"
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@items('Apply_to_each')?['new_enddate']",
+                      "@null"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5a4bc6e0-a1e5-4e85-9713-9ff37821b2f0"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "List_active_assignments": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f24e5c71-362e-40fe-b2ee-ee0723c53248"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

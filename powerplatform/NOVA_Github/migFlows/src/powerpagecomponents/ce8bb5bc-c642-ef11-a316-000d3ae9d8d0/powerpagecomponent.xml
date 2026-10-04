@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="ce8bb5bc-c642-ef11-a316-000d3ae9d8d0">
+  <content>{
+  "accountrelationship": "new_billtaxtype_managingaccountid",
+  "append": true,
+  "appendto": true,
+  "create": false,
+  "delete": false,
+  "entitylogicalname": "new_billtaxtype",
+  "entityname": "Bill Tax Type by Consultant",
+  "read": true,
+  "scope": 756150002,
+  "write": false,
+  "adx_entitypermission_webrole": [
+    "0e90c088-3441-ef11-a316-6045bd15aee8",
+    "a189215f-0e05-ee11-8f6d-6045bd12f8f9"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bill Tax Type by Consultant</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

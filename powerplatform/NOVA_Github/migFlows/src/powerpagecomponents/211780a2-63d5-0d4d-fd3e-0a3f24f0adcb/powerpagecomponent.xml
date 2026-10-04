@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="211780a2-63d5-0d4d-fd3e-0a3f24f0adcb">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 208,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "118320cf-3695-7e64-b099-26b528574895",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expense Manual Insert</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

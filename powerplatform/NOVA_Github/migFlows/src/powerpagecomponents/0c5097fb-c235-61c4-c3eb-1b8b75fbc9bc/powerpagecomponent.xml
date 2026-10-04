@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="0c5097fb-c235-61c4-c3eb-1b8b75fbc9bc">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 45,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "687c0732-019f-fc88-3678-6af2a5e58a91",
+  "parentweblinkid": "a25fbac8-2c4b-42e5-a48f-9c2091921581",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Managers</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

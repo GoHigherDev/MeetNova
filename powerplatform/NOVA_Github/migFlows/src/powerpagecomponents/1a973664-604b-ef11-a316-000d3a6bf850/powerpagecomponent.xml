@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="1a973664-604b-ef11-a316-000d3a6bf850">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_isclient",
+  "descriptionposition": 100000000,
+  "entityform": "bff67632-604b-ef11-a316-000d3a6bf850",
+  "entityformforcreate": "bff67632-604b-ef11-a316-000d3a6bf850",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "true",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Contact Client Insert new_isclient</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

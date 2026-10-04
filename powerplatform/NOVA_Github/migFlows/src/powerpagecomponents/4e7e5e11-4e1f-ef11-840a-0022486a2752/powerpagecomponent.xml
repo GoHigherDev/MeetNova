@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="4e7e5e11-4e1f-ef11-840a-0022486a2752">
+  <content>{
+  "flowapiurl": "https://quickshiftsportal.powerappsportals.com/_api/cloudflow/v1.0/trigger/6356f3c5-f438-4ada-7085-3308c5273ae1",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/6356F3C5F4384ADA70853308C5273AE1-E0183C3B6C77F252/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "6356f3c5-f438-4ada-7085-3308c5273ae1",
+  "processid": "63a5f517-381c-ef11-840a-0022486a2752",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Register a contact</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

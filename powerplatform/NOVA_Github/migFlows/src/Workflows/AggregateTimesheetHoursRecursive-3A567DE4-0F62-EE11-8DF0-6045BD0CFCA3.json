@@ -1,0 +1,219 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "1dee670b-9a3e-4f1e-bbbb-c6def8f448d5"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_2",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode ",
+              "subscriptionRequest/filterexpression": "statuscode eq 1"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "List_Timesheet_cost_row": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9a8a8b3a-1e7f-43d6-b825-576950937fe6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_2",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_timesheetcosts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheetcost\">\n    <attribute name=\"new_timesheetcostid\" />\n    <attribute name=\"new_units\" />\n    <attribute name=\"new_billunit\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_timesheetid\" operator=\"eq\" uitype=\"new_timesheet\" value=\"@{triggerOutputs()?['body/new_timesheetid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_Aggregate_Hours_": {
+          "runAfter": {
+            "List_Timesheet_cost_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "23e26f0e-08a1-4ea6-9e02-a0487b170e1f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Aggregate Hours",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_Dummy_Aggregate_Hours": {
+          "runAfter": {
+            "Initialize_Aggregate_Hours_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ae6adf6c-1919-4834-8ead-3245f3f2216d"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Dummy Aggregate Hours",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Update_Timesheet_Hours_field_": {
+          "runAfter": {
+            "Apply_to_each_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5d7ab425-0089-4cf5-9fc3-3f425c50408f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_2",
+              "operationId": "UpdateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+              "item/new_hours": "@variables('Aggregate Hours')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each_2": {
+          "foreach": "@outputs('List_Timesheet_cost_row')?['body/value']",
+          "actions": {
+            "get_units": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "229572ab-d2e7-40f7-9e9d-fdf15c155930"
+              },
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each_2')?['new_units']"
+            },
+            "get_bill_units": {
+              "runAfter": {
+                "get_units": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ba81ef09-39b6-402b-b699-137a62728ce9"
+              },
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each_2')?['new_billunit']"
+            },
+            "Condition_3": {
+              "actions": {
+                "Set_Dummy_Aggregate_Hours_2": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "b91f3759-359b-4236-a8c1-4b39a8a3d481"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Dummy Aggregate Hours",
+                    "value": "@variables('Aggregate Hours')"
+                  }
+                },
+                "Set_Aggregate_Hours_2": {
+                  "runAfter": {
+                    "Set_Dummy_Aggregate_Hours_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b74c8beb-ebad-4bed-99e3-c7c8f8500226"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Aggregate Hours",
+                    "value": "@add(variables('Dummy Aggregate Hours'), outputs('get_units'))"
+                  }
+                }
+              },
+              "runAfter": {
+                "get_bill_units": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@items('Apply_to_each_2')?['new_billunit']",
+                  100000000
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8ba780a0-8376-4332-a522-8fcded927a30"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Initialize_Dummy_Aggregate_Hours": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "10cc51e5-9802-4913-ae83-fc2adcca3320"
+          },
+          "type": "Foreach"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

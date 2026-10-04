@@ -1,0 +1,314 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "requestarray",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "47fd08b8-5039-412b-858d-22897045049b"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "type": "Compose",
+          "inputs": "@triggerBody()['text']",
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "76f9f37b-5baf-465b-9c21-0bb13771dab9"
+          }
+        },
+        "Parse_JSON": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@triggerBody()['text']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "assignmentRateId": {
+                    "type": "string"
+                  },
+                  "timesheetCostId": {
+                    "type": "string"
+                  },
+                  "unitsNewValue": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "timesheetCostId"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f62e5100-7ea5-4c7e-8cbe-409130af3daa"
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@body('Parse_JSON')",
+          "actions": {
+            "Compose_Units": {
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each')['unitsNewValue']",
+              "metadata": {
+                "operationMetadataId": "84ef12f3-b8e0-4a3c-b644-ef5d013d4b1e"
+              }
+            },
+            "Compose__timesheetCostId": {
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each')?['timesheetCostId']",
+              "runAfter": {
+                "Compose_Units": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0db71822-61c1-4665-9913-2f55e8408b0c"
+              }
+            },
+            "Compose_assignmentRateId": {
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each')['assignmentRateId']",
+              "runAfter": {
+                "Compose__timesheetCostId": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "06fea96f-0dc6-4db3-8dd9-3583ff1f6bb6"
+              }
+            },
+            "Update_a_timesheetcost_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheetcosts",
+                  "recordId": "@items('Apply_to_each')['timesheetCostId']",
+                  "item/new_units": "@outputs('Compose_Units')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Condition_assignment_rate_id": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c0da1ea5-43a3-4f36-a1f7-c1c95b61ddc5"
+              }
+            },
+            "Condition_assignment_rate_id": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('Compose_assignmentRateId'))",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Get_Assignment_Rates_row_by_ID": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_assignmentrates",
+                      "recordId": "@outputs('Compose_assignmentRateId')"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "40767a7f-4e45-4da5-8cfc-f326a2eaa5d8"
+                  }
+                },
+                "Update_a_timesheetcost_row-if_filled_asignmentrateid": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@items('Apply_to_each')['timesheetCostId']",
+                      "item/new_bill": "@outputs('Get_Assignment_Rates_row_by_ID')?['body/new_billrate']",
+                      "item/new_BillTAXTypeid@odata.bind": "/new_billtaxtypes(@{outputs('Get_Assignment_Rates_row_by_ID')?['body/_new_billtaxtypeid_value']})",
+                      "item/new_billunit": "@outputs('Get_Assignment_Rates_row_by_ID')?['body/new_billunit']",
+                      "item/new_pay": "@outputs('Get_Assignment_Rates_row_by_ID')?['body/new_payrate']",
+                      "item/new_ratetypeid@odata.bind": "/new_ratetypes(@{outputs('Get_Assignment_Rates_row_by_ID')?['body/_new_ratetypeid_value']})",
+                      "item/new_assignmentrateid@odata.bind": "@outputs('Get_Assignment_Rates_row_by_ID')?['body/@odata.id']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_Assignment_Rates_row_by_ID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c0da1ea5-43a3-4f36-a1f7-c1c95b61ddc5"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Compose_assignmentRateId": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "76a3261e-297d-40c6-8b14-e1ba796b9cde"
+              }
+            },
+            "Condition_if_pay_tax_type_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@outputs('Get_Assignment_Rates_row_by_ID')?['body/_new_paytaxtypeid_value']",
+                        "@null"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Update_a_timesheetcost_row_with_paytaxtype": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_timesheetcosts",
+                      "recordId": "@outputs('Compose__timesheetCostId')"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e9c21fc6-e5ed-4e8a-8052-e34e0395c729"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Update_a_timesheetcost_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0e037243-259c-48c2-9c9c-d3f13ccb6b00"
+              }
+            }
+          },
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6d9f8b19-a85c-4d26-829e-2b4fa7b3c630"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "processed": {
+                  "title": "processed",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "processed": "@{true}"
+            }
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "819c571e-d3e7-43bc-8f07-fbe82ef1752b"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

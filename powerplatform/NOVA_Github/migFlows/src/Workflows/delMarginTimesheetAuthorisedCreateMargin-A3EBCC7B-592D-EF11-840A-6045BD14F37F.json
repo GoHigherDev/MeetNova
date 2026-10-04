@@ -1,0 +1,489 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode, new_margin",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000007",
+              "subscriptionRequest/name": "a3ebcc7b-592d-ef11-840a-6045bd14f37f"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "c666f8c2-9c98-4766-a571-e608e8f123b0"
+          }
+        }
+      },
+      "actions": {
+        "List_margin_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_margins",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_margin\">\n    <attribute name=\"new_marginid\" />\n    <attribute name=\"new_amount\" />\n    <attribute name=\"new_consultantid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_timesheetid\" operator=\"eq\" uitype=\"new_timesheet\" value=\"@{triggerOutputs()?['body/new_timesheetid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Append_to_array_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "748d0e34-8b00-4bcf-ac0b-aec8a063c0a5"
+          }
+        },
+        "Delay": {
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 20,
+              "unit": "Second"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1c534665-ad0a-4247-8b56-e425235c0034"
+          }
+        },
+        "Initialize_margin_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Margin",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_placement_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a966fbb7-8b39-4def-9198-885870a032f2"
+          }
+        },
+        "Condition_is_fee_split": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Get_a_placement_row_by_ID')?['new_isthisafeesplit']",
+                  "@true"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@body('Get_a_placement_row_by_ID')?['_new_secondaryconsultantid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Append_to_array_variable-_secondary_consultant": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "ConsultantsArray",
+                "value": "@body('Get_a_placement_row_by_ID')?['_new_secondaryconsultantid_value']"
+              },
+              "runAfter": {
+                "Compose_-consultant_margin": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b653fe83-9764-4087-9682-1c2ce75e0e5c"
+              }
+            },
+            "Condition-copy": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@length(outputs('List_margin_rows')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Add_a_margin_row_": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_margins",
+                      "item/new_amount": "@outputs('Compose_-consultant_margin')",
+                      "item/new_name": "@triggerOutputs()?['body/new_name']",
+                      "item/new_candidateid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_candidateid_value']})",
+                      "item/new_clientid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_clientid_value']})",
+                      "item/new_consultantid@odata.bind": "/contacts(@{body('Get_a_placement_row_by_ID')?['_new_consultantid_value']})",
+                      "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{body('Get_a_placement_row_by_ID')?['_transactioncurrencyid_value']})",
+                      "item/new_dateauthorised": "@{utcNow()}",
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['_new_managingaccountid_value']})",
+                      "item/new_timesheetid@odata.bind": "/new_timesheets(@{triggerOutputs()?['body/new_timesheetid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "57baa66b-77aa-4f93-a123-bd1c3b5608a2"
+                  }
+                },
+                "Add_a_new_margin_row_-secondary_consultant": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_margins",
+                      "item/new_amount": "@outputs('Compose_consulant_2_margin')",
+                      "item/new_name": "@triggerOutputs()?['body/new_name']",
+                      "item/new_candidateid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_candidateid_value']})",
+                      "item/new_clientid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_clientid_value']})",
+                      "item/new_consultantid@odata.bind": "/contacts(@{body('Get_a_placement_row_by_ID')?['_new_secondaryconsultantid_value']})",
+                      "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{body('Get_a_placement_row_by_ID')?['_transactioncurrencyid_value']})",
+                      "item/new_dateauthorised": "@{utcNow()}",
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['_new_managingaccountid_value']})",
+                      "item/new_timesheetid@odata.bind": "/new_timesheets(@{triggerOutputs()?['body/new_timesheetid']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  },
+                  "runAfter": {
+                    "Add_a_margin_row_": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "57baa66b-77aa-4f93-a123-bd1c3b5608a2"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Apply_to_each_1": {
+                    "type": "Foreach",
+                    "foreach": "@outputs('List_margin_rows')?['body/value']",
+                    "actions": {
+                      "Condition_first_consultant": {
+                        "type": "If",
+                        "expression": {
+                          "and": [
+                            {
+                              "equals": [
+                                "@item()?['_new_consultantid_value']",
+                                "@outputs('Get_a_placement_row_by_ID')?['body/_new_consultantid_value']"
+                              ]
+                            }
+                          ]
+                        },
+                        "actions": {
+                          "Update_a_row_1": {
+                            "type": "OpenApiConnection",
+                            "inputs": {
+                              "parameters": {
+                                "entityName": "new_margins",
+                                "recordId": "@items('Apply_to_each_1')?['new_marginid']",
+                                "item/new_amount": "@outputs('Compose_-consultant_margin')"
+                              },
+                              "host": {
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                "operationId": "UpdateRecord",
+                                "connectionName": "shared_commondataserviceforapps"
+                              }
+                            },
+                            "metadata": {
+                              "operationMetadataId": "8733f1d7-db12-4da3-bce9-2de3a363a8cc"
+                            }
+                          }
+                        },
+                        "else": {
+                          "actions": {
+                            "Update_a_row__2nd_consultant": {
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "parameters": {
+                                  "entityName": "new_margins",
+                                  "recordId": "@items('Apply_to_each_1')?['new_marginid']",
+                                  "item/new_amount": "@outputs('Compose_consulant_2_margin')"
+                                },
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "operationId": "UpdateRecord",
+                                  "connectionName": "shared_commondataserviceforapps"
+                                }
+                              },
+                              "metadata": {
+                                "operationMetadataId": "8733f1d7-db12-4da3-bce9-2de3a363a8cc"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "28b9ffab-6caa-435a-9afa-78acb0b557a9"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Append_to_array_variable-_secondary_consultant": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bae3b00c-507d-4a28-babc-89d5b0acff9f"
+              }
+            },
+            "Set_variable-margin_on_2ndary_consultant": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Margin",
+                "value": "@div(triggerBody()?['new_margin'], div(100, float(last(split(outputs('Compose_custom_fee_split'), '/')))))"
+              },
+              "runAfter": {
+                "Compose_custom_fee_split": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ac69613e-3b96-4547-baf4-55df293c62e4"
+              }
+            },
+            "Compose_custom_fee_split": {
+              "type": "Compose",
+              "inputs": "@outputs('Get_a_placement_row_by_ID')?['body/new_customfeesplit']"
+            },
+            "Compose_consulant_2_margin": {
+              "type": "Compose",
+              "inputs": "@if(\r\n  less(\r\n    div(triggerBody()?['new_margin'], div(100, float(last(split(outputs('Compose_custom_fee_split'), '/'))))), \r\n    0\r\n  ), \r\n  0, \r\n  div(triggerBody()?['new_margin'], div(100, float(last(split(outputs('Compose_custom_fee_split'), '/')))))\r\n)\r\n",
+              "runAfter": {
+                "Set_variable-margin_on_2ndary_consultant": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Compose_-consultant_margin": {
+              "type": "Compose",
+              "inputs": "@if(\r\n  less(\r\n    div(triggerBody()?['new_margin'], div(100, float(first(split(outputs('Compose_custom_fee_split'), '/'))))), \r\n    0\r\n  ), \r\n  0, \r\n  div(triggerBody()?['new_margin'], div(100, float(first(split(outputs('Compose_custom_fee_split'), '/')))))\r\n)\r\n",
+              "runAfter": {
+                "Compose_consulant_2_margin": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Set_variable_margin_on_single_consultant": {
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "Margin",
+                  "value": "@triggerBody()?['new_margin']"
+                },
+                "metadata": {
+                  "operationMetadataId": "91f4daf2-bc47-4e3a-9b4d-139735385c42"
+                }
+              },
+              "Condition": {
+                "type": "If",
+                "expression": {
+                  "and": [
+                    {
+                      "equals": [
+                        "@length(outputs('List_margin_rows')?['body/value'])",
+                        0
+                      ]
+                    }
+                  ]
+                },
+                "actions": {
+                  "Add_a_new_margin_row_2": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_margins",
+                        "item/new_amount": "@variables('Margin')",
+                        "item/new_name": "@triggerOutputs()?['body/new_name']",
+                        "item/new_candidateid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_candidateid_value']})",
+                        "item/new_clientid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_clientid_value']})",
+                        "item/new_consultantid@odata.bind": "/contacts(@{body('Get_a_placement_row_by_ID')?['_new_consultantid_value']})",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{body('Get_a_placement_row_by_ID')?['_transactioncurrencyid_value']})",
+                        "item/new_dateauthorised": "@{utcNow()}",
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['_new_managingaccountid_value']})",
+                        "item/new_timesheetid@odata.bind": "/new_timesheets(@{triggerOutputs()?['body/new_timesheetid']})"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "57baa66b-77aa-4f93-a123-bd1c3b5608a2"
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {
+                    "Apply_to_each": {
+                      "type": "Foreach",
+                      "foreach": "@outputs('List_margin_rows')?['body/value']",
+                      "actions": {
+                        "Update_a_row": {
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "parameters": {
+                              "entityName": "new_margins",
+                              "recordId": "@items('Apply_to_each')?['new_marginid']",
+                              "item/new_amount": "@variables('Margin')"
+                            },
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                              "operationId": "UpdateRecord",
+                              "connectionName": "shared_commondataserviceforapps"
+                            }
+                          },
+                          "metadata": {
+                            "operationMetadataId": "8733f1d7-db12-4da3-bce9-2de3a363a8cc"
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "28b9ffab-6caa-435a-9afa-78acb0b557a9"
+                      }
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Set_variable_margin_on_single_consultant": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "bae3b00c-507d-4a28-babc-89d5b0acff9f"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_margin_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9e3ad174-4c2c-4b42-bfc3-09a78efcc62d"
+          }
+        },
+        "Initialize_consultantsArray_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ConsultantsArray",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_margin_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "75c7c2de-79fe-4808-a7c0-6a8e5ecf71de"
+          }
+        },
+        "Append_to_array_variable": {
+          "type": "AppendToArrayVariable",
+          "inputs": {
+            "name": "ConsultantsArray",
+            "value": "@body('Get_a_placement_row_by_ID')?['_new_consultantid_value']"
+          },
+          "runAfter": {
+            "Initialize_consultantsArray_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f88850ff-907b-4945-8b54-cb6d1731e607"
+          }
+        },
+        "Get_a_placement_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerBody()?['_new_assignmentid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7ebfb7b5-f8dc-47dd-9fa3-fe7edf79c075"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

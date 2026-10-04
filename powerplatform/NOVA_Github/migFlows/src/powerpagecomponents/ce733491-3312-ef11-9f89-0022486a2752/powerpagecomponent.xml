@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="ce733491-3312-ef11-9f89-0022486a2752">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_documenttype",
+  "descriptionposition": 100000000,
+  "entityform": "b679bf7c-3312-ef11-9f89-0022486a2752",
+  "entityformforcreate": "b679bf7c-3312-ef11-9f89-0022486a2752",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "100000002",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>(Delete) App Docs Insert - Declaration new_documenttype</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

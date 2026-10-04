@@ -1,0 +1,127 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_billing_deduction_is_added": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_deductions",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "new_isthisafeesplit ne true"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "08856eaf-1dc5-49c3-b0e3-88a802213baa"
+          }
+        }
+      },
+      "actions": {
+        "Run_a_Child_Flow": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "842a7b95-8629-ef11-840a-6045bd14f37f"
+            },
+            "body": {
+              "text": "@triggerOutputs()?['body/_new_consultantid_value']",
+              "date": "@variables('Week end Sunday')"
+            }
+          },
+          "runAfter": {
+            "Update_a_row-copy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "61b493c0-4720-4edd-a9cd-f82ffa9bc530"
+          }
+        },
+        "Initialize_Week_end_(eg_next_Sunday)": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Week end Sunday",
+                "type": "string",
+                "value": "@body('Run_a_Child_Flow__Calc_Weekend')?['weekend']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Run_a_Child_Flow__Calc_Weekend": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d924c9b1-62f9-47e6-a088-14fd0f51b8af"
+          }
+        },
+        "Update_a_row-copy": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_deductionses",
+              "recordId": "@triggerBody()?['new_deductionsid']",
+              "item/new_weekend": "@variables('Week end Sunday')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_Week_end_(eg_next_Sunday)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow__Calc_Weekend": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "129c3211-0a41-ef11-a316-6045bd15aee8"
+            },
+            "body": {
+              "text": "@triggerBody()?['_new_managingaccountid_value']",
+              "text_1": "@triggerBody()?['new_datecreated']"
+            }
+          },
+          "runAfter": {}
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="78b27138-a000-ef11-9f89-000d3a8714d9">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "2eea4103-cd05-5ecc-1331-889b95c259b1",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "979222c9-ddc8-ee11-9079-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Signin</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

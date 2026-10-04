@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="c97fa26f-57c4-4949-8078-316180ea8abb">
+  <content>{
+  "displayorder": 49,
+  "pageid": "3b7a1840-e3e0-5d55-3ac9-33a7e04f06e7",
+  "parentweblinkid": "daac1d69-df50-4479-9422-8af42239bca6",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Commission Settings</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

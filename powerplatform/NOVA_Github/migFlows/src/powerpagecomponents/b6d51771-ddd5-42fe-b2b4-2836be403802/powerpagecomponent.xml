@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="b6d51771-ddd5-42fe-b2b4-2836be403802">
+  <content>{
+  "contentdisposition": 756150000,
+  "displayorder": -1,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": false,
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "thumbnail.css",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <filecontent mimetype="application/octet-stream">thumbnail.css</filecontent>
+  <iscustomizable>1</iscustomizable>
+  <name>thumbnail.css</name>
+  <powerpagecomponenttype>3</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

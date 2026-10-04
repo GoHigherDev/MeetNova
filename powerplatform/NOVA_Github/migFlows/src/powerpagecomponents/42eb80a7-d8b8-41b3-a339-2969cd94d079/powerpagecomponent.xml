@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="42eb80a7-d8b8-41b3-a339-2969cd94d079">
+  <content>{
+  "displayorder": 36,
+  "parentweblinkid": "71a0dcbc-d28e-48e4-9578-23a9c9cab1fa",
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "719798cc-adf7-a586-d57b-f2fc1b37bde9",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client Approvers</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

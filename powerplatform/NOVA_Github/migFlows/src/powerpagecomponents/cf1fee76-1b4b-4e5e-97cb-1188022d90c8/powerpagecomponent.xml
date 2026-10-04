@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="cf1fee76-1b4b-4e5e-97cb-1188022d90c8">
+  <content>{
+  "displayorder": 39,
+  "pageid": "d14b571f-e799-2f9e-3125-4e291d286e1b",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "06fdb42b-f394-4563-a266-60a794b1992d"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Training</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

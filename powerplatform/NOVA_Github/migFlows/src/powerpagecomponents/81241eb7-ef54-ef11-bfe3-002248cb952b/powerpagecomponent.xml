@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="81241eb7-ef54-ef11-bfe3-002248cb952b">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_isclient",
+  "descriptionposition": 100000000,
+  "entityform": "ac0a0ea3-4d51-ee11-be6f-6045bd0cfca3",
+  "entityformforcreate": "ac0a0ea3-4d51-ee11-be6f-6045bd0cfca3",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "True",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Approver Insert new_isclient</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

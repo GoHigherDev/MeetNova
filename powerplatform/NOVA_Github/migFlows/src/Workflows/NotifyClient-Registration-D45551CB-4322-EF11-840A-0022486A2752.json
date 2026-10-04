@@ -1,0 +1,339 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_commondataserviceforapps-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Quickshifts Portal (new_QuickshiftsPortal)": {
+          "defaultValue": "https://quickshiftsportal.powerappsportals.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_QuickshiftsPortal",
+            "description": "used by candidates and clients"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_new_client_is_added": {
+          "metadata": {
+            "operationMetadataId": "393c48aa-97fa-4066-97ea-cf87e5f785d2"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "contact",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_isclient",
+              "subscriptionRequest/filterexpression": "new_isclient eq true"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Get_managing_account_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "be2bfa45-d859-4211-97a1-510fc577fa51"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerBody()?['_msa_managingpartnerid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Send_an_email_(V2)": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "7b6d49db-c2cb-4b9e-90fc-182a65f71016"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365-1",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "@triggerOutputs()?['body/emailaddress1']",
+                  "emailMessage/Subject": "Client Registration Process",
+                  "emailMessage/Body": "@{variables('Message')}\n<br>\n<a href= \"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/registration/?contactid=@{triggerBody()?['contactid']}\">Registration</a>\n<br>\n",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Condition_if_message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/new_approvebylogin']",
+                  "@true"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/new_approvebyemail']",
+                    "@true"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1504eb52-4f2f-4fa8-99cc-cc805ff26349"
+          },
+          "type": "If"
+        },
+        "Run_a_Child_Flow_Global": {
+          "runAfter": {
+            "Get_managing_account_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fd3784ee-94d1-4f55-b457-38829861b845"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          }
+        },
+        "Condition_if_global_notification_is_true": {
+          "actions": {},
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Terminate": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "8c5ee45f-a519-4cd0-b858-f09e515f2632"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "be04805d-805b-47b4-a4b9-b4db3524295b"
+          },
+          "type": "If"
+        },
+        "Run_a_Child_Flow_Enable": {
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8e83531e-8988-443f-8d7c-5d89ec8a7f28"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "5e01167a-8685-f011-b4cb-6045bd15153f"
+            }
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "actions": {},
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "7b177faf-4925-4def-9260-9b84f9dd9aeb"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Enable')?['success']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "eaf6447a-b4af-4cf6-bd2f-7a2be27e0e55"
+          },
+          "type": "If"
+        },
+        "Get_a_notification_row_by_ID": {
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "77336dfa-9843-413a-a586-9fda529cdb65"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps-1",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "5e01167a-8685-f011-b4cb-6045bd15153f"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_Message_variable": {
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2c668535-4990-4119-a743-c3e9899cfe5e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "Dear @{triggerOutputs()?['body/firstname']}, <br>\n\nPlease click the link below to complete your registration process:<br>\n\nThank you, @{body('Get_managing_account_by_ID')?['name']}<br>"
+              }
+            ]
+          }
+        },
+        "Condition_if_message_not_empty": {
+          "actions": {
+            "Set_Message_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "cd6df8f5-100e-4fac-a0be-78bb73bdf9b4"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7e8d3981-2260-49ec-a746-6e9d5c1b11d3"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

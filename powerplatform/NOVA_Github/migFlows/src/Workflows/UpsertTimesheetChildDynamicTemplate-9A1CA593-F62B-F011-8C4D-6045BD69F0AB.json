@@ -1,0 +1,1216 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps_2": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode ",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000003 or statuscode eq 100000002 or statuscode eq 100000007 or statuscode eq 100000009 or statuscode eq 100000012 or statuscode eq 100000013",
+              "subscriptionRequest/name": "9a1ca593-f62b-f011-8c4d-6045bd69f0ab:MTA"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b4f02310-a8b6-4254-b37c-606d3ceedbd1"
+          }
+        }
+      },
+      "actions": {
+        "GetTimesheetRowbyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@triggerOutputs()?['body/new_timesheetid']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_approver_is_null-copy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "06764fb5-3db7-4aeb-bd31-b5fcec13a2f5"
+          }
+        },
+        "InitializeDetailsArray": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DetailsArray",
+                "type": "string",
+                "value": "@outputs('GetTimesheetRowbyID')?['body/new_detailsarray']"
+              }
+            ]
+          },
+          "runAfter": {
+            "GetCandidatebyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "GetSupplierbyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_supplierid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "GetApprovedbyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6965f85d-4a17-4aa7-a1ce-add6a38ac543"
+          }
+        },
+        "DownloadManagingAccountLogo": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_managingaccountid_value']",
+              "fileImageFieldName": "entityimage"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetEntityFileImageFieldContent",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "GetManagingAccount": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "680f735b-1e5d-47c2-80a1-d02914550f88"
+          }
+        },
+        "ComposeDateofSending": {
+          "type": "Compose",
+          "inputs": "@formatDateTime(utcNow(),'dd/MM/yyyy')\n",
+          "runAfter": {
+            "Set_variable_expensesummary": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5eab0a2b-06a9-480b-9c5f-3039dc3bd905"
+          }
+        },
+        "GetCurrencybyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "transactioncurrencies",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_transactioncurrencyid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "GetClientbyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "12b7719d-6dd7-4d51-8d35-7b2783ca375c"
+          }
+        },
+        "ComposeLogo": {
+          "type": "Compose",
+          "inputs": {
+            "$content-type": "image/jpeg",
+            "$content": "@{base64(outputs('DownloadManagingAccountLogo')?['body'])}"
+          },
+          "runAfter": {
+            "DownloadManagingAccountLogo": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7850d046-5b63-4fa5-9690-06837e7e8528"
+          }
+        },
+        "GetAssignmentbyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_assignmentid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "ComposeLogo": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b83d58e1-cae5-49fb-8363-1dc142c845d8"
+          }
+        },
+        "GetManagingAccount": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_managingaccountid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "GetSupplierbyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f54752e7-779e-4ff5-a9a4-a0355380b9f8"
+          }
+        },
+        "GetClientbyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Condition_if_branch_exist": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3cb3bcf0-9da0-47a0-84bf-8713c73b43de"
+          }
+        },
+        "GetApprovedbyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_approverid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "GetCurrencybyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1bfe3876-3bc9-4d38-8895-455fc4d96d42"
+          }
+        },
+        "ComposeBranchName": {
+          "type": "Compose",
+          "inputs": "@if(\r\n    empty(body('GetTimesheetRowbyID')?['_new_branchid_value@OData.Community.Display.V1.FormattedValue']),\r\n    '',\r\n    body('GetTimesheetRowbyID')?['_new_branchid_value@OData.Community.Display.V1.FormattedValue']\r\n)",
+          "runAfter": {
+            "Initialize_Branch_Name": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e5b10457-ab60-463e-b6f3-7bfc010a07a1"
+          }
+        },
+        "InitializeClientPDF": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientPDF",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          },
+          "runAfter": {
+            "ComposeDateofSending": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8a1f156b-95d0-48a9-aeee-bc76dd7a1cef"
+          }
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Update_a_row_pdfURL": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['new_timesheetid']",
+                  "item/new_pdfurl": "@outputs('Compose_sharelink-copy')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Compose_sharelink-copy": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "15d3a3a9-5422-4835-916b-23a6e7b9ab06"
+              }
+            },
+            "Compose_sharelink-copy": {
+              "type": "Compose",
+              "inputs": "@outputs('HTTP')?['body']['result']['sharelink']\r\n",
+              "runAfter": {
+                "HTTP": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "db7f32fe-be07-48b1-a36f-c42ced644341"
+              }
+            },
+            "HTTP": {
+              "type": "Http",
+              "inputs": {
+                "uri": "https://docs.brics.tech/api/generate_timesheet2",
+                "method": "POST",
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "MasterAccount": "@{outputs('GetManagingAccount')?['body/_new_managingaccountid_value@Microsoft']?['Dynamics']?['CRM']?['lookuplogicalname']}",
+                  "Region": "@{outputs('GetManagingAccount')?['body/_new_regionid_name']}",
+                  "SubjectFolder": "Timesheets",
+                  "address1": "@{outputs('GetManagingAccount')?['body/address1_line1']}",
+                  "address2": "@{outputs('GetManagingAccount')?['body/address1_line2']}",
+                  "address3": "@{outputs('GetManagingAccount')?['body/address1_line3']}",
+                  "city": "@{outputs('GetManagingAccount')?['body/address1_city']}",
+                  "postCode": "@{outputs('GetManagingAccount')?['body/address1_postalcode']}",
+                  "Summarizingtype": "@{outputs('GetClientbyID')?['body/new_summarizingtype']}",
+                  "FolderName": "@{outputs('GetManagingAccount')?['body/accountid']}",
+                  "AppName": "Quickshifts",
+                  "Status": "@{variables('Status')}",
+                  "IncludeAttachmentsOnPdf": "@{if(equals(outputs('GetAssignmentbyID')?['body/new_includeexpenseevidenceondeliverychoice'], true), '1', '0')}",
+                  "attachments": "@coalesce(outputs('SelectAttachments'), json('[]'))",
+                  "TimesheetRef": "@{outputs('GetTimesheetRowbyID')?['body/new_name']}",
+                  "StartDate": "@{formatDateTime(outputs('GetTimesheetRowbyID')?['body/new_periodstart'], 'dd/MM/yyyy')}",
+                  "Title": "TIMESHEET @{triggerOutputs()?['body/new_name']}",
+                  "Logo": "@{base64(outputs('DownloadManagingAccountLogo')?['body'])}",
+                  "DetailsArray": "@{variables('DetailsArrayJson')}",
+                  "TimesheetsSummaryArray": "@{variables('SummaryArray')}",
+                  "ClientName": "@{outputs('GetClientbyID')?['body/name']}",
+                  "ApproverName": "@{outputs('GetApprovedbyID')?['body/fullname']}",
+                  "ApproverDateandtime": "@{if(equals(body('GetTimesheetRowbyID')?['new_approveddate'], null), null, formatDateTime(body('GetTimesheetRowbyID')?['new_approveddate'], 'dd/MM/yyyy HH:mm:ss'))}",
+                  "ApprovedDateandTime": "@{if(equals(body('GetTimesheetRowbyID')?['new_approveddate'], null), null, formatDateTime(body('GetTimesheetRowbyID')?['new_approveddate'], 'dd/MM/yyyy HH:mm:ss'))}",
+                  "CandidateName": "@{outputs('GetCandidatebyID')?['body/fullname']}",
+                  "TimesheetNumber": "@{outputs('GetTimesheetRowbyID')?['body/new_name']}",
+                  "Location": "@{variables('BranchName')}",
+                  "EndDate": "@{formatDateTime(outputs('GetTimesheetRowbyID')?['body/new_periodend'], 'dd/MM/yyyy')}",
+                  "RejectionReason": "@{outputs('GetTimesheetRowbyID')?['body/new_rejectedreasons']}",
+                  "AuthorisedDateandTime": "@{if(equals(body('GetTimesheetRowbyID')?['new_authorizeddate'], null), null, formatDateTime(body('GetTimesheetRowbyID')?['new_authorizeddate'], 'dd/MM/yyyy HH:mm:ss'))}",
+                  "IPAddressofAuthoriser": "@{outputs('GetTimesheetRowbyID')?['body/new_ipaddress']}",
+                  "ExpensesArray": "@{variables('ExpenseArray')}",
+                  "ExpensesSummaryArray": "@{variables('ExpenseSummaryArray')}",
+                  "Notes": "@{outputs('GetTimesheetRowbyID')?['body/new_notes']}"
+                }
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "b813e767-47eb-47cb-978d-7e2dc21ef728"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "SelectAttachments": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "725520f4-9503-495f-9e6d-8e8861fde882"
+          }
+        },
+        "Delay": {
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 10,
+              "unit": "Second"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5c890dc4-1c3c-4db7-ae82-d94342c349ea"
+          }
+        },
+        "Condition_approver_is_null-copy": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/_new_approverid_value']",
+                  "@null"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_timesheet_row_with_approver_from_consultant": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerOutputs()?['body/new_timesheetid']",
+                  "item/new_approverid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_consultantid_value']})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "07cdcb00-4350-4957-8a8e-84f3969a26b2"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "134d224f-d93d-4ce1-adcc-e5a40e9222ae"
+          }
+        },
+        "Initialize_Template_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Template",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "InitializeClientPDF": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a7d00827-8db7-43c0-8120-79ed378d5413"
+          }
+        },
+        "Initialize_Description_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Description",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Template_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0ed110bd-e70a-48e3-84b2-61d9c2a4580f"
+          }
+        },
+        "Initialize_CombinedAttachments_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CombinedAttachments",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Description_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fa8fbfe1-906d-4adf-a908-673ea004541b"
+          }
+        },
+        "Initialize_Status_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Status",
+                "type": "string",
+                "value": "@triggerOutputs()?['body/_statuscode_label']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Compose_status_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "93241516-2a40-4f56-acc7-25dc31534b9a"
+          }
+        },
+        "Compose_status_2": {
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/_statuscode_label']",
+          "runAfter": {
+            "GetTimesheetRowbyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7b9eb2e7-663e-45e0-9928-1df76ae990ec"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "success": "@true"
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0f3301fd-d625-4dc5-939e-0da8964d4349"
+          }
+        },
+        "GetCandidatebyID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_candidateid_value']",
+              "$select": "fullname"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "GetAssignmentbyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "772ed9f3-34e0-4b95-9c13-173f7debf415"
+          }
+        },
+        "Parse_JSON": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@variables('DetailsArray')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Candidate Name": {
+                    "type": "string"
+                  },
+                  "Rate": {
+                    "type": "string"
+                  },
+                  "Date": {
+                    "type": "string"
+                  },
+                  "Unit": {
+                    "type": "string"
+                  },
+                  "Unit Price": {
+                    "type": "string"
+                  },
+                  "VAT": {
+                    "type": "string"
+                  },
+                  "Sub-Total": {
+                    "type": "string"
+                  },
+                  "Tax": {
+                    "type": "string"
+                  },
+                  "Total Amount": {
+                    "type": "string"
+                  },
+                  "Break": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "runAfter": {
+            "InitializeDetailsArray": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c6790bdf-158f-4b60-9814-acf338e7dafc"
+          }
+        },
+        "Parse_JSON-summary": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('GetTimesheetRowbyID')?['body/new_timesheetsummary']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Rate Type": {
+                    "type": "string"
+                  },
+                  "Total Unit": {
+                    "type": "number"
+                  },
+                  "Total Amount": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_DetailsArrayJson_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c6790bdf-158f-4b60-9814-acf338e7dafc"
+          }
+        },
+        "Set_variable_summary": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "SummaryArray",
+            "value": "@body('Parse_JSON-summary')"
+          },
+          "runAfter": {
+            "InitializeSummaryArray": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "094c4f33-a50f-4dea-8f61-0ccab77abb15"
+          }
+        },
+        "InitializeExpenseArray": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ExpenseArray",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Set_variable_summary": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "InitializeExpensesSummaryArray": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ExpenseSummaryArray",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Set_variable_expensesarray": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "Parse_JSON-expensesummary": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('GetTimesheetRowbyID')?['body/new_expensessummary']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Expense Type": {
+                    "type": "string"
+                  },
+                  "Total Unit": {
+                    "type": "number"
+                  },
+                  "Total Amount": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "runAfter": {
+            "InitializeExpensesSummaryArray": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c6790bdf-158f-4b60-9814-acf338e7dafc"
+          }
+        },
+        "Parse_JSON_expensearray": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('GetTimesheetRowbyID')?['body/new_expensesdetailsarray']",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Candidate Name": {
+                    "type": "string"
+                  },
+                  "Expense Type": {
+                    "type": "string"
+                  },
+                  "Date": {
+                    "type": "string"
+                  },
+                  "Unit": {
+                    "type": "string"
+                  },
+                  "Unit Price": {
+                    "type": "string"
+                  },
+                  "VAT": {
+                    "type": "string"
+                  },
+                  "Sub-Total": {
+                    "type": "string"
+                  },
+                  "Tax": {
+                    "type": "string"
+                  },
+                  "Total Amount": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "runAfter": {
+            "InitializeExpenseArray": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c6790bdf-158f-4b60-9814-acf338e7dafc"
+          }
+        },
+        "Set_variable_expensesarray": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "ExpenseArray",
+            "value": "@body('Parse_JSON_expensearray')"
+          },
+          "runAfter": {
+            "Parse_JSON_expensearray": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "094c4f33-a50f-4dea-8f61-0ccab77abb15"
+          }
+        },
+        "Set_variable_expensesummary": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "ExpenseSummaryArray",
+            "value": "@body('Parse_JSON-expensesummary')"
+          },
+          "runAfter": {
+            "Parse_JSON-expensesummary": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "094c4f33-a50f-4dea-8f61-0ccab77abb15"
+          }
+        },
+        "Initialize_DetailsArrayJson_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DetailsArrayJson",
+                "type": "array",
+                "value": "@body('Parse_JSON')"
+              }
+            ]
+          },
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9be5b22c-457c-4ab8-83ab-8806b39271f6"
+          }
+        },
+        "InitializeSummaryArray": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SummaryArray",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Parse_JSON-summary": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          }
+        },
+        "Condition_client_has_template": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('GetClientbyID')?['body/_new_timesheetcustomtemplateid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Template__variable-client_template": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Template",
+                "value": "@outputs('GetClientbyID')?['body/_new_timesheetcustomtemplateid_value']"
+              },
+              "metadata": {
+                "operationMetadataId": "0cc08a71-e326-4f0f-ad75-037e2217d99f"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Run_a_Child_Flow_Get_managing_account_Template": {
+                "type": "Workflow",
+                "inputs": {
+                  "host": {
+                    "workflowReferenceName": "d5a324e7-2d50-f011-877b-6045bd69f0ab"
+                  },
+                  "body": {
+                    "text": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+                    "number": 100000001
+                  }
+                },
+                "metadata": {
+                  "operationMetadataId": "1a8bb99a-bd24-4c27-82ab-d1e5053d01ef"
+                }
+              },
+              "Condition_if_managing_account_default_template": {
+                "type": "If",
+                "expression": {
+                  "and": [
+                    {
+                      "not": {
+                        "equals": [
+                          "@body('Run_a_Child_Flow_Get_managing_account_Template')?['documenttemplateid']",
+                          ""
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": {
+                  "Set_Template__variable-managingaccountdefault": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Template",
+                      "value": "@body('Run_a_Child_Flow_Get_managing_account_Template')?['documenttemplateid']"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "0cc08a71-e326-4f0f-ad75-037e2217d99f"
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {
+                    "TimesheetHoursBreakdownCondiiton": {
+                      "type": "If",
+                      "expression": {
+                        "equals": [
+                          "@outputs('GetClientbyID')?['body/new_timesheethoursbreakdown']",
+                          true
+                        ]
+                      },
+                      "actions": {
+                        "Set_Template__variable-timesheethoursbreakdown1": {
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "Template",
+                            "value": "34f6cd5b-2750-f011-877b-6045bd69f0ab"
+                          },
+                          "metadata": {
+                            "operationMetadataId": "0cc08a71-e326-4f0f-ad75-037e2217d99f"
+                          }
+                        }
+                      },
+                      "else": {
+                        "actions": {
+                          "Set_Template_variable-timesheet1": {
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "Template",
+                              "value": "8b8a5fea-2650-f011-877b-6045bd69f0ab"
+                            },
+                            "metadata": {
+                              "operationMetadataId": "ae124f4d-7452-443c-8fe3-84ead8c95e26"
+                            }
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "1de93b08-583c-4313-ae94-60a2eab87eca"
+                      }
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Run_a_Child_Flow_Get_managing_account_Template": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "bab46d74-9e60-436a-a2f7-f82e7bc48064"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_CombinedAttachments_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6520722c-8bc1-4fed-94bf-d36a5d4f3601"
+          }
+        },
+        "Condition_if_branch_exist": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('GetTimesheetRowbyID')?['body/_new_branchid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Get_a_branch_row_by_ID": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_branchs",
+                  "recordId": "@outputs('GetTimesheetRowbyID')?['body/_new_branchid_value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps_2"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "9ce44f1e-5e36-458c-b1ad-ddd28f4c3b4d"
+              }
+            },
+            "Set_branch_name": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "BranchName",
+                "value": "@outputs('Get_a_branch_row_by_ID')?['body/new_name']"
+              },
+              "runAfter": {
+                "Get_a_branch_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "094c4f33-a50f-4dea-8f61-0ccab77abb15"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "ComposeBranchName": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "725520f4-9503-495f-9e6d-8e8861fde882"
+          }
+        },
+        "Initialize_Branch_Name": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "BranchName",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Status_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "93241516-2a40-4f56-acc7-25dc31534b9a"
+          }
+        },
+        "List_rows_AppsDocsByTimesheet": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_appdocses",
+              "$select": "new_docurl",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_appdocs\">\n    <attribute name=\"new_appdocsid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_docurl\" />\n    <link-entity name=\"new_timesheet\" from=\"new_timesheetid\" to=\"new_timesheetid\" link-type=\"inner\" alias=\"aa\">\n      <filter type=\"and\">\n        <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{triggerBody()?['text']}\" />\n      </filter>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps_2"
+            }
+          },
+          "runAfter": {
+            "Condition_client_has_template": [
+              "Succeeded"
+            ]
+          }
+        },
+        "For_each_Appsdocs": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_rows_AppsDocsByTimesheet')?['body/value']",
+          "actions": {
+            "Append_to_array_variable_4": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "CombinedAttachments",
+                "value": "@json(body('Run_a_Child_Flow')?['arrayjson'])"
+              },
+              "runAfter": {
+                "Run_a_Child_Flow": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Run_a_Child_Flow": {
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "172a349e-a708-f111-8407-6045bd69c28c"
+                },
+                "body": {
+                  "text": "@item()?['new_docurl']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows_AppsDocsByTimesheet": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "SelectAttachments": {
+          "type": "Select",
+          "inputs": {
+            "from": "@variables('CombinedAttachments')",
+            "select": {
+              "name": "@item()?['Name']",
+              "content": "@item()?['ContentBytes']"
+            }
+          },
+          "runAfter": {
+            "For_each_Appsdocs": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "565d94eb-18ff-4e6f-8934-c3d47451b1dc"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

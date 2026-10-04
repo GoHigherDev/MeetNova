@@ -1,0 +1,294 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_deductions",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/name": "1acda83a-46e5-ef11-be1f-002248cba742"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "conditions": [],
+          "metadata": {
+            "operationMetadataId": "2641d736-3936-4e50-b102-4e983bdbcfda"
+          }
+        }
+      },
+      "actions": {
+        "Condition_is_fee_split": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/new_isthisafeesplit']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "List_rows_Consultant": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_deductionses",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_deductions\">\n    <attribute name=\"new_deductionsid\" />\n    <attribute name=\"new_name\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_splitfeeparentid\" operator=\"eq\" uitype=\"new_deductions\" value=\"@{triggerOutputs()?['body/new_deductionsid']}\" />\n  <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerOutputs()?['body/_new_consultantid_value']}\" />\n   \n    </filter>\n  </entity>\n</fetch>",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Compose_2nd_consultant_fee": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition_consultant_fee_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('List_rows_Consultant')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "For_each": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('List_rows_Consultant')?['body/value']",
+                  "actions": {
+                    "Update_a_conusltant_row": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_deductionses",
+                          "recordId": "@triggerOutputs()?['body/new_deductionsid']",
+                          "item/new_deduction": "@outputs('Compose_Consultant_fee')"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "connectionName": "shared_commondataserviceforapps"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Add_a_new_row_fee_for_consultant": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_deductionses",
+                        "item/new_deduction": "@outputs('Compose_Consultant_fee')",
+                        "item/new_consultantid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_consultantid_value']})",
+                        "item/new_name": "@triggerOutputs()?['body/new_name']",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerOutputs()?['body/_transactioncurrencyid_value']})",
+                        "item/new_datecreated": "@triggerOutputs()?['body/new_datecreated']",
+                        "item/new_isthisafeesplit": false,
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingaccountid_value']})",
+                        "item/new_reason": "@triggerOutputs()?['body/new_reason']",
+                        "item/new_splitfeeparentid@odata.bind": "/new_deductionses(@{triggerOutputs()?['body/new_deductionsid']})"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      }
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "List_rows_Consultant": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Compose_Consultant_fee": {
+              "type": "Compose",
+              "inputs": "@div(triggerOutputs()?['body/new_deduction'], div(100, float(first(split(triggerOutputs()?['body/new_customfeesplit'], '/')))))"
+            },
+            "Compose_2nd_consultant_fee": {
+              "type": "Compose",
+              "inputs": "@div(triggerOutputs()?['body/new_deduction'], div(100, float(last(split(triggerOutputs()?['body/new_customfeesplit'], '/')))))",
+              "runAfter": {
+                "Compose_Consultant_fee": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "List_rows-2nd_consultant": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_deductionses",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_deductions\">\n    <attribute name=\"new_deductionsid\" />\n    <attribute name=\"new_name\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_splitfeeparentid\" operator=\"eq\" uitype=\"new_deductions\" value=\"@{triggerOutputs()?['body/new_deductionsid']}\" />\n      <condition attribute=\"new_secondaryconsultantid\" operator=\"eq\"  uitype=\"contact\" value=\"@{triggerOutputs()?['body/_new_secondaryconsultantid_value']}\" />\n    </filter>\n  </entity>\n</fetch>",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Condition_consultant_fee_exists": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition-2nd_consultant": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('List_rows-2nd_consultant')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "For_each_1": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('List_rows-2nd_consultant')?['body/value']",
+                  "actions": {
+                    "Update_a_row_2nd_consultant": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_deductionses",
+                          "recordId": "@triggerOutputs()?['body/new_deductionsid']",
+                          "item/new_deduction": "@outputs('Compose_2nd_consultant_fee')"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "connectionName": "shared_commondataserviceforapps"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Add_a_new_row_fee_for_2nd_consultant": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_deductionses",
+                        "item/new_deduction": "@outputs('Compose_2nd_consultant_fee')",
+                        "item/new_consultantid@odata.bind": "/contacts(@{triggerOutputs()?['body/_new_secondaryconsultantid_value']})",
+                        "item/new_name": "@triggerOutputs()?['body/new_name']",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerOutputs()?['body/_transactioncurrencyid_value']})",
+                        "item/new_datecreated": "@triggerOutputs()?['body/new_datecreated']",
+                        "item/new_isthisafeesplit": false,
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerOutputs()?['body/_new_managingaccountid_value']})",
+                        "item/new_reason": "@triggerOutputs()?['body/new_reason']",
+                        "item/new_splitfeeparentid@odata.bind": "/new_deductionses(@{triggerOutputs()?['body/new_deductionsid']})"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      }
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "List_rows-2nd_consultant": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Terminate_not_fee_split": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0f6029fa-a14b-4ba6-b6cf-35ae41db304a"
+          }
+        },
+        "Delay": {
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 30,
+              "unit": "Second"
+            }
+          },
+          "runAfter": {}
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

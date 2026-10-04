@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="cf6c9ad2-357d-0eea-0956-1e489525eec9">
+  <content>{
+  "display_name": "Logo alt text",
+  "type": 756150000,
+  "value": "Company Name logo"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Logo alt text</name>
+  <powerpagecomponenttype>7</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>9179b7b5-28a2-ef11-8a69-6045bd69e577</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

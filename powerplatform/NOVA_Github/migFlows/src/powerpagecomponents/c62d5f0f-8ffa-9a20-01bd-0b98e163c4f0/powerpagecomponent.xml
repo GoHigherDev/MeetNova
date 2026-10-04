@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="c62d5f0f-8ffa-9a20-01bd-0b98e163c4f0">
+  <content>{
+  "displayorder": 24,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "18e7a4ec-540b-ee11-8f6e-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "09676e88-df2a-ee11-bdf4-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "placementedit",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Assignment edit"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Placement Details</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Assignment editPlacement Details</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

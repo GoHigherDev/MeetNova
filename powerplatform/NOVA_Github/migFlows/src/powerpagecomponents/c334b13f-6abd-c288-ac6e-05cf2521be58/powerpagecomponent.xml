@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="c334b13f-6abd-c288-ac6e-05cf2521be58">
+  <content>{
+  "displayorder": 43,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "bd31e6b8-072f-ee11-bdf3-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "1df63799-c7c8-ee11-9079-6045bd0cfca3",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "placementtimesheets",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Candidate Assignment Timesheets"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Placement Timesheets</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Candidate Assignment TimesheetsPlacement Timesheets</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

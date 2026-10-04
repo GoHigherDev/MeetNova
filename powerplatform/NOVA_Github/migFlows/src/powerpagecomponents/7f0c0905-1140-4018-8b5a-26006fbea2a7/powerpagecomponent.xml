@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="7f0c0905-1140-4018-8b5a-26006fbea2a7">
+  <content>{
+  "displayorder": 7,
+  "parentweblinkid": "b8847c49-fc8c-4cf1-9e73-34f19a2f521a",
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "ca6e41bd-fc91-f948-f9bf-5b9697d4cb8b",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Staff Attendance</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

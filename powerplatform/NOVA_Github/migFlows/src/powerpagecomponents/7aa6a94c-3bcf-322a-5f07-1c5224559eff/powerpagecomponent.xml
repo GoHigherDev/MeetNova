@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="7aa6a94c-3bcf-322a-5f07-1c5224559eff">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 93,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "01319b04-1a71-e33c-b06c-deb5e3d3ab99",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Privacy and Policy</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

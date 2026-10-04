@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="ccacb632-a63f-8239-6d4a-0a333a4e41e9">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 2,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "2b766e1e-1725-efc7-5951-0335d60c1457",
+  "parentweblinkid": "98dc8433-3f74-4898-acdc-f34b54006c51",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Calendar</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

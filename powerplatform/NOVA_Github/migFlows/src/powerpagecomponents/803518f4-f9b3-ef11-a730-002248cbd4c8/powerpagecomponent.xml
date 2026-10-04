@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="803518f4-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "displayimageonly": false,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "79e88227-f057-0025-2f39-b01fa8cb708f",
+  "parentweblinkid": "7e3518f4-f9b3-ef11-a730-002248cbd4c8",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "ecef1fee-f9b3-ef11-a730-002248cbd4c8"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>الإجراءات</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

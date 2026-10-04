@@ -1,0 +1,113 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "new_assignment",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_allowexpenses",
+              "subscriptionRequest/filterexpression": "new_allowexpenses eq true"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "2cefba87-4708-4b85-aa73-dc3ab6f54fa7"
+          }
+        }
+      },
+      "actions": {
+        "Run_a_Child_Flow": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e66c1d1c-56d0-f011-8543-6045bd15aeae"
+            },
+            "body": {
+              "text": "@triggerOutputs()?['body/_new_managingaccountid_value']"
+            }
+          },
+          "runAfter": {}
+        },
+        "Add_a_new_Expenses_assignment_rate_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignmentrates",
+              "item/new_name": "Expenses",
+              "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerOutputs()?['body/_transactioncurrencyid_value']})",
+              "item/new_assignmentid@odata.bind": "new_assignments(@{triggerOutputs()?['body/new_assignmentid']})",
+              "item/new_ratetypeid@odata.bind": "/new_ratetypes(@{body('Run_a_Child_Flow')?['ratetypeid']})"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1bd78ad5-d583-4e44-a738-248bae03cb9e"
+          }
+        },
+        "Update_Placement_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerOutputs()?['body/new_assignmentid']",
+              "item/new_ExpenseRateTypeId@odata.bind": "/new_ratetypes(@{body('Run_a_Child_Flow')?['ratetypeid']})",
+              "item/new_AssignmentrateId@odata.bind": "/new_assignmentrates(@{outputs('Add_a_new_Expenses_assignment_rate_row')?['body/new_assignmentrateid']})"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Add_a_new_Expenses_assignment_rate_row": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

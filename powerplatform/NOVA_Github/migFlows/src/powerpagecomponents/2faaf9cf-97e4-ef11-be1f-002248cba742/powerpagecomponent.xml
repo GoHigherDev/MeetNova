@@ -1,0 +1,46 @@
+<powerpagecomponent powerpagecomponentid="2faaf9cf-97e4-ef11-be1f-002248cba742">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_assignmentrate",
+  "entitypermissionsenabled": true,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000000,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "$(document).ready(function(){\r\n    /*\r\n    const dropdown = $(\"#new_ratetypeid\");\r\n    \r\n    // Set \"Expenses\" as the default selected option\r\n    dropdown.val(\"cf1a1276-3c69-ee11-8def-6045bd0cfca3\");\r\n\r\n    // Create a hidden field to store the value for form submission\r\n    if (!$(\"#hidden_ratetypeid\").length) {\r\n        $(\"&lt;input&gt;\")\r\n            .attr({\r\n                type: \"hidden\",\r\n                id: \"hidden_ratetypeid\",\r\n                name: dropdown.attr(\"name\"),  // Match the name attribute\r\n                value: dropdown.val()\r\n            })\r\n            .insertAfter(dropdown);\r\n    }\r\n\r\n    // Disable the dropdown visually but keep it enabled for submission\r\n    dropdown.prop(\"disabled\", false); // Keep enabled for submission\r\n    dropdown.css({\r\n        'pointer-events': 'none',  // Prevent user interaction\r\n        'border': 'none',\r\n        'background': 'none',\r\n        'padding': '0',\r\n        'margin': '0',\r\n        'box-shadow': 'none',\r\n        'cursor': 'auto',\r\n        'appearance': 'none',\r\n    });\r\n\r\n    var parentTD = dropdown.closest('td');\r\n    if (parentTD.length &gt; 0) {\r\n        parentTD.find('span').hide();\r\n        parentTD.find('.input-group-btn').hide();\r\n    }\r\n\r\n    // Update hidden input field when dropdown changes\r\n    dropdown.on(\"change\", function() {\r\n        $(\"#hidden_ratetypeid\").val($(this).val());\r\n    });\r\n    */\r\n});\r\n",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "expensesrateinsert",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expenses Rate Insert</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

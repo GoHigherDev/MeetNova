@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="16a03b3f-2019-ef11-9f89-0022486a2752">
+  <content>{
+  "flowapiurl": "https://quickshifts-dev.powerappsportals.com/_api/cloudflow/v1.0/trigger/520d9d44-e81b-9200-aff7-5cb359e870d4",
+  "flowtriggerurl": "https://uae-001.azure-apihub.net:443/apim/logicflows/520D9D44E81B9200AFF75CB359E870D4-47B60381B5A2A2B6/triggers/manual/run?api-version=2016-06-01",
+  "metadata": "520d9d44-e81b-9200-aff7-5cb359e870d4",
+  "processid": "efcad9dc-29c4-ee11-9079-6045bd0cfca3",
+  "adx_CloudFlowConsumer_adx_webrole": [
+    "198c028f-e0d0-ee11-9079-6045bd0cfca3",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>XERO Post Invoices to trigger</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

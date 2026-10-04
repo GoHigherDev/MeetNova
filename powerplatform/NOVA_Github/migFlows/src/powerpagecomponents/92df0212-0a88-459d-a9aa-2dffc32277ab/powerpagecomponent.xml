@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="92df0212-0a88-459d-a9aa-2dffc32277ab">
+  <content>{
+  "accountrelationship": "new_fees_managingaccountid",
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_fees",
+  "entityname": "Fees",
+  "read": true,
+  "scope": 756150002,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Fees</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

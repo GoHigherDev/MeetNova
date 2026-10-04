@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="7d53ec63-a54f-d235-a2d5-214d407ef6a5">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 171,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "cd771633-434a-2e8d-9bf8-0878e4d04807",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Adjustment Options</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

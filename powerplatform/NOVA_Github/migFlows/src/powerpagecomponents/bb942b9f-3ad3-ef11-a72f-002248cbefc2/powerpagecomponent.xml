@@ -1,0 +1,24 @@
+<powerpagecomponent powerpagecomponentid="bb942b9f-3ad3-ef11-a72f-002248cbefc2">
+  <content>{
+  "adddescription": false,
+  "descriptionposition": 100000000,
+  "entityform": "23eb2cda-f494-ee11-be37-6045bd0cfca3",
+  "entityformforcreate": "23eb2cda-f494-ee11-be37-6045bd0cfca3",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "label": "[{\"LCID\":1025,\"Value\":\"المدققون \\n\"},{\"LCID\":1033,\"Value\":\"\"}]",
+  "randomizeoptionsetvalues": false,
+  "sectionname": "clientapprovers",
+  "setvalueonsave": false,
+  "type": 100000001,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client edit clientapprovers</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

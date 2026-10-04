@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="7e3518f4-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "disablepagevalidation": false,
+  "displayimageonly": false,
+  "displayorder": 4,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "19efd4ec-c6d9-0ef7-ae5e-64008b0ac6a1",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "ecef1fee-f9b3-ef11-a730-002248cbd4c8"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>الوظائف</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="b0a69942-6f37-4b39-9ef1-26f76dbf2d53">
+  <content>{
+  "displayorder": 126,
+  "pageid": "c1c7cd54-6b50-8d3d-f487-7b9ef8cb5b37",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Account Approver</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

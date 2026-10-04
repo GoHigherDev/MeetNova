@@ -1,0 +1,606 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "timesheetid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "assignmentid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "branchid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "candidateid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter your input",
+                  "title": "clientid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "description": "Please enter your input",
+                  "title": "currencyid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "description": "Please enter your input",
+                  "title": "invoicedate",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_7": {
+                  "description": "Please enter your input",
+                  "title": "managingaccountid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_9": {
+                  "description": "Please enter your input",
+                  "title": "poid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "number": {
+                  "description": "Please enter a number",
+                  "title": "paymentterms",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                },
+                "text_8": {
+                  "description": "Please enter your input",
+                  "title": "FetchXMLCondition",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_3",
+                "text_4",
+                "text_5",
+                "text_6",
+                "text_7",
+                "text_8"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "5b935aec-de2a-4b00-a1a9-d27d4b47a7fd"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "invoiceid": {
+                  "title": "invoiceid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "invoiceid": "@{variables('invoiceid')}"
+            }
+          },
+          "runAfter": {
+            "Handle_Failure": [
+              "Succeeded",
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+          }
+        },
+        "Scope": {
+          "type": "Scope",
+          "actions": {
+            "Get_DRAFT__invoice_by_FetchXMLConditions": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "fetchXml": "@triggerBody()?['text_8']",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "4b0204c8-4437-4967-aad3-59af793b23cb"
+              }
+            },
+            "Condition_if_Invoice_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('Get_DRAFT__invoice_by_FetchXMLConditions')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Respond_to_a_Power_App_or_flow-copy-copy": {
+                  "type": "Response",
+                  "kind": "PowerApp",
+                  "inputs": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "invoiceid": {
+                          "title": "invoiceid",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {}
+                    },
+                    "statusCode": 200,
+                    "body": {
+                      "invoiceid": "@{variables('invoiceid')}"
+                    }
+                  },
+                  "runAfter": {
+                    "For_each_1": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                  }
+                },
+                "For_each_1": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('Get_DRAFT__invoice_by_FetchXMLConditions')?['body/value']",
+                  "actions": {
+                    "Set_invoice_from_existing_invoice": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "invoiceid",
+                        "value": "@items('For_each_1')?['new_invoiceid']"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "f4691aaa-73ab-4728-beb9-0fcfcf535c05"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Add_a_new_invoice_row": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_invoices",
+                        "item/new_name": "new",
+                        "item/new_BranchId@odata.bind": "@if(not(equals(triggerBody()?['text_2'], '')), concat('/new_branchs(', triggerBody()?['text_2'], ')'), null)",
+                        "item/new_clientid@odata.bind": "/accounts(@{triggerBody()?['text_4']})",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerBody()?['text_5']})",
+                        "item/new_invoicedate": "@triggerBody()?['text_6']",
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['text_7']})",
+                        "item/new_paymentterms": "@triggerBody()?['number']",
+                        "item/new_purchaseorderid@odata.bind": "@if(not(equals(triggerBody()?['text_9'], '')), concat('/new_purchaseorders(', triggerBody()?['text_9'], ')'), null)",
+                        "item/statuscode": 100000000
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      },
+                      "retryPolicy": {
+                        "type": "exponential",
+                        "count": 5,
+                        "interval": "PT30S",
+                        "minimumInterval": "PT10S",
+                        "maximumInterval": "PT1H"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "da765fd6-eba1-44c2-91db-2ad30d7876d4"
+                    }
+                  },
+                  "Set_invoice_variable": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "invoiceid",
+                      "value": "@outputs('Add_a_new_invoice_row')?['body/new_invoiceid']"
+                    },
+                    "runAfter": {
+                      "Add_a_new_invoice_row": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "08fcada9-e645-48f9-84a9-5ada0c155925"
+                    }
+                  },
+                  "Respond_to_a_Power_App_or_flow-copy": {
+                    "type": "Response",
+                    "kind": "PowerApp",
+                    "inputs": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "invoiceid": {
+                            "title": "invoiceid",
+                            "x-ms-dynamically-added": true,
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {}
+                      },
+                      "statusCode": 200,
+                      "body": {
+                        "invoiceid": "@{variables('invoiceid')}"
+                      }
+                    },
+                    "runAfter": {
+                      "Set_invoice_variable": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_DRAFT__invoice_by_FetchXMLConditions": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cdc44a36-9c0d-4625-9236-150d0006c6a2"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_invoiceid_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "eb0dc600-c0eb-428c-b0a3-0408aac87ec0"
+          }
+        },
+        "Handle_Failure": {
+          "type": "Scope",
+          "actions": {
+            "Update_a_row_set_timesheet_to_awaiting_authorisation": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "recordId": "@triggerBody()?['text']",
+                  "item/statuscode": 100000003
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "4237d620-9bf0-4b40-80a5-49f7fd831f0c"
+              }
+            },
+            "Respond_to_a_Power_App_or_flow-copy_1": {
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "invoiceid": {
+                      "title": "invoiceid",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": {}
+                },
+                "statusCode": 200,
+                "body": {
+                  "invoiceid": "@{variables('invoiceid')}"
+                }
+              },
+              "runAfter": {
+                "Update_a_row_set_timesheet_to_awaiting_authorisation": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope-fail1": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3346b526-eaad-444d-bd86-03f76f3b8db2"
+          }
+        },
+        "Initialize_invoiceid_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "invoiceid",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5efa8192-e586-4e69-a5e4-16d54646d5a9"
+          }
+        },
+        "Scope-fail1": {
+          "type": "Scope",
+          "actions": {
+            "Get_DRAFT__invoice_by_FetchXMLConditions_1": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "fetchXml": "@triggerBody()?['text_8']",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "4b0204c8-4437-4967-aad3-59af793b23cb"
+              }
+            },
+            "Condition_if_Invoice_exists_1": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('Get_DRAFT__invoice_by_FetchXMLConditions_1')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Respond_to_a_Power_App_or_flow-copy-copy_1": {
+                  "type": "Response",
+                  "kind": "PowerApp",
+                  "inputs": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "invoiceid": {
+                          "title": "invoiceid",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {}
+                    },
+                    "statusCode": 200,
+                    "body": {
+                      "invoiceid": "@{variables('invoiceid')}"
+                    }
+                  },
+                  "runAfter": {
+                    "For_each": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                  }
+                },
+                "For_each": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('Get_DRAFT__invoice_by_FetchXMLConditions_1')?['body/value']",
+                  "actions": {
+                    "Set_invoice_from_existing_invoice_1": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "invoiceid",
+                        "value": "@items('For_each')?['new_invoiceid']"
+                      },
+                      "metadata": {
+                        "operationMetadataId": "5bc066e6-7308-4986-afd3-4a4da9c49279"
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e0990c27-a967-4631-b2d6-a96ecc59b22c"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Add_a_new_invoice_row_1": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "entityName": "new_invoices",
+                        "item/new_name": "new",
+                        "item/new_BranchId@odata.bind": "@if(not(equals(triggerBody()?['text_2'], '')), concat('/new_branchs(', triggerBody()?['text_2'], ')'), null)",
+                        "item/new_clientid@odata.bind": "/accounts(@{triggerBody()?['text_4']})",
+                        "item/transactioncurrencyid@odata.bind": "/transactioncurrencies(@{triggerBody()?['text_5']})",
+                        "item/new_invoicedate": "@triggerBody()?['text_6']",
+                        "item/new_managingaccountid@odata.bind": "/accounts(@{triggerBody()?['text_7']})",
+                        "item/new_paymentterms": "@triggerBody()?['number']",
+                        "item/new_purchaseorderid@odata.bind": "@if(not(equals(triggerBody()?['text_9'], '')), concat('/new_purchaseorders(', triggerBody()?['text_9'], ')'), null)",
+                        "item/statuscode": 100000000
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                        "operationId": "CreateRecord",
+                        "connectionName": "shared_commondataserviceforapps"
+                      },
+                      "retryPolicy": {
+                        "type": "exponential",
+                        "count": 5,
+                        "interval": "PT30S",
+                        "minimumInterval": "PT10S",
+                        "maximumInterval": "PT1H"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "da765fd6-eba1-44c2-91db-2ad30d7876d4"
+                    }
+                  },
+                  "Set_invoice_variable_1": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "invoiceid",
+                      "value": "@outputs('Add_a_new_invoice_row_1')?['body/new_invoiceid']"
+                    },
+                    "runAfter": {
+                      "Add_a_new_invoice_row_1": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "e768821c-5f1e-4764-a9af-f166b568de3b"
+                    }
+                  },
+                  "Respond_to_a_Power_App_or_flow-copy_2": {
+                    "type": "Response",
+                    "kind": "PowerApp",
+                    "inputs": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "invoiceid": {
+                            "title": "invoiceid",
+                            "x-ms-dynamically-added": true,
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {}
+                      },
+                      "statusCode": 200,
+                      "body": {
+                        "invoiceid": "@{variables('invoiceid')}"
+                      }
+                    },
+                    "runAfter": {
+                      "Set_invoice_variable_1": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b6b2da00-1a07-40b7-b20d-7d7ea819486d"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_DRAFT__invoice_by_FetchXMLConditions_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cdc44a36-9c0d-4625-9236-150d0006c6a2"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope": [
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "890c5b7c-d5c0-4f2c-af55-9e926429b8b4"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

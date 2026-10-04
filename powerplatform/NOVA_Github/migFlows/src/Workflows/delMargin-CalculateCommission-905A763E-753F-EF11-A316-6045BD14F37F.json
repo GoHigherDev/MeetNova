@@ -1,0 +1,723 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "Bonusid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "contactid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "date": {
+                  "description": "Please enter or select a date (YYYY-MM-DD)",
+                  "format": "date",
+                  "title": "Weekend",
+                  "type": "string",
+                  "x-ms-content-hint": "DATE",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "date"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "d744e13a-7a42-49cd-91fb-bfb3e0a18d5c"
+          }
+        }
+      },
+      "actions": {
+        "Get_a_bonus_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_consultantbonuses",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "6ceca8fd-0c5d-4fbe-a655-dfad3a68a35a"
+          }
+        },
+        "Compose_no_ofweeks_in_Month": {
+          "type": "Compose",
+          "inputs": "@div(add(sub(outputs('Compose_Number_of_Days_in_Month'), dayOfMonth(outputs('Compose_First_Sunday'))), 7), 7)",
+          "runAfter": {
+            "Compose_First_Sunday": [
+              "Succeeded"
+            ]
+          }
+        },
+        "For_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('List_new_bonussetting_rows')?['body/value']",
+          "actions": {
+            "Compose_choice_value": {
+              "type": "Compose",
+              "inputs": "@item()?['new_commissionsettingtype']"
+            },
+            "Condition_4_weeks_in_month_and_4_week_commissionsettingtype_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@outputs('Compose_no_ofweeks_in_Month')",
+                      4
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@outputs('Compose_choice_value')",
+                      100000000
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Condition_stoploop==_false": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@variables('StopLoop')",
+                          "@false"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Set_stoploop_variable": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "StopLoop",
+                        "value": true
+                      },
+                      "runAfter": {
+                        "Set_Percentage_variable": [
+                          "Succeeded"
+                        ]
+                      }
+                    },
+                    "Set_Percentage_variable": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Percentage",
+                        "value": "@item()?['new_commission']"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Compose_choice_value": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition_5_weeks_in_month_and_5_week_commissionsettingtype_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@outputs('Compose_no_ofweeks_in_Month')",
+                      5
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@outputs('Compose_choice_value')",
+                      100000001
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Condition_stoploop_==_false_on_5": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@variables('StopLoop')",
+                          "@false"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Set_Percentage_variable-5": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "Percentage",
+                        "value": "@item()?['new_commission']"
+                      }
+                    },
+                    "Set_stoploop_variable-copy": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "StopLoop",
+                        "value": true
+                      },
+                      "runAfter": {
+                        "Set_Percentage_variable-5": [
+                          "Succeeded"
+                        ]
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_4_weeks_in_month_and_4_week_commissionsettingtype_exists": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition_no_weeks_restriction": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@variables('StopLoop')",
+                      "@false"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@outputs('Compose_choice_value')",
+                      100000002
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Set_variable_stoploop_as_true_on_no_restriction": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "StopLoop",
+                    "value": true
+                  },
+                  "runAfter": {
+                    "Set_Percentage_variable_no_restriction": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Set_Percentage_variable_no_restriction": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Percentage",
+                    "value": "@item()?['new_commission']"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Condition_5_weeks_in_month_and_5_week_commissionsettingtype_exists": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "List_new_bonussetting_rows": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_stoploop_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "StopLoop",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Commission_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Percentage_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Percentage",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_bonus_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_percent_gt_0": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@variables('Percentage')",
+                  0
+                ]
+              },
+              {
+                "greater": [
+                  "@variables('TotalMargin')",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_a_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_consultantbonuses",
+                  "recordId": "@triggerBody()?['text']",
+                  "item/new_commission": "@variables('Commission')",
+                  "item/new_totaldeductions": "@variables('TotalDeduction')",
+                  "item/new_totalfees": "@variables('TotalFees')",
+                  "item/new_totalmargin": "@variables('TotalMargin')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Set_commission_variable": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Set_commission_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Commission",
+                "value": "@mul(variables('NetTotal'), div(variables('Percentage'), 100))\r\n"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Set_commission_variable-copy": {
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "Commission",
+                  "value": 0
+                }
+              },
+              "Update_a_row-copy": {
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "parameters": {
+                    "entityName": "new_consultantbonuses",
+                    "recordId": "@triggerBody()?['text']",
+                    "item/new_commission": "@variables('Commission')",
+                    "item/new_totaldeductions": "@variables('TotalDeduction')",
+                    "item/new_totalfees": "@variables('TotalFees')",
+                    "item/new_totalmargin": "@variables('TotalMargin')"
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                    "operationId": "UpdateRecord",
+                    "connectionName": "shared_commondataserviceforapps"
+                  }
+                },
+                "runAfter": {
+                  "Set_commission_variable-copy": [
+                    "Succeeded"
+                  ]
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "For_each": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "commission": {
+                  "title": "Commission",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "commission": "@variables('Commission')"
+            }
+          },
+          "runAfter": {
+            "Condition_percent_gt_0": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Commission_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Commission",
+                "type": "float",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_Percentage_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_Start_of_Month": {
+          "type": "Compose",
+          "inputs": "@startOfMonth(triggerBody()?['date'])",
+          "runAfter": {
+            "Initialize_stoploop_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_End_of_Month": {
+          "type": "Compose",
+          "inputs": "@addToTime(startOfMonth(addToTime(triggerBody()?['date'], 1, 'month')), -1, 'day')",
+          "runAfter": {
+            "Compose_Start_of_Month": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_Number_of_Days_in_Month": {
+          "type": "Compose",
+          "inputs": "@add(div(sub(ticks(outputs('Compose_End_of_Month')), ticks(outputs('Compose_Start_of_Month'))), 864000000000), 1)",
+          "runAfter": {
+            "Compose_End_of_Month": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_First_Sunday": {
+          "type": "Compose",
+          "inputs": "@addDays(outputs('Compose_Start_of_Month'), mod(sub(7, dayOfWeek(outputs('Compose_Start_of_Month'))), 7))",
+          "runAfter": {
+            "Compose_Number_of_Days_in_Month": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_all_margins_for_month": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_margins",
+              "fetchXml": "<fetch aggregate='true'>\n  <entity name=\"new_margin\">\n    <attribute name=\"new_amount\"\n      alias='Sum'\n      aggregate='sum' />\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerBody()?['text_1']}\" />\n\n   <condition attribute=\"new_weekend\" operator=\"on-or-after\" value=\"@{outputs('Compose_Start_of_Month')}\" />\n<condition attribute=\"new_weekend\" operator=\"on-or-before\" value=\"@{outputs('Compose_End_of_Month')}\" />\n   </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Compose_no_ofweeks_in_Month": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b5d8b0c8-f302-4001-8f10-c0988ce68dab"
+          }
+        },
+        "Get_fees_sum": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_feeses",
+              "fetchXml": "<fetch aggregate='true'>\n  <entity name=\"new_fees\">\n    <attribute name=\"new_fee\"\n      alias='Sum'\n      aggregate='sum' />\n    <filter type=\"and\">\n<condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerBody()?['text_1']}\" />\n\n   <condition attribute=\"new_weekend\" operator=\"on-or-after\" value=\"@{outputs('Compose_Start_of_Month')}\" />\n<condition attribute=\"new_weekend\" operator=\"on-or-before\" value=\"@{outputs('Compose_End_of_Month')}\" />\n  \n   </filter>\n</entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_all_margins_for_month": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf87a703-70b4-4c7b-9e0c-21384f797172"
+          }
+        },
+        "List_Fee_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_feeses",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_fees\">\n<attribute name=\"new_feesid\"/>\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerBody()?['text_1']}\" />\n\n   <condition attribute=\"new_weekend\" operator=\"on-or-after\" value=\"@{outputs('Compose_Start_of_Month')}\" />\n<condition attribute=\"new_weekend\" operator=\"on-or-before\" value=\"@{outputs('Compose_End_of_Month')}\" />\n  \n   </filter>\n  </entity>\n</fetch>\n"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_fees_sum": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7a1bf679-e31b-49ea-a57c-ff39484ca659"
+          }
+        },
+        "Get_all_deductions_sum": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_deductionses",
+              "fetchXml": "<fetch aggregate='true'>\n  <entity name=\"new_deductions\">\n    <attribute name=\"new_deduction\"\n      alias='Sum'\n      aggregate='sum' />\n    <filter type=\"and\">\n      <condition attribute=\"new_consultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerBody()?['text_1']}\" />\n\n   <condition attribute=\"new_weekend\" operator=\"on-or-after\" value=\"@{outputs('Compose_Start_of_Month')}\" />\n<condition attribute=\"new_weekend\" operator=\"on-or-before\" value=\"@{outputs('Compose_End_of_Month')}\" />\n   </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "List_Fee_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf87a703-70b4-4c7b-9e0c-21384f797172"
+          }
+        },
+        "Initialize_TotalMargin": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalMargin",
+                "type": "float",
+                "value": "@if(empty(outputs('Get_all_margins_for_month')?['body/value']), 0, if(not(contains(string(outputs('Get_all_margins_for_month')?['body/value'][0]), 'Sum')), 0, outputs('Get_all_margins_for_month')?['body/value'][0]['Sum']))"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ee3ba7cc-fe5f-4f05-8ed3-f17f2d61ddc4"
+          }
+        },
+        "Initialize_TotalFees": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalFees",
+                "type": "float",
+                "value": "@if(empty(outputs('Get_fees_sum')?['body/value']), 0, if(not(contains(string(outputs('Get_fees_sum')?['body/value'][0]), 'Sum')), 0, outputs('Get_fees_sum')?['body/value'][0]['Sum']))"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TotalMargin": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ee3ba7cc-fe5f-4f05-8ed3-f17f2d61ddc4"
+          }
+        },
+        "Initialize_TotalDeduction": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalDeduction",
+                "type": "float",
+                "value": "@if(empty(outputs('Get_all_deductions_sum')?['body/value']), 0, if(not(contains(string(outputs('Get_all_deductions_sum')?['body/value'][0]), 'Sum')), 0, outputs('Get_all_deductions_sum')?['body/value'][0]['Sum']))"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TotalFees": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "045eae51-2478-4935-a8c6-630a2724dea3"
+          }
+        },
+        "Initialize__NetTotalMax_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": " NetTotalMax",
+                "type": "float",
+                "value": "@sub(sub(add(variables('TotalMargin'),variables('TotalFees')),variables('TotalDeduction') ),0.01)"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_NetTotal_Min_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_NetTotal_Min_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": " NetTotalMin",
+                "type": "float",
+                "value": "@add(sub(add(variables('TotalMargin'),variables('TotalFees')),variables('TotalDeduction') ),0.01)"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_TotalDeduction": [
+              "Succeeded"
+            ]
+          }
+        },
+        "List_new_bonussetting_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_bonussettings",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_bonussetting\">\n    <attribute name=\"new_bonussettingid\" />\n    <attribute name=\"new_commissionsettingtype\" />\n    <attribute name=\"new_from\" />\n    <attribute name=\"new_to\" />\n    <attribute name=\"new_commission\" />\n    <attribute name=\"new_managingaccountid\" />\n    <attribute name=\"transactioncurrencyid\" />\n    <order attribute=\"new_commissionsettingtype\" descending=\"false\" />\n    <order attribute=\"new_from\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_from\" operator=\"lt\" value=\"@{variables(' NetTotalMin')}\" />\n      <condition attribute=\"new_to\" operator=\"gt\" value=\"@{variables(' NetTotalMax')}\" />\n\n      <condition attribute=\"new_managingaccountid\" operator=\"eq\"  uitype=\"account\" value=\"@{body('Get_a_bonus_row_by_ID')?['_new_managingaccountid_value']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize__NetTotalMax_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c8d94e94-bc19-4d79-ba57-51ae19764bae"
+          }
+        },
+        "Initialize_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NetTotal",
+                "type": "float",
+                "value": "@outputs('Get_a_bonus_row_by_ID')?['body/new_netmargin_base']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_all_deductions_sum": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

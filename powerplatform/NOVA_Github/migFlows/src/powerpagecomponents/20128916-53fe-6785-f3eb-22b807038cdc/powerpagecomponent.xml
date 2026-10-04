@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="20128916-53fe-6785-f3eb-22b807038cdc">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 171,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "0ad1d2df-b8e1-810a-1818-73d0bdd99bfb",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expense Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

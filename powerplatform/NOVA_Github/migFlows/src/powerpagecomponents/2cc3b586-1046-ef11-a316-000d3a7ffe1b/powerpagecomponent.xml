@@ -1,0 +1,11 @@
+<powerpagecomponent powerpagecomponentid="2cc3b586-1046-ef11-a316-000d3a7ffe1b">
+  <content>{"adx_flowapiurl":"/_api/cloudflow/v1.0/trigger/63a5f517-381c-ef11-840a-0022486a2752","adx_flowtriggerurl":"https://uk-001.azure-apim.net:443/apim/logicflows/BE9F3FD715C63EDFBA9BB184A4E18BAD-67F7AC550118ADF9/triggers/manual/run?api-version=2016-06-01","adx_metadata":"be9f3fd7-15c6-3edf-ba9b-b184a4e18bad","adx_CloudFlowConsumer_adx_webrole":["85e07adf-981e-4faa-aa7d-0d8eacc4bdbe"],"_adx_processid_value":"63a5f517-381c-ef11-840a-0022486a2752"}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Register a contact</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

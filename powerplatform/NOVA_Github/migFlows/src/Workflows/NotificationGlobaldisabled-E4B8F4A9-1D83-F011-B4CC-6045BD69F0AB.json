@@ -1,0 +1,205 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "17f5bbd7-a71a-4f66-8692-23030ecbb236"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_a_notification_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "319f5525-4d53-4c17-b7f7-3609c5dcb859"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "a76d18e8-aa88-f011-b4cb-6045bdfc0113"
+            },
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition_if_Global_notification__=_true": {
+          "actions": {
+            "Set_Global_Notification_variable_to_true": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "4a184636-b084-4c6d-ab65-58d7abfe7537"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "GlobalNotification",
+                "value": true
+              }
+            },
+            "Respond_to_a_Power_App_or_flow": {
+              "runAfter": {
+                "Set_Global_Notification_variable_to_true": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "aa72caea-3670-4777-9f6c-a204a1f2a0dd"
+              },
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "statusCode": 200,
+                "body": {
+                  "result": "@true"
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "title": "Result",
+                      "x-ms-dynamically-added": true,
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Set_Global_Notification_variable_to_true_1": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "b86e8aff-5912-4f90-aba8-72835b2baeac"
+                },
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "GlobalNotification",
+                  "value": false
+                }
+              },
+              "Respond_to_a_Power_App_or_flow_1": {
+                "runAfter": {
+                  "Set_Global_Notification_variable_to_true_1": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "0632b226-33c1-4a5f-968f-604b9f7e8cef"
+                },
+                "type": "Response",
+                "kind": "PowerApp",
+                "inputs": {
+                  "statusCode": 200,
+                  "body": {
+                    "result": "@false"
+                  },
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "result": {
+                        "title": "Result",
+                        "x-ms-dynamically-added": true,
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_a_notification_row_by_ID')?['body/new_globalnotificationstoggle']",
+                  1
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8f6d0c78-4f9f-4567-873c-cf0d88165a34"
+          },
+          "type": "If"
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3eae3e28-59d9-4326-82ca-23c4711f5095"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "GlobalNotification",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "99a0f692-383a-4147-abed-019c5d11a076"
+          },
+          "type": "Compose",
+          "inputs": "@outputs('Get_a_notification_row_by_ID')?['body/new_globalnotificationstoggle']"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

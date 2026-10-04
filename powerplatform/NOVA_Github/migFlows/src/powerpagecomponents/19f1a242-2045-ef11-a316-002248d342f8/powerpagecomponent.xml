@@ -1,0 +1,23 @@
+<powerpagecomponent powerpagecomponentid="19f1a242-2045-ef11-a316-002248d342f8">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_date",
+  "descriptionposition": 100000000,
+  "entityform": "403da6bf-1f45-ef11-a316-002248d342f8",
+  "entityformforcreate": "403da6bf-1f45-ef11-a316-002248d342f8",
+  "fieldisrequired": true,
+  "ignoredefaultvalue": false,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheet Cost Hours Insert new_date</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

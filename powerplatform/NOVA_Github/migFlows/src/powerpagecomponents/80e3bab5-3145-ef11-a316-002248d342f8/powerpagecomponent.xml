@@ -1,0 +1,48 @@
+<powerpagecomponent powerpagecomponentid="80e3bab5-3145-ef11-a316-002248d342f8">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_timesheetcost",
+  "entitypermissionsenabled": false,
+  "entitysourcetype": 756150001,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000001,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordidquerystringparametername": "id",
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "$(document).ready(function() {\r\n    // Set the \"Modified by Contact\" field with the contact's ID and name,  \r\n    // then hide the field and its label from the user.\r\n    var contactId = window.parent.parentContactId;\r\n    var contactName = window.parent.parentContactFullName;\r\n    if( $('#new_modifiedbycontactid') ){\r\n\r\n        $('#new_modifiedbycontactid').val(contactId);\r\n        $('#new_modifiedbycontactid_name').val(contactName);\r\n        $('#new_modifiedbycontactid_entityname').val(\"contact\");\r\n\r\n        $('#new_modifiedbycontactid').siblings(\"div.input-group-btn\").find(\"button\").prop(\"disabled\", true);\r\n        $('#new_modifiedbycontactid_label').hide();\r\n        $('#new_modifiedbycontactid').closest('div').hide();\r\n    }\r\n});",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "costhours",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Timesheet Cost Hours QP</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

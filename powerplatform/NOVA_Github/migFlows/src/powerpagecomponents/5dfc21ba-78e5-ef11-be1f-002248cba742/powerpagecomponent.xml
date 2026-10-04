@@ -1,0 +1,50 @@
+<powerpagecomponent powerpagecomponentid="5dfc21ba-78e5-ef11-be1f-002248cba742">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_timesheetcost",
+  "entitypermissionsenabled": true,
+  "entitysourcetype": 756150001,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": false,
+  "mode": 100000001,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordidquerystringparametername": "id",
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": true,
+  "redirecturlquerystringname": "expenseid",
+  "redirectwebpage": "322e9f40-d034-6bea-2d63-a21d3a482ac6",
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "$(document).ready(function(){\r\n    const assignmentName = window.parent.parentNewAssignmentName?window.parent.parentNewAssignmentName: localStorage.getItem(\"assignmentName\");\r\n    const assignmentId = window.parent.parentNewAssignmentId?window.parent.parentNewAssignmentId:localStorage.getItem(\"assignmentId\");\r\n    \r\n    $('#new_assignmentid').closest('tr').hide();\r\n    $('#new_modifiedbycontactid').closest('tr').hide();\r\n\r\n    $('#new_assignmentid_name').val(assignmentName);\r\n    $('#new_assignmentid').val(assignmentId);\r\n    $('#new_assignmentid_entityname').val(\"new_assignment\");\r\n}); ",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "editunitexpense",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Units Expense Edit</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

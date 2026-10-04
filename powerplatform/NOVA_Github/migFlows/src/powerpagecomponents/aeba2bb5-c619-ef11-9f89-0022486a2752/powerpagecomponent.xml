@@ -1,0 +1,19 @@
+<powerpagecomponent powerpagecomponentid="aeba2bb5-c619-ef11-9f89-0022486a2752">
+  <content>{
+  "contentdisposition": 756150000,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": false,
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "settingsicon",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <filecontent mimetype="application/octet-stream">115801_settings_icon.svg</filecontent>
+  <iscustomizable>1</iscustomizable>
+  <name>settingsicon.svg</name>
+  <powerpagecomponenttype>3</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

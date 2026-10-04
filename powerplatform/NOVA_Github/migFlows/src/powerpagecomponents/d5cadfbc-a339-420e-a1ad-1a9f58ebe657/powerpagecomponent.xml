@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="d5cadfbc-a339-420e-a1ad-1a9f58ebe657">
+  <content>{
+  "displayorder": 119,
+  "parentweblinkid": "44545bc8-2bb7-4f09-947f-066373c487f4",
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "81ab7552-e6cf-f2b4-5cf4-3785b16a4018",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bulk Imports Self Bill Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

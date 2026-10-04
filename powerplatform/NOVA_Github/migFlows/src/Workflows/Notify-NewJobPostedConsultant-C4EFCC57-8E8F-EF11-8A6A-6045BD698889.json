@@ -1,0 +1,187 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Timesheets url (new_Timesheetsurl)": {
+          "defaultValue": "https://quickshifts-dev.powerappsportals.com/",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_Timesheetsurl"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 7,
+              "subscriptionRequest/entityname": "new_job",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statecode",
+              "subscriptionRequest/filterexpression": "statuscode eq 1"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "conditions": [],
+          "metadata": {
+            "operationMetadataId": "85d5f554-8bea-4551-a2e3-e514373b7c04"
+          }
+        }
+      },
+      "actions": {
+        "Get_Job_Roles_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobroles",
+              "recordId": "@outputs('Get_New_Job_row_by_ID')?['body/_new_jobroleid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Get_a_Consultant_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8b571876-c4be-4b5c-b37d-140abda47b7e"
+          }
+        },
+        "Get_a_Consultant_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerBody()?['_new_consultantid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_Client_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bbacd524-06c3-4432-9d96-33914ec5d83c"
+          }
+        },
+        "Send_an_email_Consultant": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_a_Consultant_row_by_ID')?['body/emailaddress1']",
+              "emailMessage/Subject": " New Job Posted - Start Sourcing Candidates Now",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">Hi @{body('Get_a_Consultant_row_by_ID')?['firstname']},</p><br><p class=\"editor-paragraph\">A new job has been posted by @{outputs('Get_Client_row_by_ID')?['body/firstname']}. This email is notifying you to begin sourcing candidates for the following Job role:</p><br><p class=\"editor-paragraph\">Job Details:</p><p class=\"editor-paragraph\">Job Title: @{outputs('Get_New_Job_row_by_ID')?['body/new_name']}</p><p class=\"editor-paragraph\">Job Role: @{outputs('Get_Job_Roles_row_by_ID')?['body/new_name']}</p><p class=\"editor-paragraph\">Start Date: @{triggerOutputs()?['body/new_startdate']}</p><p class=\"editor-paragraph\">Total Vacanices: @{outputs('Get_New_Job_row_by_ID')?['body/new_totalvacancies']}</p><br><p class=\"editor-paragraph\">Please access the link below to review the Job details, and start reaching out to suitable candidates who match the role requirements.<br></p><br><p class=\"editor-paragraph\">@{parameters('Timesheets url (new_Timesheetsurl)')}/jobedit/?id=@{triggerOutputs()?['body/new_jobid']}</p><br><p class=\"editor-paragraph\">Thank you, @{outputs('Get_a_Consultant_row_by_ID')?['body/firstname']}</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365-1"
+            }
+          },
+          "runAfter": {
+            "Get_Job_Roles_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "48c43c1a-1089-4583-bf9b-bd670435d196"
+          }
+        },
+        "Get_Client_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Get_New_Job_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "010deff8-bcdf-4e89-9e32-bc6f66dd504c"
+          }
+        },
+        "Get_New_Job_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobs",
+              "recordId": "@triggerOutputs()?['body/new_jobid']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

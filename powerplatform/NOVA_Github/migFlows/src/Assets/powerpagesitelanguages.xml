@@ -1,0 +1,28 @@
+<powerpagesitelanguages>
+  <powerpagesitelanguage powerpagesitelanguageid="86b46d28-ba30-418b-a133-2c63fbb8f25d">
+    <content>{"publishingstate":"bcbb84c2-6bab-4ff6-95c8-faa9b3bc5de2","systemlanguage":1033}</content>
+    <displayname>English</displayname>
+    <iscustomizable>1</iscustomizable>
+    <languagecode>en-US</languagecode>
+    <lcid>1033</lcid>
+    <name>English</name>
+    <powerpagesiteid>
+      <powerpagesiteid>536be9ca-009b-46b5-936a-b88303ab83bd</powerpagesiteid>
+    </powerpagesiteid>
+    <statecode>0</statecode>
+    <statuscode>1</statuscode>
+  </powerpagesitelanguage>
+  <powerpagesitelanguage powerpagesitelanguageid="f26e79ae-8236-438d-8948-fa035828e0db">
+    <content>{"publishingstate":"8a2543dd-e77e-4b37-914f-6d6b2cf8398d","systemlanguage":1033}</content>
+    <displayname>English</displayname>
+    <iscustomizable>1</iscustomizable>
+    <languagecode>en-US</languagecode>
+    <lcid>1033</lcid>
+    <name>English</name>
+    <powerpagesiteid>
+      <powerpagesiteid>4b03660c-1dad-419b-85b9-1c1539e47438</powerpagesiteid>
+    </powerpagesiteid>
+    <statecode>0</statecode>
+    <statuscode>1</statuscode>
+  </powerpagesitelanguage>
+</powerpagesitelanguages>

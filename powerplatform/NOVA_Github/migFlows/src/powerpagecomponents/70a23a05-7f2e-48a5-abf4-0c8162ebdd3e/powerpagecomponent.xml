@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="70a23a05-7f2e-48a5-abf4-0c8162ebdd3e">
+  <content>{
+  "displayorder": 177,
+  "pageid": "e22b5777-5a0f-5062-9cc5-463b36b28f5f",
+  "parentweblinkid": "c39b6c6f-e75a-482f-b8f2-e0ed0de76c05",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Currencies</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

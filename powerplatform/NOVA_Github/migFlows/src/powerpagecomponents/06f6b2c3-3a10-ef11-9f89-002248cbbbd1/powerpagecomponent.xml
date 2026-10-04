@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="06f6b2c3-3a10-ef11-9f89-002248cbbbd1">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_managingaccountid",
+  "descriptionposition": 100000000,
+  "entityform": "ff38ffa9-3a10-ef11-9f89-002248cbbbd1",
+  "entityformforcreate": "ff38ffa9-3a10-ef11-9f89-002248cbbbd1",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "msa_managingpartnerid",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Proof of Address Type Insert new_managingaccountid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

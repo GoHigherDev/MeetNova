@@ -1,0 +1,36 @@
+<powerpagecomponent powerpagecomponentid="d8ef1fee-f9b3-ef11-a730-002248cbd4c8">
+  <content>{
+  "copy": "&lt;div id=\"iseehg\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;\"&gt;\n  &lt;div id=\"i0t9jg\" class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div id=\"il7wsj\" class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Invoices QP - Client' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n",
+  "displayorder": 47,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "ab86f63f-d219-ef11-9f89-0022486a2752",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "fc00d1ff-a508-f011-bae3-6045bd69f0ab",
+  "parentpageid": "7fa2e643-a1d7-14a5-ea70-3c769bb93b2c",
+  "partialurl": "invoices",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "6ee2b8e0-c56d-c74a-2bbc-f246bc4aab5a",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "الفواتير"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Invoices</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>707f60d0-f9b3-ef11-a72f-6045bd6ab7b6</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>الفواتير&lt;div id="iseehg" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;"&gt;
+  &lt;div id="i0t9jg" class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div id="il7wsj" class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; word-break: break-word; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Invoices QP - Client' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+Invoices</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="80eb9ff0-6603-4402-84e2-2502fea40f7a">
+  <content>{
+  "displayorder": 97,
+  "pageid": "90a21578-4508-5bd9-046a-1d5445d63d11",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expense Edit</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,164 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "schedule": {
+              "hours": [
+                "1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "f4f9f09d-9fcc-4b5c-a903-bb5ee4eb84ef"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "List_rows": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "64305ab0-eaa0-4627-9ac6-c40b80b4752f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "$select": "new_availableuntil",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"contact\">\n    <attribute name=\"fullname\" />\n    <attribute name=\"contactid\" />\n    <attribute name=\"new_availableuntil\" />\n    <order attribute=\"fullname\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_allowavailabilitynotifications\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"new_iscandidate\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"new_availableuntil\" operator=\"not-null\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each_standard_Available_Until": {
+          "foreach": "@outputs('List_rows')?['body/value']",
+          "actions": {
+            "Available_Until": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "cfb5e9d5-9b06-4ff8-81f0-8ab98af60f4d"
+              },
+              "type": "Compose",
+              "inputs": "@items('Apply_to_each_standard_Available_Until')?['new_availableuntil']"
+            },
+            "Condition": {
+              "actions": {
+                "Send_Message": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "42a54df2-e4e3-4a69-9217-03c8f29f5778"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "f13da6d5-d626-ee11-9965-6045bd0cfca3"
+                    },
+                    "body": {
+                      "text": "@items('Apply_to_each_standard_Available_Until')?['@odata.id']"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Available_Until": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "or": [
+                  {
+                    "equals": [
+                      "@formatDateTime(outputs('Available_Until'), 'dd,MM,yyyy')",
+                      "@addDays(utcNow(), 7, 'dd,MM,yyyy')"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(outputs('Available_Until'), 'dd,MM,yyyy')",
+                      "@addDays(utcNow(), -7, 'dd,MM,yyyy')"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(outputs('Available_Until'), 'dd,MM,yyyy')",
+                      "@formatDateTime(utcNow(), 'dd,MM,yyyy')"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@formatDateTime(outputs('Available_Until'), 'dd,MM,yyyy')",
+                      "@addDays(utcNow(), 30, 'dd,MM,yyyy')"
+                    ]
+                  },
+                  {
+                    "and": [
+                      {
+                        "equals": [
+                          "@dayOfMonth(utcNow())",
+                          1
+                        ]
+                      },
+                      {
+                        "greater": [
+                          "@formatDateTime(outputs('Available_Until'), 'dd,MM,yyyy')",
+                          "@addDays(utcNow(), 30, 'dd,MM,yyyy')"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e496b1bd-4da3-4e09-b8d2-28b468ddd661"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cbefac61-ce5a-4054-86ba-8a070ac2c7d6"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

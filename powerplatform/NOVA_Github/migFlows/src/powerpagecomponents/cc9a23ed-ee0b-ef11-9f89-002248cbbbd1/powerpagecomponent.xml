@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="cc9a23ed-ee0b-ef11-9f89-002248cbbbd1">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_documenttype",
+  "descriptionposition": 100000000,
+  "entityform": "05442a06-ee0b-ef11-9f89-002248cbbbd1",
+  "entityformforcreate": "05442a06-ee0b-ef11-9f89-002248cbbbd1",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "100000001",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>App Docs Insert - Right to Work new_documenttype</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

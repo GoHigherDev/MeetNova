@@ -1,0 +1,250 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "583822f0-9fc1-4650-b52b-68b6b5c9aaf3"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_invoice",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_pdfurl"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Condition_that_timesheets_to_be_attached_to_Invoice": {
+          "actions": {
+            "HTTP": {
+              "runAfter": {
+                "ComposeURL": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e990e68f-7084-485f-bbf0-d16b9c64d5ff"
+              },
+              "type": "Http",
+              "inputs": {
+                "method": "POST",
+                "uri": "https://docs.brics.tech/merge_invo_time/merge",
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "InvoicePDFURL": "@{outputs('ComposeURL')}",
+                  "TimesheetPDFUrls": "@{variables('PdfUrlsArray')}"
+                }
+              }
+            },
+            "Compose_sharelink": {
+              "runAfter": {
+                "HTTP": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "db7f32fe-be07-48b1-a36f-c42ced644341"
+              },
+              "type": "Compose",
+              "inputs": "@outputs('HTTP')?['body']['result']['sharelink']\r\n"
+            },
+            "Update_an_invoice_row_with_sharelink": {
+              "runAfter": {
+                "Compose_sharelink": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8ce69087-57b9-47ea-bb87-71368130664f"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_invoices",
+                  "recordId": "@triggerOutputs()?['body/new_invoiceid']",
+                  "item/new_pdfurlmergedtimesheet": "@outputs('Compose_sharelink')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "List_timesheets_rows": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "22096d47-08ce-43a4-b544-d58f84b98726"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_timesheet\">\n    <attribute name=\"new_timesheetid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"new_pdfurl\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_pdfurl\" operator=\"not-null\" />\n      <condition attribute=\"new_invoiceid\" operator=\"eq\" uitype=\"new_invoice\" value=\"@{triggerOutputs()?['body/new_invoiceid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "For_each": {
+              "foreach": "@outputs('List_timesheets_rows')?['body/value']",
+              "actions": {
+                "ComposePdfurl": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "34f21a91-d779-459a-a793-1c8b043ebcc0"
+                  },
+                  "type": "Compose",
+                  "inputs": "@item()?['new_pdfurl']"
+                },
+                "Append_to_array_variable": {
+                  "runAfter": {
+                    "ComposePdfurl": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6566a57f-f4ad-4ef2-b1a4-8ef5023f9bd0"
+                  },
+                  "type": "AppendToArrayVariable",
+                  "inputs": {
+                    "name": "PdfUrlsArray",
+                    "value": "@outputs('ComposePdfurl')"
+                  }
+                }
+              },
+              "runAfter": {
+                "List_timesheets_rows": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "dbbc1a47-9a85-40ec-85c0-195212d26c24"
+              },
+              "type": "Foreach"
+            },
+            "ComposeURL": {
+              "runAfter": {
+                "For_each": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "10523025-dade-400e-976a-a5f21d049513"
+              },
+              "type": "Compose",
+              "inputs": "@replace(triggerOutputs()?['body/new_pdfurl'], 'merge/', '')"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_PdfUrlsArray": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_a_client_row_by_ID')?['body/new_timesheetstobeattachedtoinvoiceschoice']",
+                  1
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/new_pdfurl']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ef6567cb-edc4-4533-a649-6494a8e8a8db"
+          },
+          "type": "If"
+        },
+        "Get_a_client_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "60bfc8d2-9708-4bf7-8a92-426e825d3423"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerOutputs()?['body/_new_clientid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_PdfUrlsArray": {
+          "runAfter": {
+            "Get_a_client_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3eab3fed-f18c-4e80-a5ee-ee9ca919b214"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PdfUrlsArray",
+                "type": "array"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

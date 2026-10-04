@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="6fdb16b2-a44e-ecb1-8efa-046a59559a2b">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "06e0b881-9b13-e656-a767-653b3da156c9",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889",
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e",
+    "cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3",
+    "ee5aa67c-cc84-ef11-ac20-6045bd6a5beb"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Consultants</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

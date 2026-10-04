@@ -1,0 +1,46 @@
+<powerpagecomponent powerpagecomponentid="2bd9a083-5306-ef11-9f89-0022481bbf4e">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_skills",
+  "entitypermissionsenabled": false,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000000,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "$(document).ready(function() {\r\n\r\n     var newAssignmentId = window.parent.parentNewAssignmentId;\r\n     var newAssignmentName = window.parent.parentNewAssignmentName;\r\n \r\n     // Populate the fields if they are empty\r\n     if ($('#new_assignmentid').val() === '') {\r\n         $('#new_assignmentid').val(newAssignmentId);\r\n         $('#new_assignmentid_name').val(newAssignmentName);\r\n         $('#new_assignmentid_entityname').val(\"new_assignment\");\r\n \r\n \r\n       // $(\"#transactioncurrencyid\").parent().parent().parent().hide();      \r\n   }\r\n \r\n });\r\n \r\n \r\n ",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "newSkill",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Skill Insert</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

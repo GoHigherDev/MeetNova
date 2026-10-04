@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="f4db3cd7-82e5-4d31-898a-1f7692f604dc">
+  <content>{
+  "displayorder": 100,
+  "pageid": "dc0149c8-14db-ce0b-96b1-9c80182414ed",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "4a5e8d97-2223-4ef2-b5f0-42b4ce6cc95f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Approval Confirmation</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

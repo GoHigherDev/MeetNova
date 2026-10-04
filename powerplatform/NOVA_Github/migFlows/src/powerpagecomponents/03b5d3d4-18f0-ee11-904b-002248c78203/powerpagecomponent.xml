@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="03b5d3d4-18f0-ee11-904b-002248c78203">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_isshiftmanager",
+  "descriptionposition": 100000000,
+  "entityform": "63c9be20-25dd-ee11-904c-000d3a8714d9",
+  "entityformforcreate": "63c9be20-25dd-ee11-904c-000d3a8714d9",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavetype": 100000000,
+  "onsavevalue": "True",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Manager Insert new_isshiftmanager</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

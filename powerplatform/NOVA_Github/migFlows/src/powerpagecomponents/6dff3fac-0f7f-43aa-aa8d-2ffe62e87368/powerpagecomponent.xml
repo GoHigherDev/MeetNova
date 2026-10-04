@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="6dff3fac-0f7f-43aa-aa8d-2ffe62e87368">
+  <content>{
+  "filecontent": null,
+  "displayorder": 93,
+  "weblinksetid": "63bf9ba6-3dcd-4076-bb73-21d8707af6d6",
+  "pageid": "e087e486-0988-6cf7-07e5-ae866bcf804c",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Privacy and Policy clients</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

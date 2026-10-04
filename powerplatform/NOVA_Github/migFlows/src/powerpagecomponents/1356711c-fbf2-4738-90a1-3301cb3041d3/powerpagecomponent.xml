@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="1356711c-fbf2-4738-90a1-3301cb3041d3">
+  <content>{
+  "displayorder": 91,
+  "pageid": "b20d2fa6-0cc8-9a86-e1f9-ff28340f65d5",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "4a5e8d97-2223-4ef2-b5f0-42b4ce6cc95f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Expense Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

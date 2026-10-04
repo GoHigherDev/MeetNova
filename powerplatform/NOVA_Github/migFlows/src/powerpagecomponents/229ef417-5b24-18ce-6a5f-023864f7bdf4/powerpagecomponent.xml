@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="229ef417-5b24-18ce-6a5f-023864f7bdf4">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 148,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "75da467e-1611-ef11-9f89-002248cbbbd1",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "c522c2b9-1c09-ef11-9f89-6045bd0d1c17",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "professionalregistration",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Professional Registration"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Professional Registration</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Professional RegistrationundefinedProfessional Registration</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

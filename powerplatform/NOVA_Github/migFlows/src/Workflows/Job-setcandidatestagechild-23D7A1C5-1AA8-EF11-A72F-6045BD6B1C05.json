@@ -1,0 +1,292 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "jobapplicantid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "5d892a4e-783e-4dcd-a002-6c3495526e2c"
+          }
+        }
+      },
+      "actions": {
+        "List_recruitment_stages_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_recruitmentstages",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"true\">\n  <entity name=\"new_recruitmentstage\">\n    <attribute name=\"new_recruitmentstageid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_stagetypeid\" />\n    <attribute name=\"new_order\" />\n    <attribute name=\"new_actionssetdate\" />\n    <attribute name=\"new_recruitmentstagelistid\" />\n    <attribute name=\"new_clientid\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_order\" operator=\"gt\" value=\"@{variables('LastCandidateStageOrder')}\" />\n    </filter>\n    <link-entity name=\"new_recruitmentstagelist\" from=\"new_recruitmentstagelistid\" to=\"new_recruitmentstagelistid\" link-type=\"inner\" alias=\"aa\">\n      <link-entity name=\"new_job\" from=\"new_recruitmentstageistid\" to=\"new_recruitmentstagelistid\" link-type=\"inner\" alias=\"ab\">\n        <filter type=\"and\">\n          <condition attribute=\"new_jobid\" operator=\"eq\"  uitype=\"new_job\" value=\"@{outputs('Get_a_job_applicant_row_by_ID')?['body/_new_jobid_value']}\" />\n        </filter>\n      </link-entity>\n    </link-entity>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_that_last_candidate_stage_is_open_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "28d38e9e-edb0-4b00-956b-a3bd07c55758"
+          }
+        },
+        "Get_a_job_applicant_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobapplicants",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Initialize_LastCandidateStageOrder_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6fe22e80-409e-402b-b80b-7bffdd418cf3"
+          }
+        },
+        "Initialize_LastCandidateStageOrder_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "LastCandidateStageOrder",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d2e223c0-0bf5-43b0-9e14-b8dbe25ef27d"
+          }
+        },
+        "List_Candidate_stages_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_recruitmentprocessstages",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_recruitmentprocessstage\">\n    <attribute name=\"new_recruitmentprocessstageid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"createdon\" />\n    <attribute name=\"new_stagetypeid\" />\n    <attribute name=\"new_order\" />\n    <attribute name=\"new_jobroleid\" />\n    <attribute name=\"new_jobapplicantid\" />\n    <attribute name=\"new_jobid\" />\n    <attribute name=\"new_consultantid\" />\n    <attribute name=\"new_clientid\" />\n    <attribute name=\"new_candidateid\" />\n    <attribute name=\"new_stagestatus\" />\n    <order attribute=\"new_order\" descending=\"true\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_jobapplicantid\" operator=\"eq\"  uitype=\"new_jobapplicant\" value=\"@{triggerBody()['text']}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_job_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d5755970-920b-464e-b446-85f35242f0ce"
+          }
+        },
+        "Set_LastCandidateStageOrder_variable": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "LastCandidateStageOrder",
+            "value": "@if(\r\n    greater(length(outputs('List_Candidate_stages_rows')?['body/value']), 0),\r\n    coalesce(first(outputs('List_Candidate_stages_rows')?['body/value'])?['new_order'], 0),\r\n    0\r\n)"
+          },
+          "runAfter": {
+            "List_Candidate_stages_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "da4d2784-cc96-4c9a-a96e-01f06ccb9c86"
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "type": "boolean",
+                  "x-ms-content-hint": "BOOLEAN",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "success": "@true"
+            }
+          },
+          "runAfter": {
+            "Condition_that_there_is_another_stage": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_that_there_is_another_stage": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('List_recruitment_stages_rows')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "For_each": {
+              "type": "Foreach",
+              "foreach": "@outputs('List_recruitment_stages_rows')?['body/value']",
+              "actions": {
+                "Add_a_CandidateStage_new_row": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_recruitmentprocessstages",
+                      "item/new_name": "@items('For_each')?['new_name']",
+                      "item/new_candidateid@odata.bind": "/contacts(@{outputs('Get_a_job_applicant_row_by_ID')?['body/_new_candidateid_value']})",
+                      "item/new_clientid@odata.bind": "/accounts(@{item()?['_new_clientid_value']})",
+                      "item/new_comments": "@outputs('Get_a_job_applicant_row_by_ID')?['body/new_description']",
+                      "item/new_consultantid@odata.bind": "/contacts(@{outputs('Get_a_job_row_by_ID')?['body/_new_consultantid_value']})",
+                      "item/new_jobid@odata.bind": "@outputs('Get_a_job_row_by_ID')?['body/@odata.id']",
+                      "item/new_jobapplicantid@odata.bind": "@outputs('Get_a_job_applicant_row_by_ID')?['body/@odata.id']",
+                      "item/new_jobroleid@odata.bind": "/new_jobroles(@{outputs('Get_a_job_row_by_ID')?['body/_new_jobroleid_value']})",
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{outputs('Get_a_job_applicant_row_by_ID')?['body/_new_managingaccountid_value']})",
+                      "item/new_order": "@item()?['new_order']",
+                      "item/new_stagetypeid@odata.bind": "new_recruitmentstagetypes(@{item()?['_new_stagetypeid_value']})"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "connectionName": "shared_commondataserviceforapps"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "List_recruitment_stages_rows": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_job_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobs",
+              "recordId": "@outputs('Get_a_job_applicant_row_by_ID')?['body/_new_jobid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_a_job_applicant_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_that_last_candidate_stage_is_open_": {
+          "type": "If",
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@and(\r\n    greater(length(outputs('List_Candidate_stages_rows')?['body/value']), 0),\r\n    equals(\r\n        first(outputs('List_Candidate_stages_rows')?['body/value'])?['new_stagestatus'],\r\n        null\r\n    )\r\n)",
+                  "@true"
+                ]
+              },
+              {
+                "equals": [
+                  "@and(\r\n    greater(length(outputs('List_Candidate_stages_rows')?['body/value']), 0),\r\n    or(\r\n        equals(first(outputs('List_Candidate_stages_rows')?['body/value'])?['new_stagestatus'], 100000001),\r\n        equals(first(outputs('List_Candidate_stages_rows')?['body/value'])?['new_stagestatus'], 100000002)\r\n    )\r\n)",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Terminate": {
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Cancelled"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Set_LastCandidateStageOrder_variable": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="dcd6b2cd-57dc-ee11-904c-000d3a86a889">
+  <content>{
+  "accountrelationship": "new_shiftstaff_managingaccountid",
+  "append": true,
+  "appendto": true,
+  "create": true,
+  "delete": true,
+  "entitylogicalname": "new_shiftstaff",
+  "entityname": "Shift Staff",
+  "read": true,
+  "scope": 756150002,
+  "write": true,
+  "adx_entitypermission_webrole": [
+    "b5b6db58-bfdb-ee11-904c-000d3a86a889"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Staff</name>
+  <powerpagecomponenttype>18</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

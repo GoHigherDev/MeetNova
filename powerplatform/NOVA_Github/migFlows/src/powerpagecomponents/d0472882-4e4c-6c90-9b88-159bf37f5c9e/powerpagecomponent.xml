@@ -1,0 +1,27 @@
+<powerpagecomponent powerpagecomponentid="d0472882-4e4c-6c90-9b88-159bf37f5c9e">
+  <content>{
+  "displayorder": 171,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "274af039-1632-ee11-bdf3-6045bd0cfca3",
+  "parentpageid": "f07ba5c9-dc86-746b-3cbb-553a09c15cfb",
+  "partialurl": "purchaseordersadmin",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Purchase Orders Admin"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Purchase Orders</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Purchase Orders AdminPurchase Orders</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

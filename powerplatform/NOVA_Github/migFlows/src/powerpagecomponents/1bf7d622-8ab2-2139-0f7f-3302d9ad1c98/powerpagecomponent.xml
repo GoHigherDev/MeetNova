@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="1bf7d622-8ab2-2139-0f7f-3302d9ad1c98">
+  <content>{
+  "right": 2,
+  "scope": 1,
+  "webpageid": "0a0280cf-7827-20b6-0ec5-700396bf59b4",
+  "adx_webpageaccesscontrolrule_webrole": [
+    "bf1f904b-9e03-ef11-9f89-0022481bbf4e"
+  ]
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Restrict Read on Right to Work</name>
+  <powerpagecomponenttype>10</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

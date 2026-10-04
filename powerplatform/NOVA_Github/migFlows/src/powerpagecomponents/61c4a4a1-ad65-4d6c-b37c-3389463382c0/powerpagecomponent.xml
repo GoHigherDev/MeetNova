@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="61c4a4a1-ad65-4d6c-b37c-3389463382c0">
+  <content>{
+  "displayorder": 115,
+  "pageid": "3ac3e3cd-a4d8-ae28-873a-f4dd110bd7fd",
+  "parentweblinkid": "6c85ebd4-6383-4712-9bd9-dfc1e96cd541",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "6b7e16b9-6861-4ba7-a77e-40f30089141c"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bulk Imports Invoice Details</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

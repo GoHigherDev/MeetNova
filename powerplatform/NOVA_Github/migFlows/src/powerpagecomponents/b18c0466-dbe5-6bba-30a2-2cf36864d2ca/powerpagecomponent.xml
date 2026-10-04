@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="b18c0466-dbe5-6bba-30a2-2cf36864d2ca">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 60,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "5fa8ad5c-ea05-ee11-8f6e-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "4e7cb3bc-1932-ee11-bdf3-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "invoiceedit",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Invoice Edit"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Invoice Edit</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Invoice EditundefinedInvoice Edit</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

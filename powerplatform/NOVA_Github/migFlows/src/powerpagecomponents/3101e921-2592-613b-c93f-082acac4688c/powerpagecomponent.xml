@@ -1,0 +1,26 @@
+<powerpagecomponent powerpagecomponentid="3101e921-2592-613b-c93f-082acac4688c">
+  <content>{
+  "displayorder": 100,
+  "enablerating": false,
+  "enabletracking": false,
+  "excludefromsearch": false,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "b0d41a68-724f-70fd-6089-2a52f4b78039",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "ReadCriminalConvictions",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "ReadCriminalConvictions"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>ReadCriminalConvictions</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>ReadCriminalConvictionsReadCriminalConvictions</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

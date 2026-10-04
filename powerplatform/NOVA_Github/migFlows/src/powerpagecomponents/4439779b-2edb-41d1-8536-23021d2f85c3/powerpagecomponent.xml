@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="4439779b-2edb-41d1-8536-23021d2f85c3">
+  <content>{
+  "filecontent": null,
+  "displayorder": 101,
+  "weblinksetid": "63bf9ba6-3dcd-4076-bb73-21d8707af6d6",
+  "pageid": "bcf5e0a5-62c0-9244-c476-a5a117a49b01",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheet Closure</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

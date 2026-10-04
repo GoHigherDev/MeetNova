@@ -1,0 +1,265 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "ab3e2884-7bc3-41f3-bf23-c1576989e241"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_currency_variable": {
+          "runAfter": {
+            "InitializeBaseCurrencyISO_Variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f2bddf80-8a2f-41d9-893b-e98ef332d12a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Currency3LetterISO",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_currencies_rows')?['body/value']",
+          "actions": {
+            "Set_fx_rate_on_this_currency": {
+              "runAfter": {
+                "Set_currency_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2d0cb003-b318-46e1-b4aa-17c6c403ff8c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "ExchangeRate",
+                "value": "@\r\nfloat(body('HTTP_Get_Exchange_Rates')?[outputs('Get_Currency_record')?['body/isocurrencycode']]?['rate'])"
+              }
+            },
+            "Get_Currency_record": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0cd92562-6c8f-4647-a0e3-4a270c8667c5"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "transactioncurrencies",
+                  "recordId": "@items('Apply_to_each')?['transactioncurrencyid']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Set_currency_variable": {
+              "runAfter": {
+                "Get_Currency_record": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9c27ae32-54e5-4c79-af2a-a28fc84a5d6e"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Currency3LetterISO",
+                "value": "@items('Apply_to_each')?['isocurrencycode']"
+              }
+            },
+            "Update_exchange_row": {
+              "runAfter": {
+                "Set_fx_rate_on_this_currency": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "63219013-7303-44bd-90f3-a63402b53026"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "transactioncurrencies",
+                  "recordId": "@items('Apply_to_each')?['transactioncurrencyid']",
+                  "item/exchangerate": "@variables('ExchangeRate')"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_currencies_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e8495980-47e9-4421-aa4f-64b1429f803c"
+          },
+          "type": "Foreach"
+        },
+        "InitializeExchangeRateVariable": {
+          "runAfter": {
+            "Initialize_currency_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "48136d6d-6c4d-44c6-a1c7-abd169d2586a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ExchangeRate",
+                "type": "float"
+              }
+            ]
+          }
+        },
+        "InitializeBaseCurrencyISO_Variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "4f54ab0f-d3cb-46e8-81e5-ec599c178c3d"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Base Currency ISO",
+                "type": "string",
+                "value": "GBP"
+              }
+            ]
+          }
+        },
+        "HTTP_Get_Exchange_rates": {
+          "runAfter": {
+            "InitializeExchangeRateVariable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "448b33d3-0d11-4a69-9d6e-ba32fe1789fa"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://www.floatrates.com/daily/@{variables('Base Currency ISO')}.json"
+          }
+        },
+        "List_currencies_rows": {
+          "runAfter": {
+            "HTTP_Get_Exchange_rates": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b79d2f7c-0762-4ee9-8d57-08366d778906"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "transactioncurrencies",
+              "$filter": "isocurrencycode ne '@{variables('Base Currency ISO')}' and isocurrencycode ne 'AED'"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d256c593-f000-46c6-8228-e930b7f47d4a"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "processed": "@{true}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "processed": {
+                  "title": "processed",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

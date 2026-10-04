@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="693c10da-7269-4c60-a971-22dcd2fe28c1">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 29,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "524971c0-b60b-ee11-8f6e-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "92bb2da3-b130-ee11-bdf3-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "Sector-Edit",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Sector Edit"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Sector Edit</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Sector EditundefinedSector Edit</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

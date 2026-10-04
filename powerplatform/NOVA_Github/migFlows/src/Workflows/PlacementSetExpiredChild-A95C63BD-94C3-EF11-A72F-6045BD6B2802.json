@@ -1,0 +1,360 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "PlacementId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "7b254410-1bbe-4e1f-bf73-d18be5e0619b"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "success": "@{true}"
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "94954f4a-616a-4a78-bff6-73e67793876c"
+          }
+        },
+        "Get_a_placement_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "77cf72a1-edf9-44f9-83d6-f334f645f8f8"
+          }
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "less": [
+                  "@outputs('Get_a_placement_row_by_ID')?['body/new_enddate']",
+                  "@utcNow()"
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Get_a_placement_row_by_ID')?['body/statecode']",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_a_placement_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@triggerBody()['text']",
+                  "item/statecode": 1,
+                  "item/statuscode": 100000001
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "613efc8a-49fe-4638-b14e-2b294c06e8c4"
+              }
+            },
+            "Condition_if_open_timesheets_exist,_and_status_reason_=_Expired": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('get_all_opened_timesheets')?['body/value'])",
+                      0
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@outputs('Update_a_placement_row')?['body/statuscode']",
+                      100000001
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "For_each": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('get_all_opened_timesheets')?['body/value']",
+                  "actions": {
+                    "List_all_timesheet_cost_for_open_timesheet": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_timesheetcosts",
+                          "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_timesheetcost\">\n<attribute name=\"new_timesheetcostid\"/>\n<filter type=\"and\">\n<condition attribute=\"new_timesheetid\" operator=\"eq\" uitype=\"new_timesheet\" value=\"@{items('For_each')?['new_timesheetid']}\"/>\n</filter>\n</entity>\n</fetch>"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "ListRecords",
+                          "connectionName": "shared_commondataserviceforapps-1"
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "50ec54ee-6ba6-4ffa-b2c4-9d4c524e57fb"
+                      }
+                    },
+                    "If_timesheet_cost_exist": {
+                      "type": "If",
+                      "expression": {
+                        "and": [
+                          {
+                            "greater": [
+                              "@length(outputs('List_all_timesheet_cost_for_open_timesheet')?['body/value'])",
+                              0
+                            ]
+                          }
+                        ]
+                      },
+                      "actions": {
+                        "Apply_to_each": {
+                          "type": "Foreach",
+                          "foreach": "@outputs('List_all_timesheet_cost_for_open_timesheet')?['body/value']",
+                          "actions": {
+                            "update_status_reason_of_timesheet_cost_to_inactive_": {
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "parameters": {
+                                  "entityName": "new_timesheetcosts",
+                                  "recordId": "@items('Apply_to_each')?['new_timesheetcostid']",
+                                  "item/statecode": 1,
+                                  "item/statuscode": 100000007
+                                },
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord",
+                                  "connectionName": "shared_commondataserviceforapps-1"
+                                }
+                              },
+                              "metadata": {
+                                "operationMetadataId": "7cd74fe9-f1d9-4d62-a30c-6e7bf056f29c"
+                              }
+                            }
+                          },
+                          "metadata": {
+                            "operationMetadataId": "c615e0d4-c0d8-4908-95af-5ceb55d51304"
+                          }
+                        }
+                      },
+                      "else": {
+                        "actions": {}
+                      },
+                      "runAfter": {
+                        "List_all_timesheet_cost_for_open_timesheet": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c9e62d8b-df58-4680-b289-500613da2825"
+                      }
+                    },
+                    "update_timesheet_status_reason_to_inactive": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_timesheets",
+                          "recordId": "@items('For_each')?['new_timesheetid']",
+                          "item/new_deactivationdate": "@outputs('Update_a_placement_row')?['body/new_enddate']",
+                          "item/new_deactivationreason": 3,
+                          "item/new_periodend": "@outputs('Update_a_placement_row')?['body/new_enddate']",
+                          "item/new_reasondetails": "Cancelled due to Placement Expired",
+                          "item/statecode": 1,
+                          "item/statuscode": 100000004
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "connectionName": "shared_commondataserviceforapps-1"
+                        }
+                      },
+                      "runAfter": {
+                        "If_timesheet_cost_exist": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "7cd74fe9-f1d9-4d62-a30c-6e7bf056f29c"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Update_a_placement_row_set_closure_date_to_end_date": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Update_a_placement_row_set_closure_date_to_end_date": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "entityName": "new_assignments",
+                      "recordId": "@outputs('Update_a_placement_row')?['body/new_assignmentid']",
+                      "item/new_closuredate": "@outputs('Update_a_placement_row')?['body/new_enddate']"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "connectionName": "shared_commondataserviceforapps-1"
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Compose_1": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "get_all_opened_timesheets": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_timesheets",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n<entity name=\"new_timesheet\">\n<attribute name=\"new_timesheetid\"/>\n<filter type=\"and\">\n<condition attribute=\"statuscode\" operator=\"eq\" value=\"1\"/>\n<condition attribute=\"new_assignmentid\" operator=\"eq\" uitype=\"new_assignment\" value=\"@{triggerBody()?['text']}\"/>\n</filter>\n</entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps-1"
+                }
+              },
+              "runAfter": {
+                "Update_a_placement_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b3836627-bd59-4dbd-a31a-0f6dbb3aa334"
+              }
+            },
+            "Compose": {
+              "type": "Compose",
+              "inputs": "@length(outputs('get_all_opened_timesheets')?['body/value'])",
+              "runAfter": {
+                "get_all_opened_timesheets": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Compose_1": {
+              "type": "Compose",
+              "inputs": "@outputs('Update_a_placement_row')?['body/statuscode']",
+              "runAfter": {
+                "Compose": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Get_a_placement_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e1870cc-dcd1-49e4-9e0e-596203d485f5"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

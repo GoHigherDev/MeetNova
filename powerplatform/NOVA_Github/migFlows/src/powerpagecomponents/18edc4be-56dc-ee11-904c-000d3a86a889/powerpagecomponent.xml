@@ -1,0 +1,46 @@
+<powerpagecomponent powerpagecomponentid="18edc4be-56dc-ee11-904c-000d3a86a889">
+  <content>{
+  "appendquerystring": false,
+  "associatecurrentportaluser": false,
+  "attachfile": false,
+  "attachfileallowmultiple": false,
+  "attachfilerequired": false,
+  "attachfilerestrictaccept": false,
+  "autogeneratesteps": false,
+  "captcharequired": false,
+  "entityname": "new_shift",
+  "entitypermissionsenabled": true,
+  "forceallfieldsrequired": false,
+  "formname": "Portal",
+  "geolocation_displaymap": false,
+  "geolocation_enabled": false,
+  "geolocation_maptype": 756150000,
+  "hideformonsuccess": true,
+  "mode": 100000000,
+  "onsuccess": 756150000,
+  "populatereferenceentitylookupfield": false,
+  "portaluserlookupattributeisactivityparty": false,
+  "recommendedfieldsrequired": true,
+  "recordsourceallowcreateonnull": false,
+  "redirecturlappendentityidquerystring": false,
+  "referenceentityshowreadonlyform": false,
+  "referencequerystringisprimarykey": true,
+  "registerstartupscript": "document.addEventListener('DOMContentLoaded', function() {\n    var recurrenceTypeSelect = document.getElementById('new_recurrencetype');\n    if (!recurrenceTypeSelect) {\n        return;\n    }\n\n    if (typeof jQuery == 'undefined') {\n        return;\n    }\n\n    var table = document.querySelector('table[data-name=\"tab_2_section_1\"]');\n    var recurrenceDaysContainer, recurrenceEndDateContainer;\n\n    if (table) {\n        recurrenceDaysContainer = table.querySelectorAll('tr')[5].querySelectorAll('td')[1];\n        recurrenceEndDateContainer = table.querySelectorAll('tr')[4].querySelectorAll('td')[1];\n    }\n\n    if (!recurrenceDaysContainer || !recurrenceEndDateContainer) {\n        console.error('Recurrence Days or End Date container not found');\n        return;\n    }\n\n    var handleRecurrenceTypeChange = function() {\n        var selectedValue = recurrenceTypeSelect.value;\n\n        $(recurrenceDaysContainer).addClass('hidden');\n        $(recurrenceEndDateContainer).addClass('hidden');\n\n        SetFieldAsNonRequired('new_recurrencedays');\n        SetFieldAsNonRequired('new_recurrenceenddate');\n\n        // If 'Weekly' is selected, show the Recurrence Days and make it required\n        if (selectedValue === '100000001') {\n            $(recurrenceDaysContainer).removeClass('hidden');\n            SetFieldAsRequired('new_recurrencedays', 'Recurrence Days');\n            console.log('Recurrence Days container shown and marked as required.');\n        }\n\n        // For 'One Time' selection, hide the Recurrence End Date\n        if (selectedValue === '100000003') {\n            $(recurrenceEndDateContainer).addClass('hidden');\n            SetFieldAsNonRequired('new_recurrenceenddate');\n            console.log('Recurrence End Date container hidden for One Time selection.');\n        } else {\n            // For any non-empty selection other than 'One Time', show the Recurrence End Date and make it required\n            $(recurrenceEndDateContainer).removeClass('hidden');\n            SetFieldAsRequired('new_recurrenceenddate', 'Recurrence End Date');\n            console.log('Recurrence End Date container shown and marked as required.');\n        }\n    };\n\n    handleRecurrenceTypeChange();\n    recurrenceTypeSelect.addEventListener('change', handleRecurrenceTypeChange);\n});\n\nfunction SetFieldAsRequired(fieldName, displayname)\n{\n    if (typeof (Page_Validators) == 'undefined') return;\n    if ($(\"#\" + fieldName) != undefined &amp;&amp; $(\"#\" + fieldName + \"_label\") != undefined)\n    {\n        $(\"#\" + fieldName).prop('required', true);\n        $(\"#\" + fieldName).closest(\".control\").prev().addClass(\"required\");\n        // Create new validator object\n        var Requiredvalidator = document.createElement('span');\n        Requiredvalidator.style.display = \"none\";\n        Requiredvalidator.id = fieldName + \"Validator\";\n        Requiredvalidator.controltovalidate = fieldName;\n        var errormessage = \"&lt;a href='#\" + fieldName + \"_label'&gt;\" +  displayname  + \" is a required field.&lt;/a&gt;\";\n        Requiredvalidator.errormessage = errormessage;\n        Requiredvalidator.initialvalue = \"\";\n        Requiredvalidator.evaluationfunction = function ()\n        {\n            var fieldControl = $(\"#\" + fieldName);\n            if (fieldControl.is(\"span\"))\n            {\n                var value0 = $(\"#\" + fieldName + \"_0\").prop(\"checked\");\n                var value1 = $(\"#\" + fieldName + \"_1\").prop(\"checked\");\n                if (value0 == false &amp;&amp; value1 == false)\n                {\n                    return false;\n                }\n                else\n                {\n                    return true;\n                }\n            }\n            else\n            {\n                var value = $(\"#\" + fieldName).val();\n                if (value == null || value == \"\")\n                {\n                    return false;\n                }\n                else\n                {\n                    return true;\n                }\n            }\n        };\n        //Add the new validator to the page validators array\n        Page_Validators.push(Requiredvalidator);\n    }\n}\nfunction SetFieldAsNonRequired(fieldName)\n{\n    if (typeof (Page_Validators) == 'undefined') return;\n    if ($(\"#\" + fieldName) != undefined)\n    {\n        $(\"#\" + fieldName).closest(\".control\").prev().removeClass(\"required\");\n        $(\"#\" + fieldName).prop('required', false);\n        for (i = 0; i &lt; Page_Validators.length; i++)\n        {\n            if (Page_Validators[i].id == fieldName + \"Validator\")\n            {\n                Page_Validators.splice(i);\n            }\n        }\n    }\n}\n\n\n\n\n\n\n\n\n\n\n",
+  "renderwebresourcesinline": false,
+  "setentityreference": false,
+  "showcaptchaforauthenticatedusers": false,
+  "showownerfields": false,
+  "showunsupportedfields": false,
+  "tabname": "newShift",
+  "tooltipenabled": true,
+  "validationsummarylinksenabled": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Shift Insert</name>
+  <powerpagecomponenttype>15</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

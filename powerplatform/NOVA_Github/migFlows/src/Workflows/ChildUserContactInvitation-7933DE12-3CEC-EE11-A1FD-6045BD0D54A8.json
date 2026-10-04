@@ -1,0 +1,261 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps-1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Timesheets url (new_Timesheetsurl)": {
+          "defaultValue": "https://quickshifts-dev.powerappsportals.com/",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_Timesheetsurl"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "contactid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "webroleid",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "5ebaae1d-8b5c-4de6-8fa6-2a292ad5d35c"
+          }
+        }
+      },
+      "actions": {
+        "Add_an_invitation_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "adx_invitations",
+              "item/adx_name": "@outputs('Get_a_contact_row_by_ID')?['body/fullname']",
+              "item/adx_type": 756150000,
+              "item/adx_inviteContact@odata.bind": "@outputs('Get_a_contact_row_by_ID')?['body/@odata.id']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_a_contact_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "25f9a908-e66f-4c24-9ce8-6490c09129ea"
+          }
+        },
+        "Get_a_contact_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "35a33b3d-9ec6-4f60-a607-718f41f79971"
+          }
+        },
+        "Compose_Link": {
+          "type": "Compose",
+          "inputs": "@{parameters('Timesheets url (new_Timesheetsurl)')}register/?returnurl=%2f&invitation=@{outputs('Add_an_invitation_row')?['body/adx_invitationcode']}",
+          "runAfter": {
+            "Relate_rows_for_web_role": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "86187b0f-29d6-43b8-86c2-c20de4ac031c"
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "processed": {
+                  "title": "processed",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "processed": true
+            }
+          },
+          "runAfter": {
+            "Send_an_email_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "19d25435-7f80-4923-910b-da4a0024a6b0"
+          }
+        },
+        "Relate_rows_for_web_role": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@body('Get_a_contact_row_by_ID')?['contactid']",
+              "associationEntityRelationship": "powerpagecomponent_mspp_webrole_contact",
+              "item/@odata.id": "@body('Get_Web_Role_by_Id')?['@odata.id']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "AssociateEntities",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Get_Web_Role_by_Id": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3453e9eb-71f1-480c-a11a-fabbb243d480"
+          }
+        },
+        "Get_Web_Role_by_Id": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "mspp_webroles",
+              "recordId": "@triggerBody()?['text_1']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps-1"
+            }
+          },
+          "runAfter": {
+            "Add_an_invitation_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "35a33b3d-9ec6-4f60-a607-718f41f79971"
+          }
+        },
+        "Send_an_email_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@body('Get_a_contact_row_by_ID')?['emailaddress1']",
+              "emailMessage/Subject": "Invitation for User Authentication",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">Dear @{outputs('ComposeWebRoleName')},<br><br>We're excited to invite you to authenticate your user account with us. To get started, simply click on the link below:<br><br>@{outputs('Compose_Link')}<br><br>Thank you for your cooperation.<br><br>Best regards,<br><br>Customer Services<br><br>If you have any questions, please don't hesitate to contact us.</p>",
+              "emailMessage/ReplyTo": "noreply@TimesheetsTeam.com",
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365"
+            }
+          },
+          "runAfter": {
+            "ComposeWebRoleName": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5194ecc0-7964-44a1-b5c0-f45d8c1a96f7"
+          }
+        },
+        "ComposeEmail": {
+          "type": "Compose",
+          "inputs": "@outputs('Get_a_contact_row_by_ID')?['body/emailaddress1']",
+          "runAfter": {
+            "Compose_Link": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "86187b0f-29d6-43b8-86c2-c20de4ac031c"
+          }
+        },
+        "ComposeWebRoleName": {
+          "type": "Compose",
+          "inputs": "@outputs('Get_Web_Role_by_Id')?['body/mspp_name']",
+          "runAfter": {
+            "ComposeEmail": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "86187b0f-29d6-43b8-86c2-c20de4ac031c"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

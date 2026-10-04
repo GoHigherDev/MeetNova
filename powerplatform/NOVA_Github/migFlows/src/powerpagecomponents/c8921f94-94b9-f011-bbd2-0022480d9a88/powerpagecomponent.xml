@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="c8921f94-94b9-f011-bbd2-0022480d9a88">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_paymentterms",
+  "descriptionposition": 100000000,
+  "entityform": "b0c3cef4-7cb9-f011-bbd2-0022480d9a88",
+  "entityformforcreate": "b0c3cef4-7cb9-f011-bbd2-0022480d9a88",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": true,
+  "prepopulatetype": 100000000,
+  "prepopulatevalue": "7",
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Manual Invoice new_paymentterms</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="8cb1e2e5-8cbe-4ea5-a3ff-09e592f2b750">
+  <content>{
+  "displayorder": 8,
+  "pageid": "5e8d8c9a-3c55-87a6-1eba-e5fd055eb932",
+  "parentweblinkid": "232e6d72-0713-49fe-a04c-78a65ae131c3",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Intermediary Report</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

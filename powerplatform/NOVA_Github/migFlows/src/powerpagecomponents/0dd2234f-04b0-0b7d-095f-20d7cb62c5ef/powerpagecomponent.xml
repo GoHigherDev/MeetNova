@@ -1,0 +1,29 @@
+<powerpagecomponent powerpagecomponentid="0dd2234f-04b0-0b7d-095f-20d7cb62c5ef">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 50,
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "8a1047de-0319-ee11-8f6d-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "fa4e8d4c-ca32-ee11-bdf3-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "jobedit",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Job Edit"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Job Edit</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Job EditundefinedJob Edit</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

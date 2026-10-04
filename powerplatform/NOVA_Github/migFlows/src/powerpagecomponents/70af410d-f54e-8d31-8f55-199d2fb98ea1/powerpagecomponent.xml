@@ -1,0 +1,30 @@
+<powerpagecomponent powerpagecomponentid="70af410d-f54e-8d31-8f55-199d2fb98ea1">
+  <content>{
+  "copy": "undefined",
+  "displayorder": 78,
+  "editorialcomments": "ui",
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "9a567beb-a319-ee11-8f6d-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "8f122714-b945-ee11-be6e-6045bd0cfca3",
+  "parentpageid": "e77dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "partialurl": "uploadcv",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Upload CV"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Upload CV</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Upload CVundefinedUpload CV</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

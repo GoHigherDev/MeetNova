@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="6d605772-6055-4383-ae47-10c032f88482">
+  <content>{
+  "displayorder": 30,
+  "pageid": "2eea4103-cd05-5ecc-1331-889b95c259b1",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Sign In</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

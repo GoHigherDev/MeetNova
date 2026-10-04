@@ -1,0 +1,28 @@
+<powerpagecomponent powerpagecomponentid="8a218e97-9bbe-1a1f-68a3-0e43675969b7">
+  <content>{
+  "displayorder": 28,
+  "enablerating": false,
+  "enabletracking": false,
+  "entitylist": "2077c29e-0919-ee11-8f6d-6045bd0cfca3",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": true,
+  "pagetemplateid": "ad2a0fa9-4a31-ee11-bdf3-6045bd0cfca3",
+  "parentpageid": "3a9b2241-f6af-81d0-9012-5d7c32b6f37d",
+  "partialurl": "skillstype",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Skills Type"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Skills Type</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <searchcontent>Skills TypeSkills Type</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,17 @@
+<powerpagecomponent powerpagecomponentid="9db805f7-a4b5-483a-a115-157c546ef024">
+  <content>{
+  "displayorder": 171,
+  "parentweblinkid": "6e8c59de-075b-48e0-85af-95a53f5aac30",
+  "weblinksetid": "d04ef6bc-7651-4dd6-af59-3697f58e2219",
+  "pageid": "9cdd4bb1-595a-7ae3-de39-ab302c866d26",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Permanent Fees</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

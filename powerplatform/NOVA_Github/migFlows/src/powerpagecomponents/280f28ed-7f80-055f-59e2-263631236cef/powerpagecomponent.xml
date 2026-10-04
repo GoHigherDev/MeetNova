@@ -1,0 +1,21 @@
+<powerpagecomponent powerpagecomponentid="280f28ed-7f80-055f-59e2-263631236cef">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 183,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "960bc359-6c50-bfa6-e83a-a7fd0b4a6e4e",
+  "parentweblinkid": null,
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "robotsfollowlink": true,
+  "weblinksetid": "28adec89-b589-4325-b82a-14f25bc55d10"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Unauthorized Access</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

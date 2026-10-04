@@ -1,0 +1,11 @@
+<powerpagecomponent powerpagecomponentid="476b0edf-665a-ef11-bfe2-000d3ad50c41">
+  <content>{"adx_flowapiurl":"/_api/cloudflow/v1.0/trigger/da815376-ee50-ef11-a316-002248cb952b","adx_flowtriggerurl":"https://c61047c8-5fef-e189-913c-90734656dda6.10.common.uk.azure-apihub.net:443/apim/logicflows/AAD4317F6E34169A01E10E80ACC3299D-E49C6A165BE2CCEB/triggers/manual/run?api-version=2016-06-01","adx_metadata":"aad4317f-6e34-169a-01e1-0e80acc3299d","adx_CloudFlowConsumer_adx_webrole":["b5b6db58-bfdb-ee11-904c-000d3a86a889","cd4b3c78-2a4e-ee11-be6f-6045bd0cfca3","a189215f-0e05-ee11-8f6d-6045bd12f8f9"],"_adx_processid_value":"da815376-ee50-ef11-a316-002248cb952b"}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Timesheet Cost Update Array Trigger</name>
+  <powerpagecomponenttype>33</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

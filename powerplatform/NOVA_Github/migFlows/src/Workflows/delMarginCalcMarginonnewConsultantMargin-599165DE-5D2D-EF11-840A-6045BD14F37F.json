@@ -1,0 +1,150 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_margin",
+              "subscriptionRequest/scope": 4
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "39f251ac-e5b2-4fde-953d-5b462f8fd031"
+          }
+        }
+      },
+      "actions": {
+        "Run_a_Child_Flow": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "842a7b95-8629-ef11-840a-6045bd14f37f"
+            },
+            "body": {
+              "text": "@triggerOutputs()?['body/_new_consultantid_value']",
+              "date": "@substring(body('Run_a_Child_Flow_get_date')?['weekend'], 0, 10)"
+            }
+          },
+          "runAfter": {
+            "Update_a_row_weekend": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f04f306f-d234-40f9-be9c-e091e7fd6875"
+          }
+        },
+        "Get_managing_account_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@triggerBody()?['_new_managingaccountid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "59d07dfb-9829-4b36-b9d6-4a30d6289d30"
+          }
+        },
+        "Update_a_row_weekend": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_margins",
+              "recordId": "@triggerBody()?['new_marginid']",
+              "item/new_weekend": "@body('Run_a_Child_Flow_get_date')?['weekend']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_get_date": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "24a7394b-b36c-4b8b-84cc-db96567fe458"
+          }
+        },
+        "Run_a_Child_Flow_get_date": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "129c3211-0a41-ef11-a316-6045bd15aee8"
+            },
+            "body": {
+              "text": "@triggerOutputs()?['body/_new_managingaccountid_value']",
+              "text_1": "@outputs('Get_a_timesheet_row_by_ID')?['body/new_authorizeddate']"
+            }
+          },
+          "runAfter": {
+            "Get_a_timesheet_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_timesheet_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@triggerOutputs()?['body/_new_timesheetid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Get_managing_account_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,142 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "f20e7c4c-8b8f-4a6c-a137-e2041220ba61"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "recordarray",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "comma delimited array of costs guids",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "df635dca-94b2-4070-bc5c-b379584c7cf4"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "success": "@{true}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "ComposeSplitGuid": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "26709b1c-cd18-4b19-80ff-5bc7eb715bb1"
+          },
+          "type": "Compose",
+          "inputs": "@split(triggerBody()['text'], ',')"
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('ComposeSplitGuid')",
+          "actions": {
+            "ComposeTimesheetcostGuid": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "fe60f0b2-4efe-4780-b5a1-5941bece48bf"
+              },
+              "type": "Compose",
+              "inputs": "@trim(replace(replace(replace(items('Apply_to_each'), '\"', ''), '[', ''), ']', ''))"
+            },
+            "Update_a_row_-_to_clear_Invoice": {
+              "runAfter": {
+                "ComposeTimesheetcostGuid": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cd556558-0f18-4aa0-b028-70fb812c0e03"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_timesheetcosts",
+                  "recordId": "@outputs('ComposeTimesheetcostGuid')",
+                  "item/new_invoiceid@odata.bind": "@null"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "ComposeSplitGuid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cf467e81-c097-4729-8a16-66879bb8a427"
+          },
+          "type": "Foreach"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

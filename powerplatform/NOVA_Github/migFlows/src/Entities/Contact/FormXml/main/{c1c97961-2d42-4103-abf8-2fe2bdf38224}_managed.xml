@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{c1c97961-2d42-4103-abf8-2fe2bdf38224}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>0</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form shownavigationbar="true" showImage="false" maxWidth="1900" headerdensity="HighWithControls">
+      <tabs>
+        <tab name="general" verticallayout="true" id="{e3327218-e08e-4133-beb6-5177bc816581}" IsUserDefined="0" labelid="{b2ef0773-20d1-4dbd-8f0b-b2e66ad15120}" ordinalvalue="0">
+          <columns>
+            <column width="100%" id="0">
+              <sections>
+                <section name="name" showlabel="false" showbar="false" id="{6a7d96cb-825b-4eb0-a072-03a420c54b47}" IsUserDefined="0" labelid="{d4f48a24-3bbe-43f9-b3c9-f040d247b892}" ordinalvalue="0">
+                  <rows>
+                    <row>
+                      <cell id="{c60ce6b4-a09a-2c47-e98d-bcc885a86754}" showlabel="true" locklevel="0" ordinalvalue="10012" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="msa_managingpartnerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="msa_managingpartnerid" disabled="false" />
+                      </cell>
+                      <cell id="{697b76d3-c5c3-bb7e-d88d-610ce0883842}" showlabel="false" ordinalvalue="20013" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e7d2453a-9112-c181-39dd-0999189e55b2}" showlabel="true" locklevel="0" ordinalvalue="10014" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_isadmin" classid="{67FAC785-CD58-4f9f-ABB3-4B7DDC6ED5ED}" datafieldname="new_isadmin" disabled="false" />
+                      </cell>
+                      <cell id="{954b61d5-a186-b012-3a08-7093d7234839}" showlabel="false" ordinalvalue="20015" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3ad4bbc2-41a5-6c04-de21-6ac448ee3a87}" showlabel="true" locklevel="0" ordinalvalue="10016" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_iscandidate" classid="{67FAC785-CD58-4f9f-ABB3-4B7DDC6ED5ED}" datafieldname="new_iscandidate" disabled="false" />
+                      </cell>
+                      <cell id="{5b37deab-24be-60c4-d735-d5a7e5846587}" showlabel="false" ordinalvalue="20017" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b96072dd-0557-b4b5-7727-7c9aa8a49c8d}" showlabel="true" locklevel="0" ordinalvalue="10018" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_isclient" classid="{67FAC785-CD58-4f9f-ABB3-4B7DDC6ED5ED}" datafieldname="new_isclient" disabled="false" />
+                      </cell>
+                      <cell id="{7b6e502e-ca6e-09b1-42ba-bee0ccce1977}" showlabel="false" ordinalvalue="20019" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bbc5aa28-04bc-4ec6-e6a4-22ce78dc3944}" showlabel="true" locklevel="0" ordinalvalue="10020" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_isconsultant" classid="{67FAC785-CD58-4f9f-ABB3-4B7DDC6ED5ED}" datafieldname="new_isconsultant" disabled="false" />
+                      </cell>
+                      <cell id="{c21e2ea6-69c7-1de7-e38c-8415c09ca306}" showlabel="false" ordinalvalue="20021" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{647e7a8d-acc4-7d8e-eca3-b0d97269a219}" showlabel="true" locklevel="0" ordinalvalue="10022" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_isregistered" classid="{67FAC785-CD58-4f9f-ABB3-4B7DDC6ED5ED}" datafieldname="new_isregistered" disabled="false" />
+                      </cell>
+                      <cell id="{9cdb3ddc-d26a-c9c7-dcd1-894e36d12ad3}" showlabel="false" ordinalvalue="20023" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{720dbaea-5304-77e1-1544-7dd862a84eb7}" showlabel="true" locklevel="0" ordinalvalue="10024" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_isshiftmanager" classid="{67FAC785-CD58-4f9f-ABB3-4B7DDC6ED5ED}" datafieldname="new_isshiftmanager" disabled="false" />
+                      </cell>
+                      <cell id="{96d45c38-88e1-87d2-ce5c-a1a761c91cb8}" showlabel="false" ordinalvalue="20025" solutionaction="Added">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <LocalizedNames>
+      <LocalizedName description="Portal Contact (Enhanced)" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

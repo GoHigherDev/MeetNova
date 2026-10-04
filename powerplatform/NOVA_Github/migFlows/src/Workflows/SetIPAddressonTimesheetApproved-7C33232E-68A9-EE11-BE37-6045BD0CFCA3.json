@@ -1,0 +1,140 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "3e6bb825-b0b2-4281-9818-f0587bf0c11f"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "timesheetId": {
+                  "type": "string"
+                },
+                "ipAddress": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "timesheetId"
+              ]
+            },
+            "triggerAuthenticationType": "All"
+          }
+        }
+      },
+      "actions": {
+        "ComposeTimesheetid": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5bccc64a-76be-4f36-b328-7424ca42daf0"
+          },
+          "type": "Compose",
+          "inputs": "@triggerBody()['timesheetId']"
+        },
+        "HTTP_1_": {
+          "runAfter": {
+            "ComposeTimesheetid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81caa6d0-cb79-45fb-889a-59ac01f9712d"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://httpbin.org/ip"
+          }
+        },
+        "Parse_JSON_IP": {
+          "runAfter": {
+            "HTTP_1_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0c981621-9acd-45aa-a8a5-a2d5c6206b9b"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_1_')",
+            "schema": {
+              "properties": {
+                "origin": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "Compose_ipaddress": {
+          "runAfter": {
+            "Parse_JSON_IP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2fdbd9a3-f5b4-4b51-8dbc-78b6e9ec6d9e"
+          },
+          "type": "Compose",
+          "inputs": "@body('Parse_JSON_IP')?['origin']\r\n"
+        },
+        "Update_a_row_copy": {
+          "runAfter": {
+            "Compose_ipaddress": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ca46d7ef-f9cd-449a-bc3f-f32de4734739"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_timesheets",
+              "recordId": "@outputs('ComposeTimesheetid')",
+              "item/new_ipaddress": "@{outputs('Compose_ipaddress')}"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

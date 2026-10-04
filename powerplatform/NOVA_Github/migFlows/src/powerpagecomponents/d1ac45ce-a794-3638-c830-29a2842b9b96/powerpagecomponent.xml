@@ -1,0 +1,62 @@
+<powerpagecomponent powerpagecomponentid="d1ac45ce-a794-3638-c830-29a2842b9b96">
+  <content>{
+  "copy": "&lt;div id=\"manualInvoiceSection\" class=\"row sectionBlockLayout text-left\" style=\"display: flex; flex-wrap: wrap; margin: 0px; text-align: left; min-height: auto; padding: 8px;\"&gt;\n  &lt;div class=\"container\" style=\"display: flex; flex-wrap: wrap;\"&gt;&lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; padding: 16px; margin: 60px 0px;\"&gt;{% entityform name: 'Client Expense Edit - QP' %}&lt;/div&gt;&lt;/div&gt;\n&lt;/div&gt;\n\n&lt;!-- Page Not Found Message --&gt;\n&lt;section id=\"pageNotFound\" class=\"not-found\" style=\"display: none;\"&gt;\n  &lt;div class=\"container\" style=\"padding: 0px; display: flex; flex-wrap: wrap;\"&gt;\n    &lt;div class=\"col-md-12 columnBlockLayout\" style=\"flex-grow: 1; display: flex; flex-direction: column; min-width: 300px; padding: 16px;\"&gt;&lt;img src=\"/Cat-PC.png\" alt=\"\" name=\"Cat-PC.png\" style=\"width: 200px; height: 161px; margin-left: auto; margin-right: auto;\"&gt;\n      &lt;h2 style=\"text-align: center; color: var(--portalThemeColor4);\"&gt;Page not found&lt;/h2&gt;\n      &lt;p style=\"text-align: center; color: var(--portalThemeColor8);\"&gt;Check the link and try again&lt;/p&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n&lt;/section&gt;\n&lt;!-- &lt;script&gt;\n  $(document).ready(function () {\n    const invoiceType = window.placementInvoiceType;\n    \n    if (invoiceType === \"100000000\") { // Automatic\n      console.log(\"Showing Page Not Found\");\n      document.getElementById(\"pageNotFound\").style.display = \"block\";\n      document.getElementById(\"manualInvoiceSection\").style.display = \"none\";\n    } else if (invoiceType === \"100000001\") { // Manual\n      console.log(\"Showing Manual Invoice Section\");\n      document.getElementById(\"manualInvoiceSection\").style.display = \"flex\";\n      document.getElementById(\"pageNotFound\").style.display = \"none\";\n    } else {\n      console.log(\"No valid invoice type found.\");\n    }\n  });\n&lt;/script&gt; --&gt;\n",
+  "enablerating": false,
+  "enabletracking": false,
+  "entityform": "774a8f8d-5efe-ef11-bae3-6045bd69f0ab",
+  "excludefromsearch": false,
+  "feedbackpolicy": 756150000,
+  "hiddenfromsitemap": true,
+  "isroot": false,
+  "pagetemplateid": "44b9fb28-c6c8-ee11-9079-6045bd0cfca3",
+  "parentpageid": "4c7838be-3c20-4064-9f3b-707964bba0b3",
+  "partialurl": "expenseeetails",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "rootwebpageid": "2fba3505-990f-02e4-d7e9-af36fc71f7b7",
+  "sharedpageconfiguration": false,
+  "summary": "&lt;p&gt;This is a sample landing page designed to be a starting point for your website&lt;/p&gt;",
+  "title": "Expense Details"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expense Details</name>
+  <powerpagecomponenttype>2</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>e2dbc71f-37e6-4ea1-9ca0-3e9eb80aeeac</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <searchcontent>Expense Details&lt;div id="manualInvoiceSection" class="row sectionBlockLayout text-left" style="display: flex; flex-wrap: wrap; margin: 0px; text-align: left; min-height: auto; padding: 8px;"&gt;
+  &lt;div class="container" style="display: flex; flex-wrap: wrap;"&gt;&lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px; padding: 16px; margin: 60px 0px;"&gt;{% entityform name: 'Client Expense Edit - QP' %}&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Page Not Found Message --&gt;
+&lt;section id="pageNotFound" class="not-found" style="display: none;"&gt;
+  &lt;div class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"&gt;
+    &lt;div class="col-md-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 300px; padding: 16px;"&gt;&lt;img src="/Cat-PC.png" alt="" name="Cat-PC.png" style="width: 200px; height: 161px; margin-left: auto; margin-right: auto;"&gt;
+      &lt;h2 style="text-align: center; color: var(--portalThemeColor4);"&gt;Page not found&lt;/h2&gt;
+      &lt;p style="text-align: center; color: var(--portalThemeColor8);"&gt;Check the link and try again&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+&lt;!-- &lt;script&gt;
+  $(document).ready(function () {
+    const invoiceType = window.placementInvoiceType;
+    
+    if (invoiceType === "100000000") { // Automatic
+      console.log("Showing Page Not Found");
+      document.getElementById("pageNotFound").style.display = "block";
+      document.getElementById("manualInvoiceSection").style.display = "none";
+    } else if (invoiceType === "100000001") { // Manual
+      console.log("Showing Manual Invoice Section");
+      document.getElementById("manualInvoiceSection").style.display = "flex";
+      document.getElementById("pageNotFound").style.display = "none";
+    } else {
+      console.log("No valid invoice type found.");
+    }
+  });
+&lt;/script&gt; --&gt;
+Expense Details</searchcontent>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

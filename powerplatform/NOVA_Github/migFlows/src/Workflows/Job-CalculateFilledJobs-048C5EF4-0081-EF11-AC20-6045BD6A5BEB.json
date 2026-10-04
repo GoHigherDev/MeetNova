@@ -1,0 +1,179 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_jobapplicant",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000005"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "372ee215-2a36-4779-b667-8fcf3611f14e"
+          }
+        }
+      },
+      "actions": {
+        "List_all_accepted_jobs_applicants_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobapplicants",
+              "$filter": "_new_jobid_value eq @{triggerOutputs()?['body/_new_jobid_value']} and statuscode eq 100000005"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "609c6283-e92e-433e-a4aa-43602b312d9a"
+          }
+        },
+        "Compose_no_of_filled_job_applicants": {
+          "type": "Compose",
+          "inputs": "@length(outputs('List_all_accepted_jobs_applicants_rows')?['body/value'])",
+          "runAfter": {
+            "List_all_accepted_jobs_applicants_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d6f2b2a5-f3d9-4717-b507-209e7d76dc26"
+          }
+        },
+        "Update_a_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobs",
+              "recordId": "@triggerOutputs()?['body/_new_jobid_value']",
+              "item/new_closedvacancies": "@outputs('Compose_no_of_filled_job_applicants')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Compose_no_of_filled_job_applicants": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "32861c08-e02a-4471-a6f5-a0209636a5e0"
+          }
+        },
+        "Condition_(no_job_vacancies)_": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_total_vacancies_')",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_a_row_(filled_vacancies)": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_jobs",
+                  "recordId": "@body('Update_a_row')?['statuscode']",
+                  "item/new_enddate": "@body('Update_a_row')?['new_enddate']",
+                  "item/new_closedvacancies": "@body('Update_a_row')?['new_closedvacancies']",
+                  "item/new_startdate": "@body('Update_a_row')?['new_startdate']",
+                  "item/statecode": 1,
+                  "item/statuscode": 100000004,
+                  "item/new_totalvacancies": "@body('Update_a_row')?['new_closedvacancies']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Compose_total_vacancies_": [
+              "SUCCEEDED"
+            ]
+          }
+        },
+        "Get_a_job_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_jobs",
+              "recordId": "@triggerBody()?['_new_jobid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Update_a_row": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_total_vacancies_": {
+          "type": "Compose",
+          "inputs": "@sub(body('Get_a_job_row_by_ID')?['new_totalvacancies'],outputs('Compose_no_of_filled_job_applicants'))",
+          "runAfter": {
+            "Get_a_job_row_by_ID": [
+              "SUCCEEDED"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

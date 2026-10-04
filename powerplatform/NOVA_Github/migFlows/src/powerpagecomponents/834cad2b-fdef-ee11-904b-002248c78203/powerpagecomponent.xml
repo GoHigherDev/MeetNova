@@ -1,0 +1,14 @@
+<powerpagecomponent powerpagecomponentid="834cad2b-fdef-ee11-904b-002248c78203">
+  <content>{
+  "botschemaname": "cr0b7_6509bc25-a184-484c-8a96-bb614d2bdf72",
+  "configjson": "{ 'skillConfigViewName' : 'Quickshifts bot Answers'}"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Bot Consumer</name>
+  <powerpagecomponenttype>27</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

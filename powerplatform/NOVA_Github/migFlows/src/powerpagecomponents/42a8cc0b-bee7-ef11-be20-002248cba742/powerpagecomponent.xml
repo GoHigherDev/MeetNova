@@ -1,0 +1,22 @@
+<powerpagecomponent powerpagecomponentid="42a8cc0b-bee7-ef11-be20-002248cba742">
+  <content>{
+  "adddescription": false,
+  "descriptionposition": 100000000,
+  "entityform": "7a96a7e1-bce7-ef11-be20-002248cba742",
+  "entityformforcreate": "7a96a7e1-bce7-ef11-be20-002248cba742",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000005,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Detailed Expense Insert </name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="2853bdc0-929f-4d6c-9eec-274733ed9c8f">
+  <content>{
+  "entityform": "3b51bade-4d23-ef11-840a-0022486a2752",
+  "label": "[{\"LCID\":1033,\"Value\":\"Client Settings\"}]",
+  "tabname": "clientsettings",
+  "type": 100000002
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Client Settings - QP clientsettings</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

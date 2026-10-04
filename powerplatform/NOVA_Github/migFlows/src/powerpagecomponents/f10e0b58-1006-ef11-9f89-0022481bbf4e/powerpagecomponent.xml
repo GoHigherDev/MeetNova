@@ -1,0 +1,23 @@
+<powerpagecomponent powerpagecomponentid="f10e0b58-1006-ef11-9f89-0022481bbf4e">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_completestatus",
+  "descriptionposition": 100000000,
+  "entityform": "0a46a60f-1006-ef11-9f89-0022481bbf4e",
+  "entityformforcreate": "0a46a60f-1006-ef11-9f89-0022481bbf4e",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Compliance Request new_completestatus</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

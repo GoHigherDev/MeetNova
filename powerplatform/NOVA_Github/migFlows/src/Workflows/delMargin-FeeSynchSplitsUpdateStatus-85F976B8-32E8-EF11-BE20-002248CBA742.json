@@ -1,0 +1,239 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_75cdf"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_fees",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_feestatus",
+              "subscriptionRequest/filterexpression": "new_isthisafeesplit eq true",
+              "subscriptionRequest/name": "1acda83a-46e5-ef11-be1f-002248cba742"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "conditions": [],
+          "metadata": {
+            "operationMetadataId": "2641d736-3936-4e50-b102-4e983bdbcfda"
+          }
+        }
+      },
+      "actions": {
+        "Condition_is_fee_split": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@triggerOutputs()?['body/new_isthisafeesplit']",
+              "@true"
+            ]
+          },
+          "actions": {
+            "List_rows_Consultant_Fee": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_feeses",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_fees\">\n    <attribute name=\"new_feesid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"new_feestatus\" />\n    <order attribute=\"new_name\" descending=\"false\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_splitfeeparentfeeid\" operator=\"eq\" uitype=\"new_fees\" value=\"@{triggerOutputs()?['body/new_feesid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Compose_2nd_consultant_fee": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition_consultant_fee_exists": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('List_rows_Consultant_Fee')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "For_each": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('List_rows_Consultant_Fee')?['body/value']",
+                  "actions": {
+                    "Update_a_conusltant_row": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_feeses",
+                          "recordId": "@item()?['new_feesid']",
+                          "item/new_feestatus": "@triggerOutputs()?['body/new_feestatus']"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "connectionName": "shared_commondataserviceforapps"
+                        }
+                      }
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "concurrency": {
+                      "repetitions": 1
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "List_rows_Consultant_Fee": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Compose_Consultant_fee": {
+              "type": "Compose",
+              "inputs": "@div(triggerOutputs()?['body/new_fee'], div(100, float(first(split(triggerOutputs()?['body/new_customfeesplit'], '/')))))"
+            },
+            "Compose_2nd_consultant_fee": {
+              "type": "Compose",
+              "inputs": "@div(triggerOutputs()?['body/new_fee'], div(100, float(last(split(triggerOutputs()?['body/new_customfeesplit'], '/')))))",
+              "runAfter": {
+                "Compose_Consultant_fee": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "List_rows-2nd_consultant": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "new_feeses",
+                  "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_fees\">\n    <attribute name=\"new_feesid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_splitfeeparentfeeid\" operator=\"eq\" uitype=\"new_fees\" value=\"@{triggerOutputs()?['body/new_feesid']}\" />\n      <condition attribute=\"new_secondaryconsultantid\" operator=\"eq\" uitype=\"contact\" value=\"@{triggerOutputs()?['body/_new_secondaryconsultantid_value']}\" />\n    </filter>\n  </entity>\n</fetch>",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "runAfter": {
+                "Terminate": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Condition-2nd_consultant": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(outputs('List_rows-2nd_consultant')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "For_each_1": {
+                  "type": "Foreach",
+                  "foreach": "@outputs('List_rows-2nd_consultant')?['body/value']",
+                  "actions": {
+                    "Update_a_row_2nd_consultant": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "new_feeses",
+                          "recordId": "@item()?['new_feesid']",
+                          "item/new_fee": "@outputs('Compose_2nd_consultant_fee')",
+                          "item/new_feestatus": "@triggerOutputs()?['body/new_feestatus']"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "connectionName": "shared_commondataserviceforapps"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "List_rows-2nd_consultant": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Terminate": {
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              },
+              "runAfter": {
+                "Condition_consultant_fee_exists": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Terminate_not_fee_split": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "0f6029fa-a14b-4ba6-b6cf-35ae41db304a"
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,1752 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_11963"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "3668212b-dcec-44e2-8912-b1be1d263b5e"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "Session",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Session",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "Placement ID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Placement ID",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e1ee77d5-2072-4f07-881d-50c69eafdf80"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "odataid": "done"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "odataid": {
+                  "title": "odataid",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "HTTPPlacement": {
+          "runAfter": {},
+          "limit": {
+            "timeout": "PT2M"
+          },
+          "metadata": {
+            "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+            "headers": {
+              "Content-Type": "text/xml; charset=utf-8",
+              "SOAPAction": ""
+            },
+            "body": "<soapenv:Envelope\nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>Placement</entityName>\n       <id xsi:type=\"xs:int\">@{triggerBody()['text_1']}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+          }
+        },
+        "Initialize_CandidateID": {
+          "runAfter": {
+            "Initialize_ClientGUID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "447f3a2d-dac2-458b-a97b-ec62c4488a3e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CandidateID",
+                "type": "string",
+                "value": "@{int(first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"candidateID\"]/text()')  ) )}"
+              }
+            ]
+          }
+        },
+        "HTTPJobOrder": {
+          "runAfter": {
+            "HTTPCandidate": [
+              "Succeeded"
+            ]
+          },
+          "limit": {
+            "timeout": "PT2M"
+          },
+          "metadata": {
+            "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+            "headers": {
+              "Content-Type": "text/xml; charset=utf-8",
+              "SOAPAction": ""
+            },
+            "body": "<soapenv:Envelope   \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>JobOrder</entityName>\n       <id xsi:type=\"xs:int\">@{first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"jobOrderID\"]/text()'))}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+          }
+        },
+        "HTTPAuthoriser": {
+          "runAfter": {
+            "Condition_Candidate": [
+              "Succeeded"
+            ]
+          },
+          "limit": {
+            "timeout": "PT2M"
+          },
+          "metadata": {
+            "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+            "headers": {
+              "Content-Type": "text/xml; charset=utf-8",
+              "SOAPAction": ""
+            },
+            "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session></session>\n         <entityName>ClientContact</entityName>\n       <id xsi:type=\"xs:int\"></id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+          }
+        },
+        "HTTPCandidate": {
+          "runAfter": {
+            "Initialize_CandidateID": [
+              "Succeeded"
+            ]
+          },
+          "limit": {
+            "timeout": "PT2M"
+          },
+          "metadata": {
+            "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+            "headers": {
+              "Content-Type": "text/xml; charset=utf-8",
+              "SOAPAction": ""
+            },
+            "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>Candidate</entityName>\n       <id xsi:type=\"xs:int\">@{variables('CandidateID')}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+          }
+        },
+        "ListClientrow": {
+          "runAfter": {
+            "Set_ClientExternalID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "620f3daf-b866-4e91-97a8-b71d88f03c53"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"account\">\n    <attribute name=\"name\" />\n    <attribute name=\"accountid\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_externalreference\" operator=\"eq\" value=\"@{variables('ClientExternalID')}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Condition_Client": {
+          "actions": {
+            "getclientGuid_2": {
+              "foreach": "@outputs('ListClientrow')?['body/value']",
+              "actions": {
+                "Set_ClientGuid_variable_3": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "db03b616-a758-4354-807c-f9869765a7d1"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "ClientGuid",
+                    "value": "@items('getclientGuid_2')?['accountid']"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "c0546731-49da-4b9f-8590-4a2ea82235bc"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            },
+            "Update_a_row": {
+              "runAfter": {
+                "Condition_Bill_Tax_Type_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "05159ff3-2e12-410d-b7af-8a58c4c69ab5"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "accounts",
+                  "recordId": "@variables('ClientGuid')",
+                  "item/name": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"name\"]/text()'))",
+                  "item/address1_city": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"city\"]/text()'))",
+                  "item/address1_line1": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"address1\"]/text()'))",
+                  "item/address1_line2": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"address2\"]/text()'))",
+                  "item/address1_postalcode": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"zip\"]/text()'))",
+                  "item/telephone1": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"phone\"]/text()'))",
+                  "item/address1_country": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"countryID\"]/text()'))",
+                  "item/address1_stateorprovince": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"state\"]/text()'))",
+                  "item/new_billfrequency": "@if(not(empty(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText2\"]/text()')))), int(trim(substring(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText2\"]/text()')), add(indexOf(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText2\"]/text()')), '-'), 2)))), null)",
+                  "item/new_externalreference": "@variables('ClientExternalId')",
+                  "item/new_invoiceccemails": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"culture\"]/text()'))",
+                  "item/new_invoicegrouping": "@if(not(empty(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"industryList\"]/text()')))), int(trim(substring(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"industryList\"]/text()')), add(indexOf(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"industryList\"]/text()')), '-'), 2)))), null)",
+                  "item/new_invoicepdfgeneration": "@if(not(empty(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText3\"]/text()')))), int(trim(substring(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText3\"]/text()')), add(indexOf(first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText3\"]/text()')), '-'), 2)))), null)",
+                  "item/new_isclient": true,
+                  "item/new_paymentterms": "@first(xpath(xml(outputs('HTTPClient2')['body']), '//*[local-name()=\"customText6\"]/text()'))"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "HTTPClient2": {
+              "runAfter": {
+                "getclientGuid_2": [
+                  "Succeeded"
+                ]
+              },
+              "limit": {
+                "timeout": "PT2M"
+              },
+              "metadata": {
+                "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+              },
+              "type": "Http",
+              "inputs": {
+                "method": "POST",
+                "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                "headers": {
+                  "Content-Type": "text/xml; charset=utf-8",
+                  "SOAPAction": ""
+                },
+                "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>ClientCorporation</entityName>\n       <id xsi:type=\"xs:int\">@{variables('ClientExternalID')}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+              }
+            },
+            "Bill_Tax_Type_2": {
+              "runAfter": {
+                "HTTPClient2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ffd8d8d7-9b43-47f6-8bc1-72185a322bcd"
+              },
+              "type": "Compose",
+              "inputs": "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"customText18\"]/text()'))"
+            },
+            "Condition_Bill_Tax_Type_2": {
+              "actions": {
+                "Set_variable_7": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "75e57668-78a5-4810-98a3-5f55f971cc6f"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "BillTaxType",
+                    "value": "/new_billtaxtypes(f8d3bcfa-ed05-ee11-8f6e-6045bd0cfca3)"
+                  }
+                }
+              },
+              "runAfter": {
+                "Bill_Tax_Type_2": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Set_variable_6": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "27b46066-e29f-4288-a61c-ce4bae5ba2d9"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "BillTaxType",
+                      "value": "/new_billtaxtypes(6B42B103-EE05-EE11-8F6E-6045BD0CFCA3)"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "equals": [
+                  "@outputs('Bill_Tax_Type_2')",
+                  "20%"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c33c956-b68f-4ce6-aeb4-2295c29b3866"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "ListClientrow": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "HTTPClient_2": {
+                "runAfter": {},
+                "limit": {
+                  "timeout": "PT2M"
+                },
+                "metadata": {
+                  "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                },
+                "type": "Http",
+                "inputs": {
+                  "method": "POST",
+                  "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                  "headers": {
+                    "Content-Type": "text/xml; charset=utf-8",
+                    "SOAPAction": ""
+                  },
+                  "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>ClientCorporation</entityName>\n       <id xsi:type=\"xs:int\">@{variables('ClientExternalID')}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                }
+              },
+              "Add_a_new_client_row": {
+                "runAfter": {
+                  "Condition_Bill_Tax_Type": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "a0e046e6-d295-4e66-b9aa-d951e21ed15d"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "accounts",
+                    "item/name": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"name\"]/text()'))",
+                    "item/address1_city": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"city\"]/text()'))",
+                    "item/address1_line1": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"address1\"]/text()'))",
+                    "item/address1_line2": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"address2\"]/text()'))",
+                    "item/address1_postalcode": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"zip\"]/text()'))",
+                    "item/telephone1": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"phone\"]/text()'))",
+                    "item/address1_country": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"countryID\"]/text()'))",
+                    "item/address1_stateorprovince": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"state\"]/text()'))",
+                    "item/new_expensestobeattachedtoinvoices": true,
+                    "item/new_externalreference": "@variables('ClientExternalId')",
+                    "item/new_isclient": true,
+                    "item/new_managingaccountid@odata.bind": "/accounts(@{variables('ManagingAccountID')})"
+                  },
+                  "authentication": {
+                    "type": "Raw",
+                    "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                  }
+                }
+              },
+              "Set_clientguid_3": {
+                "runAfter": {
+                  "Add_a_new_client_row": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "662a2ac0-f0fe-4660-879f-5d10e1dfea7a"
+                },
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "ClientGuid",
+                  "value": "@outputs('Add_a_new_client_row')?['body/accountid']"
+                }
+              },
+              "Bill_Tax_Type": {
+                "runAfter": {
+                  "HTTPClient_2": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "ffd8d8d7-9b43-47f6-8bc1-72185a322bcd"
+                },
+                "type": "Compose",
+                "inputs": "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"customText18\"]/text()'))"
+              },
+              "Condition_Bill_Tax_Type": {
+                "actions": {
+                  "Set_variable": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "75e57668-78a5-4810-98a3-5f55f971cc6f"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "BillTaxType",
+                      "value": "/new_billtaxtypes(f8d3bcfa-ed05-ee11-8f6e-6045bd0cfca3)"
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Bill_Tax_Type": [
+                    "Succeeded"
+                  ]
+                },
+                "else": {
+                  "actions": {
+                    "Set_variable_2": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "27b46066-e29f-4288-a61c-ce4bae5ba2d9"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "BillTaxType",
+                        "value": "/new_billtaxtypes(6B42B103-EE05-EE11-8F6E-6045BD0CFCA3)"
+                      }
+                    }
+                  }
+                },
+                "expression": {
+                  "equals": [
+                    "@outputs('Bill_Tax_Type')",
+                    "20%"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "5c33c956-b68f-4ce6-aeb4-2295c29b3866"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs('ListClientrow')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7c7dfa56-668e-47d2-b3aa-02ca7f473ea8"
+          },
+          "type": "If"
+        },
+        "Set_approvingclientcontact": {
+          "runAfter": {
+            "List_client_row_for_primarycontact": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f2ba3ee2-a1f8-4c9d-8746-864c28af0ad3"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "approvingClientContactID",
+            "value": "@if(empty(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"approvingClientContactID\"]/text()')), 0, int(first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"approvingClientContactID\"]/text()'))))"
+          }
+        },
+        "List_client_row_for_primarycontact": {
+          "runAfter": {
+            "Condition_Client": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "60af52d5-21ac-4761-b874-003c5284f46e"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "$select": "primarycontactid",
+              "$filter": "accountid eq '@{variables('ClientGuid')}'",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "For_each": {
+          "foreach": "@outputs('List_client_row_for_primarycontact')?['body/value']",
+          "actions": {
+            "Condition": {
+              "actions": {
+                "HTTPClientContact": {
+                  "runAfter": {},
+                  "limit": {
+                    "timeout": "PT2M"
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                    "headers": {
+                      "Content-Type": "text/xml; charset=utf-8",
+                      "SOAPAction": ""
+                    },
+                    "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>ClientContact</entityName>\n       <id xsi:type=\"xs:int\">@{first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"customText18\"]/text()'))}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                  }
+                },
+                "Add_a_contactrow_for_primary": {
+                  "runAfter": {
+                    "HTTPClientContact": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "58d2db5b-df4e-4118-9e9f-451813c14b9e"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contacts",
+                      "item/lastname": "@first(xpath(xml(outputs('HTTPClientContact')['body']), '//*[local-name()=\"lastName\"]/text()'))",
+                      "item/parentcustomerid_account@odata.bind": "/accounts(@{variables('ClientGuid')})",
+                      "item/emailaddress1": "@{first(xpath(xml(outputs('HTTPClientContact')['body']), '//*[local-name()=\"email\"]/text()'))}",
+                      "item/firstname": "@first(xpath(xml(outputs('HTTPClientContact')['body']), '//*[local-name()=\"firstName\"]/text()'))",
+                      "item/mobilephone": "@{first(xpath(xml(outputs('HTTPClientContact')['body']), '//*[local-name()=\"mobile\"]/text()'))}",
+                      "item/new_externalreference": "@first(xpath(xml(outputs('HTTPClient_2')['body']), '//*[local-name()=\"customText18\"]/text()'))",
+                      "item/msa_managingpartnerid@odata.bind": "/accounts(@{variables('ManagingAccountID')})"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Update_client__row_with_primary_contact": {
+                  "runAfter": {
+                    "Add_a_contactrow_for_primary": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "cb02bb58-7a7a-4357-9694-b914002d25ed"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "accounts",
+                      "recordId": "@variables('ClientGuid')",
+                      "item/primarycontactid@odata.bind": "@outputs('Add_a_contactrow_for_primary')?['body/@odata.id']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "HTTPClientApproverContact": {
+                  "runAfter": {
+                    "Update_client__row_with_primary_contact": [
+                      "Succeeded"
+                    ]
+                  },
+                  "limit": {
+                    "timeout": "PT2M"
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                    "headers": {
+                      "Content-Type": "text/xml; charset=utf-8",
+                      "SOAPAction": ""
+                    },
+                    "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>ClientContact</entityName>\n       <id xsi:type=\"xs:int\">@{variables('approvingClientContactID')}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                  }
+                },
+                "Add_a_contactrow_for_Approver": {
+                  "runAfter": {
+                    "HTTPClientApproverContact": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "58d2db5b-df4e-4118-9e9f-451813c14b9e"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contacts",
+                      "item/lastname": "@first(xpath(xml(outputs('HTTPClientApproverContact')['body']), '//*[local-name()=\"lastName\"]/text()'))",
+                      "item/telephone1": "@first(xpath(xml(outputs('HTTPClientApproverContact')['body']), '//*[local-name()=\"phone\"]/text()'))",
+                      "item/parentcustomerid_account@odata.bind": "/accounts(@{variables('ClientGuid')})",
+                      "item/emailaddress1": "@first(xpath(xml(outputs('HTTPClientApproverContact')['body']), '//*[local-name()=\"email\"]/text()'))",
+                      "item/firstname": "@first(xpath(xml(outputs('HTTPClientApproverContact')['body']), '//*[local-name()=\"firstName\"]/text()'))",
+                      "item/new_isanapprover": true,
+                      "item/new_externalreference": "@variables('approvingClientContactID')",
+                      "item/msa_managingpartnerid@odata.bind": "/accounts(@{variables('ManagingAccountID')})"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                }
+              },
+              "runAfter": {},
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "\r@{item()?['_primarycontactid_value']}",
+                      "@null"
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "a6c0b96b-f335-4224-939e-3304a2585fbd"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Set_approvingclientcontact": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7d804418-b160-46e0-b15f-43771758272d"
+          },
+          "type": "Foreach",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          }
+        },
+        "ListConsultantRow": {
+          "runAfter": {
+            "Set_ConsultantExternalRef": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "620f3daf-b866-4e91-97a8-b71d88f03c53"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"contact\">\n    <filter type=\"and\">\n      <condition attribute=\"new_isconsultant\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"new_externalreference\" operator=\"eq\" value=\"@{variables('ConsultantExternalRef')}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Condition_Consultant": {
+          "actions": {
+            "Apply_to_each_GetConsultantGuid": {
+              "foreach": "@outputs('ListConsultantRow')?['body/value']",
+              "actions": {
+                "Set_ConsultantGuid_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "a7909830-39da-4aed-8c37-52c73fe4960d"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "ConsultantGuid",
+                    "value": "@items('Apply_to_each_GetConsultantGuid')?['contactid']"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0ab7f14b-87fd-4ce3-b243-49ca64323a9f"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "ListConsultantRow": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "HTTPConsultant": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                },
+                "type": "Http",
+                "inputs": {
+                  "method": "POST",
+                  "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                  "headers": {
+                    "Content-Type": "text/xml; charset=utf-8",
+                    "SOAPAction": ""
+                  },
+                  "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>CorporateUser</entityName>\n       <id xsi:type=\"xs:int\">@{variables('ConsultantExternalRef')}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                }
+              },
+              "AddConsultantRow": {
+                "runAfter": {
+                  "HTTPConsultant": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "37d86040-f7cb-41ef-b394-5c73d83190c2"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "contacts",
+                    "item/lastname": "@first(xpath(xml(outputs('HTTPConsultant')['body']), '//*[local-name()=\"lastName\"]/text()'))",
+                    "item/emailaddress1": "@first(xpath(xml(outputs('HTTPConsultant')['body']), '//*[local-name()=\"email\"]/text()'))",
+                    "item/firstname": "@first(xpath(xml(outputs('HTTPConsultant')['body']), '//*[local-name()=\"firstName\"]/text()'))",
+                    "item/new_externalreference": "@variables('ConsultantExternalRef')",
+                    "item/new_iscandidate": false,
+                    "item/new_isconsultant": true,
+                    "item/msa_managingpartnerid@odata.bind": "/accounts(@{variables('ManagingAccountID')})"
+                  },
+                  "authentication": {
+                    "type": "Raw",
+                    "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                  }
+                }
+              },
+              "SetConsultantGuid": {
+                "runAfter": {
+                  "AddConsultantRow": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "047f81d8-e10f-4593-a9d5-f78d50449c91"
+                },
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "ConsultantGuid",
+                  "value": "@outputs('AddConsultantRow')?['body/contactid']"
+                }
+              }
+            }
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs('ListConsultantRow')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d72729a5-feda-4116-b7b6-65cd6cae4adc"
+          },
+          "type": "If"
+        },
+        "Condition_sector_not_null": {
+          "actions": {
+            "List_Sectors_rows": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "7dc9e735-31c7-43d9-812f-d0099a432c29"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_sectors",
+                  "$filter": "new_name eq '@{first(xpath(xml(outputs('HTTPjobOrder')['body']), '//*[local-name()=\"degreeList\"]/text()'))}'",
+                  "$top": 1
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Condition_Sector_NOT_exist_by_name": {
+              "actions": {
+                "Add_a_new_sector_row": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "61e720b7-b3b8-4a76-9db3-7346a24815a2"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_sectors",
+                      "item/new_name": "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"correlatedCustomTextBlock2\"]/text()'))",
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{variables('ManagingAccountID')})"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Set_sector_guid_variable": {
+                  "runAfter": {
+                    "Add_a_new_sector_row": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "402d1fc8-502a-410c-8d3a-08d81a40531a"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "SectorGuid",
+                    "value": "@body('Add_a_new_sector_row')?['@odata.id']"
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Sectors_rows": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "For_each_2": {
+                    "foreach": "@outputs('List_Sectors_rows')?['body/value']",
+                    "actions": {
+                      "Set_sector_guid_variable_copy": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "a05f81f4-6ab0-4dc2-a601-e290b672e320"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "SectorGuid",
+                          "value": "@items('For_each_2')?['@odata.id']"
+                        }
+                      }
+                    },
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "9bcee160-0b2c-42c1-a490-9ae45e564df7"
+                    },
+                    "type": "Foreach"
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@length(outputs('List_Sectors_rows')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3aa975b0-85f7-4724-8432-8fe25a3fe6f8"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Condition_Consultant": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "not": {
+              "equals": [
+                "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"correlatedCustomTextBlock2\"]/text()'))",
+                "@null"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "5265e784-639b-4c21-9f34-ab40047ca6a2"
+          },
+          "type": "If"
+        },
+        "Condition_Supplier_not_null": {
+          "actions": {
+            "List_supplier_row": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "7dc9e735-31c7-43d9-812f-d0099a432c29"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "accounts",
+                  "$filter": "new_externalreference eq @{first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"vendorClientCorporationID\"]/text()'))}",
+                  "$top": 1
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Condition_supplier_NOT_exist_by_external_Ref": {
+              "actions": {
+                "Set_supplier_guid": {
+                  "runAfter": {
+                    "Add_a_new_Supplier_row": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "402d1fc8-502a-410c-8d3a-08d81a40531a"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "SupplierGuid",
+                    "value": "@{body('Add_a_new_Supplier_row')?['@odata.id']}"
+                  }
+                },
+                "HTTPSupplier": {
+                  "runAfter": {},
+                  "limit": {
+                    "timeout": "PT2M"
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                    "headers": {
+                      "Content-Type": "text/xml; charset=utf-8",
+                      "SOAPAction": ""
+                    },
+                    "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>ClientCorporation</entityName>\n       <id xsi:type=\"xs:int\">@{int(first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"vendorClientCorporationID\"]/text()')))}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                  }
+                },
+                "Add_a_new_Supplier_row": {
+                  "runAfter": {
+                    "HTTPSupplier": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "61e720b7-b3b8-4a76-9db3-7346a24815a2"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "accounts",
+                      "item/name": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"name\"]/text()'))",
+                      "item/address1_city": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"city\"]/text()'))",
+                      "item/address1_line1": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"address1\"]/text()'))",
+                      "item/address1_line2": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"address2\"]/text()'))",
+                      "item/address1_postalcode": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"zip\"]/text()'))",
+                      "item/accountnumber": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"customText9\"]/text()'))",
+                      "item/address1_country": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"countryID\"]/text()'))",
+                      "item/address1_stateorprovince": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"state\"]/text()'))",
+                      "item/new_externalreference": "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"vendorClientCorporationID\"]/text()'))",
+                      "item/new_issupplier": true,
+                      "item/new_managingaccountid@odata.bind": "/accounts(@{variables('ManagingAccountID')})",
+                      "item/new_selfbillgrouping": 100000002
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Add_a_contactrow_for_SupplierPrimary": {
+                  "runAfter": {
+                    "HTTPSupplierContact": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "58d2db5b-df4e-4118-9e9f-451813c14b9e"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contacts",
+                      "item/lastname": "@first(xpath(xml(outputs('HTTPSupplierContact')['body']), '//*[local-name()=\"lastName\"]/text()'))",
+                      "item/telephone1": "@first(xpath(xml(outputs('HTTPSupplierContact')['body']), '//*[local-name()=\"phone\"]/text()'))",
+                      "item/parentcustomerid_account@odata.bind": "@outputs('Add_a_new_Supplier_row')?['body/@odata.id']",
+                      "item/emailaddress1": "@first(xpath(xml(outputs('HTTPSupplierContact')['body']), '//*[local-name()=\"email\"]/text()'))",
+                      "item/firstname": "@first(xpath(xml(outputs('HTTPSupplierContact')['body']), '//*[local-name()=\"firstName\"]/text()'))",
+                      "item/mobilephone": "@first(xpath(xml(outputs('HTTPSupplierContact')['body']), '//*[local-name()=\"mobile\"]/text()'))",
+                      "item/new_externalreference": "@first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"customText15\"]/text()'))",
+                      "item/managerphone": "/accounts(@{variables('ManagingAccountID')})"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "HTTPSupplierContact": {
+                  "runAfter": {
+                    "Set_supplier_guid": [
+                      "Succeeded"
+                    ]
+                  },
+                  "limit": {
+                    "timeout": "PT2M"
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                    "headers": {
+                      "Content-Type": "text/xml; charset=utf-8",
+                      "SOAPAction": ""
+                    },
+                    "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>ClientContact</entityName>\n       <id xsi:type=\"xs:int\">@{first(xpath(xml(outputs('HTTPSupplier')['body']), '//*[local-name()=\"customText15\"]/text()'))}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                  }
+                },
+                "Update_supplier_row": {
+                  "runAfter": {
+                    "Add_a_contactrow_for_SupplierPrimary": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "9aa8a542-0921-4b14-b0d2-3bd811488f53"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "accounts",
+                      "recordId": "@outputs('Add_a_new_Supplier_row')?['body/accountid']",
+                      "item/primarycontactid@odata.bind": "@outputs('Add_a_contactrow_for_SupplierPrimary')?['body/@odata.id']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "List_supplier_row": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Apply_to_each_2": {
+                    "foreach": "@outputs('List_supplier_row')?['body/value']",
+                    "actions": {
+                      "Set_supplier_guid_2": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "402d1fc8-502a-410c-8d3a-08d81a40531a"
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "SupplierGuid",
+                          "value": "@items('Apply_to_each_2')?['@odata.id']"
+                        }
+                      }
+                    },
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "16f9c806-31c4-4b78-93a3-49b2dd8cfa34"
+                    },
+                    "type": "Foreach"
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@length(outputs('List_supplier_row')?['body/value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3aa975b0-85f7-4724-8432-8fe25a3fe6f8"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Condition_sector_not_null": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "not": {
+              "equals": [
+                "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"vendorClientCorporationID\"]/text()'))",
+                "@null"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "a365ad9a-6970-4873-acdc-325215ad4977"
+          },
+          "type": "If"
+        },
+        "ListCandidateRow": {
+          "runAfter": {
+            "Set_CandidateExternalRef": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b9b72388-c4d8-4e5b-bce4-a4baa207e6b6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "contacts",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"contact\">\n    <filter type=\"and\">\n      <condition attribute=\"new_iscandidate\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"new_externalreference\" operator=\"eq\" value=\"@{variables('CandidateExternalRef')}\" />\n    </filter>\n  </entity>\n</fetch>",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Condition_Candidate": {
+          "actions": {
+            "Apply_to_each_GetCandidateGuid_2": {
+              "foreach": "@outputs('ListCandidateRow')?['body/value']",
+              "actions": {
+                "Set_CandidateGuid_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "a7909830-39da-4aed-8c37-52c73fe4960d"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "CandidateGuid",
+                    "value": "@items('Apply_to_each_GetCandidateGuid_2')?['contactid']"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0ab7f14b-87fd-4ce3-b243-49ca64323a9f"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "ListCandidateRow": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "HTTPCandidate_2": {
+                "runAfter": {},
+                "limit": {
+                  "timeout": "PT5M"
+                },
+                "metadata": {
+                  "operationMetadataId": "ab44b1db-b94b-4ca3-a5c2-174f149af2b7"
+                },
+                "type": "Http",
+                "inputs": {
+                  "method": "POST",
+                  "uri": "https://rest-emea.bullhornstaffing.com/webservices-2.0/?wsdl",
+                  "headers": {
+                    "Content-Type": "text/xml; charset=utf-8",
+                    "SOAPAction": ""
+                  },
+                  "body": "<soapenv:Envelope    \nxmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\nxmlns:apis=\"http://apiservice.bullhorn.com/\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\nxmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <apis:find>\n         <session>@{triggerBody()['text']}</session>\n         <entityName>Candidate</entityName>\n       <id xsi:type=\"xs:int\">@{variables('CandidateExternalRef')}</id>\n</apis:find>    \n   </soapenv:Body>\n</soapenv:Envelope>"
+                }
+              },
+              "AddCandidateRow": {
+                "runAfter": {
+                  "HTTPCandidate_2": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "37d86040-f7cb-41ef-b394-5c73d83190c2"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "entityName": "contacts",
+                    "item/lastname": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"lastName\"]/text()'))",
+                    "item/address1_city": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"city\"]/text()'))",
+                    "item/address1_line1": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"address1\"]/text()'))",
+                    "item/address1_line2": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"address2\"]/text()'))",
+                    "item/address1_postalcode": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"zip\"]/text()'))",
+                    "item/emailaddress1": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"email\"]/text()'))",
+                    "item/firstname": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"firstName\"]/text()'))",
+                    "item/jobtitle": "@first(xpath(xml(outputs('HTTPjobOrder')['body']), '//*[local-name()=\"title\"]/text()'))",
+                    "item/mobilephone": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"mobile\"]/text()'))",
+                    "item/address1_county": "@first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"state\"]/text()'))",
+                    "item/new_externalreference": "@variables('CandidateExternalRef')",
+                    "item/new_iscandidate": true,
+                    "item/new_isconsultant": false,
+                    "item/msa_managingpartnerid@odata.bind": "/accounts(@{variables('ManagingAccountID')})"
+                  },
+                  "authentication": {
+                    "type": "Raw",
+                    "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                  }
+                }
+              },
+              "Set_candidateguid": {
+                "runAfter": {
+                  "AddCandidateRow": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "047f81d8-e10f-4593-a9d5-f78d50449c91"
+                },
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "CandidateGuid",
+                  "value": "@outputs('AddCandidateRow')?['body/contactid']"
+                }
+              }
+            }
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs('ListCandidateRow')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d72729a5-feda-4116-b7b6-65cd6cae4adc"
+          },
+          "type": "If"
+        },
+        "Bill_Unit": {
+          "runAfter": {
+            "HTTPAuthoriser": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8c4bdff3-6d9e-4c95-869a-a90e19e457b3"
+          },
+          "type": "Compose",
+          "inputs": "@first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"customText15\"]/text()'))"
+        },
+        "Initialize_CandidateGUID": {
+          "runAfter": {
+            "Initialize_ConsultantGUID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "65f2f345-6e84-4a63-a38d-8b0b4b5ddaf7"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CandidateGuid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_ClientGUID": {
+          "runAfter": {
+            "Initialize_CandidateGUID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "51eba657-ce00-4884-9668-b31dc746527e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientGuid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_BillTaxType": {
+          "runAfter": {
+            "Initialize_BillUnit": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bd72120b-5d60-458e-8e32-a4209ed5821e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "BillTaxType",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_ApprovingClientContact": {
+          "runAfter": {
+            "Initialize_Managing_Account_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ffef2bfe-cd72-40c4-b022-3c662aa9be60"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "approvingClientContactID",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_ConsultantGUID": {
+          "runAfter": {
+            "Initialize_SectorGUID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fcefc209-29be-45b5-a549-02cd88e9b1c5"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ConsultantGuid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_SectorGUID": {
+          "runAfter": {
+            "Initialize_SupplierGuid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9c3cde2a-4774-4790-8f12-2fc98790724e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SectorGuid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_SupplierGuid": {
+          "runAfter": {
+            "Initialize_BillTaxType": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "efd20efe-82ee-4cda-851f-75afb79e7ac0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SupplierGuid",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_BillUnit": {
+          "runAfter": {
+            "Initialize_CandidateExternalRef": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e337db81-c422-41c5-8995-c24df6d8b943"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "BillUnit",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_ConsultantExternalRef": {
+          "runAfter": {
+            "Initialize_ApprovingClientContact": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c28b7873-674c-4c18-867c-f4d30315e1f7"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ConsultantExternalRef",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Set_ConsultantExternalRef": {
+          "runAfter": {
+            "For_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "65dbd177-651c-4e08-8e5d-26662dd4fbff"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "ConsultantExternalRef",
+            "value": "@int(first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"customInt1\"]/text()')  ) )"
+          }
+        },
+        "Initialize_CandidateExternalRef": {
+          "runAfter": {
+            "Initialize_ConsultantExternalRef": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58e89225-4e93-4cfd-90b8-73f8af9d8ab1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CandidateExternalRef",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Set_CandidateExternalRef": {
+          "runAfter": {
+            "Condition_Supplier_not_null": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "15cd4cec-e48d-483d-8393-8edd629b9854"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "CandidateExternalRef",
+            "value": "@int(first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"candidateID\"]/text()')  ) )"
+          }
+        },
+        "Initialize_ClientExternalId": {
+          "runAfter": {
+            "HTTPJobOrder": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "efd20efe-82ee-4cda-851f-75afb79e7ac0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ClientExternalID",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Set_ClientExternalID": {
+          "runAfter": {
+            "Initialize_ClientExternalId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f31808ea-5fbc-4f80-93bb-78cf8871b925"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "ClientExternalID",
+            "value": "@int(first(xpath(xml(outputs('HTTPjobOrder')['body']), '//*[local-name()=\"clientCorporationID\"]/text()')  ) )"
+          }
+        },
+        "Initialize_Managing_Account_ID": {
+          "runAfter": {
+            "HTTPPlacement": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "03812492-ea0e-4eba-b2d3-470f54332290"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ManagingAccountID",
+                "type": "string",
+                "value": "b009ac94-07e7-ee11-904c-6045bdd21335"
+              }
+            ]
+          }
+        },
+        "Add_a_Placement_Row": {
+          "runAfter": {
+            "Bill_Unit": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3d726fc9-ce54-4ed2-9a03-bb1ce6976d09"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "CreateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_assignments",
+              "item/new_candidateid@odata.bind": "/contacts(@{variables('CandidateGuid')})",
+              "item/new_clientid@odata.bind": "/accounts(@{variables('ClientGuid')})",
+              "item/new_consultantid@odata.bind": "/consultant(@{variables('ConsultantGuid')})",
+              "item/transactioncurrencyid@odata.bind": "GBP",
+              "item/new_enddate": "@null",
+              "item/new_name": "@first (xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"id\"]/text()') )",
+              "item/new_startdate": "@first (xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"dateBegin\"]/text()') )",
+              "item/cr0b7_assignmentlocation": "@first (xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"costCenter\"]/text()') )",
+              "item/new_externalreference": "@first (xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"id\"]/text()') )",
+              "item/new_managingaccountid@odata.bind": "/accounts(@{variables('ManagingAccountID')})",
+              "item/new_sectorid@odata.bind": "@if(not(empty(variables('SectorGuid'))), variables('SectorGuid'), null)",
+              "item/new_supplierid@odata.bind": "@variables('SupplierGuid')"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Add_a_Placement_Row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e85a242-7559-492e-af54-67a575487c38"
+          },
+          "type": "Compose",
+          "inputs": "New Starter Form:\nOffice: Resourcing\nDate: \n\nConsultant:  @{first(xpath(xml(outputs('HTTPConsultant')['body']), '//*[local-name()=\"firstName\"]/text()'))} @{first(xpath(xml(outputs('HTTPConsultant')['body']), '//*[local-name()=\"lastName\"]/text()'))}\nSector: @{first(xpath(xml(outputs('HTTPPlacement')['body']), '//*[local-name()=\"correlatedCustomTextBlock2\"]/text()'))}\n\nCandidate Bullhorn ID: @{variables('CandidateExternalRef')}\nCandidate Name: @{first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"firstName\"]/text()'))} @{first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"lastName\"]/text()'))}\nCandidate Email Address: @{first(xpath(xml(outputs('HTTPCandidate_2')['body']), '//*[local-name()=\"email\"]/text()'))}\nLimited to 20 Hours? \n\nUmbrella Company Name: \nCandidate Phone Number:  \n\nClient Name: \nInvoice Contact Name: \nInvoice Email Address: \nInvoice Telephone Number: \nBilling Address:\nVAT Exempt? \n\nAuthoriser Details: \n\n\nPlacement Details:\nStart Date:\nPay Rate:\nBill Rate: \nAble to submit expenses? \n\n\n\n\n\n\n"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

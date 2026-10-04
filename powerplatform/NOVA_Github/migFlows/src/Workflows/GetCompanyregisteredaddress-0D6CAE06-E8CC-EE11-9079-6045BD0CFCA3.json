@@ -1,0 +1,160 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "63b6a32a-e35c-463d-b0a5-d2e2d6165b99"
+          },
+          "type": "Request",
+          "kind": "PowerPages",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "company number",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d33fa16c-ffca-467d-813d-a8a1d6310b23"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://api.company-information.service.gov.uk/company/@{triggerBody()['text']}/registered-office-address"
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "08bbc0c5-0f01-4ec9-9644-d3b284be1a91"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accept_appropriate_office_address_statement": {
+                  "type": "string"
+                },
+                "address_line_1": {
+                  "type": "string"
+                },
+                "address_line_2": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "etag": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "links": {
+                  "type": "object",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "locality": {
+                  "type": "string"
+                },
+                "postal_code": {
+                  "type": "string"
+                },
+                "premises": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "29b4228e-e599-4d29-a1ae-5a4f575039df"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "addressline1": "@body('Parse_JSON')?['address_line_1']",
+              "addresline2": "@body('Parse_JSON')?['address_line_2']",
+              "city": "@body('Parse_JSON')?['locality']",
+              "zip/postcode": "@body('Parse_JSON')?['postal_code']"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "addressline1": {
+                  "title": "AddressLine1",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "addresline2": {
+                  "title": "AddresLine2",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "city": {
+                  "title": "City",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "zip/postcode": {
+                  "title": "Zip/PostCode",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

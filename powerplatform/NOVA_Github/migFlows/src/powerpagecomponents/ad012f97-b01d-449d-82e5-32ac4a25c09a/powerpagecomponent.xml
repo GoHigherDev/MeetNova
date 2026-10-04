@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="ad012f97-b01d-449d-82e5-32ac4a25c09a">
+  <content>{
+  "displayorder": 22,
+  "pageid": "9484c9f0-4e27-aeec-1491-e0985de8b9ea",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "weblinksetid": "49ecda81-6803-4ab5-980f-2c6af05a3d63"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Expenses</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,18 @@
+<powerpagecomponent powerpagecomponentid="d02e8f2f-7b0c-457a-9692-01b83c786e32">
+  <content>{
+  "display_name": "Footer",
+  "type": 756150001,
+  "value": "&lt;p&gt;&lt;span&gt;Copyright © &lt;/span&gt;{{ now | date: 'yyyy' }}&lt;span&gt;. All rights reserved.&lt;/span&gt;&lt;/p&gt;\n"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Footer</name>
+  <powerpagecomponenttype>7</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <powerpagesitelanguageid>
+    <powerpagesitelanguageid>e2dbc71f-37e6-4ea1-9ca0-3e9eb80aeeac</powerpagesitelanguageid>
+  </powerpagesitelanguageid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

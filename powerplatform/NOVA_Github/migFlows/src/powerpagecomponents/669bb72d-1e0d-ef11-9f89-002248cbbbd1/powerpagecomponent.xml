@@ -1,0 +1,24 @@
+<powerpagecomponent powerpagecomponentid="669bb72d-1e0d-ef11-9f89-002248cbbbd1">
+  <content>{
+  "adddescription": true,
+  "attributelogicalname": "new_isdefault",
+  "description": "[{\"LCID\":1033,\"Value\":\"Here you can link a document template to specific clients. Otherwise the default Document template is used \"}]",
+  "descriptionposition": 100000001,
+  "entityform": "8a654485-6479-ee11-8179-6045bd0cfca3",
+  "entityformforcreate": "8a654485-6479-ee11-8179-6045bd0cfca3",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": false,
+  "type": 100000000,
+  "useattributedescriptionproperty": false
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Template new_isdefault</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

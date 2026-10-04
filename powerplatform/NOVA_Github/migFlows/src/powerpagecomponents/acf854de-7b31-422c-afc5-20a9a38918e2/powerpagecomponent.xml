@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="acf854de-7b31-422c-afc5-20a9a38918e2">
+  <content>{
+  "entityform": "a4ea00ac-8f0e-ef11-9f89-002248cbbbd1",
+  "label": "[{\"LCID\":1033,\"Value\":\"Training\"}]",
+  "tabname": "candidatetraining",
+  "type": 100000002
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Training candidatetraining</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

@@ -1,0 +1,428 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365-1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_e65ee"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_298c4"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f6ecc"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Quickshifts Portal (new_QuickshiftsPortal)": {
+          "defaultValue": "https://quickshiftsportal.powerappsportals.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_QuickshiftsPortal",
+            "description": "used by candidates and clients"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_timesheet",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statuscode",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000002",
+              "subscriptionRequest/name": "bb170017-6ba9-ee11-be37-6045bd0cfca3:MTA"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "a6f1782d-7537-4334-bf4e-e497dbc4ea73"
+          }
+        }
+      },
+      "actions": {
+        "Get_Placement_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_assignments",
+              "recordId": "@triggerOutputs()?['body/_new_assignmentid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "14abe674-4b19-423e-b7d2-b167d99216c2"
+          }
+        },
+        "Get_Candidate_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_candidateid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Get_Placement_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "51f6cd17-9112-4f21-9a47-9e3f8b9e348b"
+          }
+        },
+        "Get_Client_Approver_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "contacts",
+              "recordId": "@triggerOutputs()?['body/_new_approverid_value']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Get_Candidate_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "de65578f-3b0b-40a0-aa5d-846e8e94c997"
+          }
+        },
+        "Condition_-_Approve_by_Login": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_Client_Approver_by_ID')?['body/new_approvebylogin']",
+                  "@true"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_Client_Approver_by_ID')?['body/new_approvebyemail']",
+                    "@true"
+                  ]
+                }
+              },
+              {
+                "equals": [
+                  "@outputs('Get_Placement_by_ID')?['body/new_istimesheetpreapproved']",
+                  "@false"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Condition_-_is_empty": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@empty(body('Get_Client_Approver_by_ID')?['adx_identity_username'])",
+                      "@true"
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Send_an_email_unregistered": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "emailMessage/To": "@body('Get_Client_Approver_by_ID')?['emailaddress1']",
+                      "emailMessage/Subject": "@{body('Get_Candidate_by_ID')?['fullname']} - Timesheet Pending Approval ",
+                      "emailMessage/Body": "<p class=\"editor-paragraph\">Hi @{body('Get_Client_Approver_by_ID')?['fullname']},</p><br><p class=\"editor-paragraph\">@{body('Get_Candidate_by_ID')?['fullname']} has submitted their timesheet for approval. However, before accessing the timesheet open for submission. Please click the link below to complete your registration process:</p>\n<br>\n<a href = \"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/registration/?contactid=@{triggerOutputs()?['body/_new_approverid_value']}\">Registration</a>\n<br>\n<br>Once you have completed your registration process. Please can you approve, or reject the timesheet at your earliest convenience using the link below:\n<br>\n<a href = \"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/assignments/activetimesheets/timesheetdetails/?timesheetid=@{triggerOutputs()?['body/new_timesheetid']}&clientid=@{outputs('Get_Placement_by_ID')?['body/_new_clientid_value']}&contactid=@{triggerOutputs()?['body/_new_approverid_value']}\">@{triggerOutputs()?['body/new_name']}</a>\n<br>\nThank you,Timesheets System",
+                      "emailMessage/Cc": "@outputs('Get_Placement_by_ID')?['body/new_approveremails']",
+                      "emailMessage/Importance": "Normal"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                      "operationId": "SendEmailV2",
+                      "connectionName": "shared_office365-1"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "94f29f3b-eb89-4e77-bf42-8563fc4c87f0"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Send_an_email_(V2)": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "emailMessage/To": "@{body('Get_Client_Approver_by_ID')?['emailaddress1']}, hala.hassouna96@gmail.com",
+                        "emailMessage/Subject": "@{body('Get_Candidate_by_ID')?['fullname']} - Timesheet Pending Approval ",
+                        "emailMessage/Body": "@variables('Message')",
+                        "emailMessage/Cc": "@outputs('Get_Placement_by_ID')?['body/new_approveremails']",
+                        "emailMessage/Importance": "Normal"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                        "operationId": "SendEmailV2",
+                        "connectionName": "shared_office365-1"
+                      }
+                    },
+                    "metadata": {
+                      "operationMetadataId": "94f29f3b-eb89-4e77-bf42-8563fc4c87f0"
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "c12dcbcb-0211-40cc-98ba-3533c379bcd7"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Send_an_email_(V2)_1": {
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "parameters": {
+                    "emailMessage/To": "@body('Get_Client_Approver_by_ID')?['emailaddress1']",
+                    "emailMessage/Subject": "@{body('Get_Candidate_by_ID')?['fullname']} - Timesheet Pending Approval ",
+                    "emailMessage/Body": "<p class=\"editor-paragraph\">this is a test, we can sort the test out after</p>",
+                    "emailMessage/Importance": "Normal"
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                    "operationId": "SendEmailV2",
+                    "connectionName": "shared_office365"
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Condition_if_message_not_empty": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "418c1dc3-c41c-4c30-89c0-d72284e98feb"
+          }
+        },
+        "Run_a_Child_Flow_Global": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e4b8f4a9-1d83-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {
+            "Get_Client_Approver_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_global_notification_is_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Global')?['result']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Global": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Run_a_Child_Flow_Enable": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "c925c1bd-1c83-f011-b4cc-6045bd69f0ab"
+            },
+            "body": {
+              "text": "e746f3c6-c884-f011-b4cc-6045bd69f0ab"
+            }
+          },
+          "runAfter": {
+            "Condition_if_global_notification_is_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_result_of_child_=_true": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@body('Run_a_Child_Flow_Enable')?['success']",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "actions": {},
+          "else": {
+            "actions": {
+              "Terminate_1": {
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Cancelled"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow_Enable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_a_notification_row_by_ID": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "new_notifications",
+              "recordId": "e746f3c6-c884-f011-b4cc-6045bd69f0ab"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {
+            "Condition_if_result_of_child_=_true": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_Message_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Message",
+                "type": "string",
+                "value": "\nUser Name: @{outputs('Get_Client_Approver_by_ID')?['body/adx_identity_username']} <div> \n </div>\n<p class=\"editor-paragraph\">Hi @{outputs('Get_Client_Approver_by_ID')?['body/fullname']},</p>\n<p class=\"editor-paragraph\">@{outputs('Get_Candidate_by_ID')?['body/fullname']} has submitted their timesheet for approval. Please can you approve, or reject the timesheet at your earliest convenience using the link below:</p>\n\n\n<a href=\"@{parameters('Quickshifts Portal (new_QuickshiftsPortal)')}/assignments/activetimesheets/timesheetdetails/?timesheetid=@{triggerOutputs()?['body/new_timesheetid']}&clientid=@{outputs('Get_Placement_by_ID')?['body/_new_clientid_value']}&contactid=@{triggerOutputs()?['body/_new_approverid_value']}\">@{triggerOutputs()?['body/new_name']}</a>\n\n\n<p class=\"editor-paragraph\">Thank you,Timesheets System</p>"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_a_notification_row_by_ID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_if_message_not_empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Set_Message_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Message",
+                "value": "@outputs('Get_a_notification_row_by_ID')?['body/new_emailmessage']"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_Message_variable": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

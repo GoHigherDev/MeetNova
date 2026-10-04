@@ -1,0 +1,841 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_commondataserviceforapps-1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d7b6b"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_wordonlinebusiness": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedwordonlinebusiness_8de84"
+        },
+        "api": {
+          "name": "shared_wordonlinebusiness"
+        }
+      },
+      "shared_onedriveforbusiness": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedonedriveforbusiness_ec0d8"
+        },
+        "api": {
+          "name": "shared_onedriveforbusiness"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "b4f02310-a8b6-4254-b37c-606d3ceedbd1"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_remittance",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "new_remittancedate,new_total,statuscode ",
+              "subscriptionRequest/filterexpression": "statuscode eq 100000002"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "GetSelfBillRowbyID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "06764fb5-3db7-4aeb-bd31-b5fcec13a2f5"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_remittances",
+              "recordId": "@triggerOutputs()?['body/new_remittanceid']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Apply_to_each_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "137bdd3a-e6a2-4c01-b076-9a60d064558a"
+          },
+          "type": "Compose",
+          "inputs": "@variables('SelfBillDetailsArray')"
+        },
+        "Initialize_Self_Bill_DETAILS_ARRAY": {
+          "runAfter": {
+            "List_rows_SelfBillDETAILS": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5c46c588-1378-47bd-a588-e38d01824e1c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SelfBillDetailsArray",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "Get_a_SupplierRow_by_ID": {
+          "runAfter": {
+            "Get_a_Currency_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6965f85d-4a17-4aa7-a1ce-add6a38ac543"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('GetSelfBillRowbyID')?['body/_new_supplierid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "List_rows_SelfBillDETAILS": {
+          "runAfter": {
+            "Compose_Logo": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "908699a6-cea1-41fd-bdb1-66c768174108"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_remittancedetails",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_remittancedetail\">\n    <attribute name=\"new_assignmentrateid\" />\n    <attribute name=\"new_date\" />\n    <attribute name=\"new_units\" />\n    <attribute name=\"new_pay\" />\n    <attribute name=\"new_assignmentid\" />\n    <attribute name=\"new_billtotal\" />\n    <attribute name=\"new_total\" />\n    <attribute name=\"new_tax\" />\n    <attribute name=\"new_billtaxtypeid\" />\n    <attribute name=\"new_remittancedetailid\" />\n\n    <filter type=\"and\">\n      <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n      <condition attribute=\"new_remittanceid\" operator=\"eq\"  uitype=\"new_remittance\" value=\"@{outputs('GetSelfBillRowbyID')?['body/new_remittanceid']}\" />\n   <condition attribute=\"new_units\" operator=\"gt\" value=\"0\" />\n  \n    </filter>\n  </entity>\n</fetch>\n\nlink entity to \nnew_assignmentid to get from it the full name of contact lookup of new_candidateid\n"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each_2": {
+          "foreach": "@outputs('List_rows_SelfBillDETAILS')?['body/value']",
+          "actions": {
+            "Get_a_placement_row_by_ID": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "b407d072-2a80-4684-b0cb-306257b64b35"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_assignments",
+                  "recordId": "@items('Apply_to_each_2')?['_new_assignmentid_value']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Append_to_SelfBillDETAILS_ARRAY": {
+              "runAfter": {
+                "Get_paytaxtype_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1deb63cf-69e6-4530-8d91-826580aaab5a"
+              },
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "SelfBillDetailsArray",
+                "value": {
+                  "Candidate Name": "@outputs('GetCandidaterow_by_ID')?['body/fullname']",
+                  "Rate": "@items('Apply_to_each_2')?['_new_assignmentrateid_value@OData.Community.Display.V1.FormattedValue']",
+                  "Date": "@if(empty(items('Apply_to_each_2')?['new_date']), null, formatDateTime(parseDateTime(items('Apply_to_each_2')?['new_date']), 'dd/MM/yyyy', 'en-GB'))",
+                  "Unit": "@formatNumber(coalesce(items('Apply_to_each_2')?['new_units'],0), '0.00')",
+                  "Unit Price": "@formatNumber(coalesce(items('Apply_to_each_2')?['new_pay'],0), '0.00')",
+                  "VAT": "@body('Get_paytaxtype_row_by_ID')?['new_name']",
+                  "Sub-Total": "@formatNumber(coalesce(items('Apply_to_each_2')?['new_billtotal'],0), '0.00')",
+                  "Tax": "@formatNumber(coalesce(items('Apply_to_each_2')?['new_tax'],0), '0.00')",
+                  "Total Amount": "@formatNumber(coalesce(items('Apply_to_each_2')?['new_total'],0), '0.00')"
+                }
+              }
+            },
+            "GetCandidaterow_by_ID": {
+              "runAfter": {
+                "Get_a_placement_row_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "772ed9f3-34e0-4b95-9c13-173f7debf415"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "contacts",
+                  "recordId": "@outputs('Get_a_placement_row_by_ID')?['body/_new_candidateid_value']",
+                  "$select": "fullname"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Get_paytaxtype_row_by_ID": {
+              "runAfter": {
+                "GetCandidaterow_by_ID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4f02030d-04dc-4fa6-895e-55dc78031051"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps-1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_billtaxtypes",
+                  "recordId": "@item()?['_new_billtaxtypeid_value']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Self_Bill_DETAILS_ARRAY": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "771e4960-e808-4fee-a527-c7e85841a2ad"
+          },
+          "type": "Foreach"
+        },
+        "Download_MANAGING_ACCOUNT_LOGO": {
+          "runAfter": {
+            "Get_a_managing_account_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "680f735b-1e5d-47c2-80a1-d02914550f88"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetEntityFileImageFieldContent",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@body('Get_a_SupplierRow_by_ID')?['_new_managingaccountid_value']",
+              "fileImageFieldName": "entityimage"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_date_of_sending_": {
+          "runAfter": {
+            "ListDetailsGroupedByRateType": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5eab0a2b-06a9-480b-9c5f-3039dc3bd905"
+          },
+          "type": "Compose",
+          "inputs": "@formatDateTime(utcNow(),'dd/MM/yyyy')\n"
+        },
+        "Get_a_Currency_row_by_ID": {
+          "runAfter": {
+            "GetSelfBillRowbyID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "12b7719d-6dd7-4d51-8d35-7b2783ca375c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "transactioncurrencies",
+              "recordId": "@outputs('GetSelfBillRowbyID')?['body/_transactioncurrencyid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_Logo": {
+          "runAfter": {
+            "Download_MANAGING_ACCOUNT_LOGO": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7850d046-5b63-4fa5-9690-06837e7e8528"
+          },
+          "type": "Compose",
+          "inputs": {
+            "$content-type": "image/jpeg",
+            "$content": "@{base64(outputs('Download_MANAGING_ACCOUNT_LOGO')?['body'])}"
+          }
+        },
+        "ListDetailsGroupedByRateType": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "00fed401-baeb-4fbe-8f6a-65a12e893b2b"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_remittancedetails",
+              "fetchXml": "<fetch distinct='false' mapping='logical' aggregate='true'> \n  <entity name=\"new_remittancedetail\">\n      <attribute name='new_tax' alias='new_tax_sum' aggregate='sum'/> \n      <attribute name='new_total' alias='new_total_sum' aggregate='sum'/> \n     <attribute name='new_units' alias='new_units_sum' aggregate='sum'/> \n      <attribute name='new_paytotal' alias='new_paytotal_sum' aggregate='sum'/> \n     <attribute name='new_assignmentrateid' alias='new_assignmentrateid_alias' groupby='true' /> \n    <filter type=\"and\">\n      <condition attribute=\"statecode\" operator=\"eq\" value=\"0\" />\n      <condition attribute=\"new_remittanceid\" operator=\"eq\"  uitype=\"new_remittance\" value=\"@{outputs('GetSelfBillRowbyID')?['body/new_remittanceid']}\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Terminate": {
+          "runAfter": {
+            "Scope-fail": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3945aaa9-ce5b-47bf-9924-81fc0549acac"
+          },
+          "type": "Terminate",
+          "inputs": {
+            "runStatus": "Succeeded"
+          }
+        },
+        "Get_a_managing_account_row_by_ID": {
+          "runAfter": {
+            "Get_a_SupplierRow_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f54752e7-779e-4ff5-a9a4-a0355380b9f8"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "accounts",
+              "recordId": "@outputs('Get_a_SupplierRow_by_ID')?['body/_new_managingaccountid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Scope": {
+          "actions": {
+            "Populate_a_Microsoft_Word_template": {
+              "runAfter": {},
+              "metadata": {
+                "0172APWYMQUHB4NWRGUBGLVEAF6J23FYAA": "/GoHigher Main/DOC_17422060.docx",
+                "operationMetadataId": "496fc289-219e-4968-b8ba-9acaf5799284",
+                "0172APWYLXYI335AONCZBLPGC7DW766QBY": "/Archer Offshore/SelfBillTemplate.docx",
+                "0172APWYNJ62EMB6AVDRA2R5Q5JGKNBZQQ": "/Archer Offshore/TimesheetTemplate.docx",
+                "01K2ZPN3YAOWGB3RKZR5BZFAUQENHHBD4Y": "/SelfBill/SelfBillTemplate.docx",
+                "01K2ZPN37MZHI763RVKBFLW3XM422RN3CY": "/DefaultTemplates/Default_SelfBillTemplate.docx",
+                "013LX7HPOU2O7SHPE4RNDLMCNBUSESKWXU": "/DefaultTemplates/Default_SelfBillTemplate.docx"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "source": "me",
+                  "drive": "b!gtfDRaHshUiegAWkfiGSLL382nBh4XJAmTcuLeHOVismGojbYYoxQZxU6jFBy9QI",
+                  "file": "013LX7HPOU2O7SHPE4RNDLMCNBUSESKWXU",
+                  "dynamicFileSchema/79888677": "@outputs('Get_a_SupplierRow_by_ID')?['body/_new_countryid_name']",
+                  "dynamicFileSchema/296340671": "@outputs('Get_a_Currency_row_by_ID')?['body/isocurrencycode']",
+                  "dynamicFileSchema/410579261": "@outputs('Get_a_managing_account_row_by_ID')?['body/name']",
+                  "dynamicFileSchema/447747060": "@variables('SelfBillDetailsArray')",
+                  "dynamicFileSchema/468557511": "@formatDateTime(parseDateTime(outputs('GetSelfBillRowbyID')?['body/new_remittancedate']), 'dd/MM/yyyy', 'en-GB')",
+                  "dynamicFileSchema/621269035": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_line3']",
+                  "dynamicFileSchema/726274806": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_stateorprovince']",
+                  "dynamicFileSchema/766961035": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_postalcode']",
+                  "dynamicFileSchema/842512736": "@outputs('Get_a_managing_account_row_by_ID')?['body/accountnumber']",
+                  "dynamicFileSchema/1102302114": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_line2']",
+                  "dynamicFileSchema/1146397765": "@outputs('GetSelfBillRowbyID')?['body/new_name']",
+                  "dynamicFileSchema/1414122894": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_line1']",
+                  "dynamicFileSchema/2030378344": "@outputs('Get_a_SupplierRow_by_ID')?['body/name']",
+                  "dynamicFileSchema/2145849349": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_line1']",
+                  "dynamicFileSchema/-2006577232": "@outputs('Compose_Logo')",
+                  "dynamicFileSchema/-89784366": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_line2']",
+                  "dynamicFileSchema/-1727292209": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_city']",
+                  "dynamicFileSchema/-1811703770": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_stateorprovince']",
+                  "dynamicFileSchema/-2053295385": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_postalcode']",
+                  "dynamicFileSchema/-1575503292": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_line3']",
+                  "dynamicFileSchema/-1098257854": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_city']",
+                  "dynamicFileSchema/-339855566": "@outputs('Get_a_managing_account_row_by_ID')?['body/_new_countryid_name']",
+                  "dynamicFileSchema/-1033026812": "@outputs('Get_a_managing_account_row_by_ID')?['body/new_taxnumber']",
+                  "dynamicFileSchema/-131637196": "@outputs('GetSelfBillRowbyID')?['body/new_name']",
+                  "dynamicFileSchema/-790438524": "@outputs('Get_a_SupplierRow_by_ID')?['body/new_taxnumber']",
+                  "dynamicFileSchema/-1295900532": "@outputs('Get_a_Currency_row_by_ID')?['body/isocurrencycode']",
+                  "dynamicFileSchema/-60883268": "@formatNumber(coalesce(outputs('GetSelfBillRowbyID')?['body/new_paytotal'], 0), '0.00')",
+                  "dynamicFileSchema/-1862887082": "@formatNumber(coalesce(outputs('GetSelfBillRowbyID')?['body/new_totaltax'], 0), '0.00')",
+                  "dynamicFileSchema/-1455781746": "@formatNumber(coalesce(outputs('GetSelfBillRowbyID')?['body/new_total'], 0), '0.00')"
+                },
+                "host": {
+                  "connectionName": "shared_wordonlinebusiness",
+                  "operationId": "CreateFileItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Create_file": {
+              "runAfter": {
+                "Populate_a_Microsoft_Word_template": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1076fab3-0f86-40fc-a040-3d123386420a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "CreateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "folderPath": "/Accounts",
+                  "name": "@{outputs('GetSelfBillRowbyID')?['body/new_name']}.docx",
+                  "body": "@body('Populate_a_Microsoft_Word_template')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Delay": {
+              "runAfter": {
+                "Create_file": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "80d6f80d-997f-46b8-9ff7-e5003c7bdf15"
+              },
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 1,
+                  "unit": "Minute"
+                }
+              }
+            },
+            "Delay-copy": {
+              "runAfter": {
+                "Convert_file_using_path": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3f4fe04a-0ce7-4084-9239-5d3ffcf770d7"
+              },
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 1,
+                  "unit": "Minute"
+                }
+              }
+            },
+            "Upload_pdf_toRecord": {
+              "runAfter": {
+                "Delay-copy": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ccf087b0-baa9-4fcb-8ff9-9f10f4284b5c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateEntityFileImageFieldContent",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@outputs('GetSelfBillRowbyID')?['body/new_remittanceid']",
+                  "fileImageFieldName": "new_pdf",
+                  "item": "@body('Convert_file_using_path')",
+                  "x-ms-file-name": "@{outputs('GetSelfBillRowbyID')?['body/new_name']}.PDF"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Run_a_Child_Flow_Delete_onedrive_pdf": {
+              "runAfter": {
+                "Upload_pdf_toRecord": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "57bf2563-8597-41b8-8db6-3fac4966ca06"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "8036fe10-55bc-ef11-a72f-6045bd6b2802"
+                },
+                "body": {
+                  "text": "@outputs('Create_file')?['body/Id']"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              }
+            },
+            "Terminate-copy": {
+              "runAfter": {
+                "Run_a_Child_Flow_Delete_onedrive_pdf": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3945aaa9-ce5b-47bf-9924-81fc0549acac"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            },
+            "Convert_file_using_path": {
+              "runAfter": {
+                "Delay": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "da544ac6-9fd0-48a6-b8a3-a998b114ec96"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "ConvertFileByPath",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "path": "/Accounts/@{outputs('GetSelfBillRowbyID')?['body/new_name']}.docx",
+                  "type": "PDF"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Compose_date_of_sending_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2a36bf98-2460-49bd-9936-b395fd849507"
+          },
+          "type": "Scope"
+        },
+        "Scope-fail": {
+          "actions": {
+            "Populate_a_Microsoft_Word_template_1": {
+              "runAfter": {},
+              "metadata": {
+                "0172APWYMQUHB4NWRGUBGLVEAF6J23FYAA": "/GoHigher Main/DOC_17422060.docx",
+                "operationMetadataId": "496fc289-219e-4968-b8ba-9acaf5799284",
+                "0172APWYLXYI335AONCZBLPGC7DW766QBY": "/Archer Offshore/SelfBillTemplate.docx",
+                "0172APWYNJ62EMB6AVDRA2R5Q5JGKNBZQQ": "/Archer Offshore/TimesheetTemplate.docx",
+                "01K2ZPN3YAOWGB3RKZR5BZFAUQENHHBD4Y": "/SelfBill/SelfBillTemplate.docx",
+                "01K2ZPN37MZHI763RVKBFLW3XM422RN3CY": "/DefaultTemplates/Default_SelfBillTemplate.docx",
+                "013LX7HPOU2O7SHPE4RNDLMCNBUSESKWXU": "/DefaultTemplates/Default_SelfBillTemplate.docx"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "source": "me",
+                  "drive": "b!gtfDRaHshUiegAWkfiGSLL382nBh4XJAmTcuLeHOVismGojbYYoxQZxU6jFBy9QI",
+                  "file": "013LX7HPOU2O7SHPE4RNDLMCNBUSESKWXU",
+                  "dynamicFileSchema/79888677": "@outputs('Get_a_SupplierRow_by_ID')?['body/_new_countryid_name']",
+                  "dynamicFileSchema/296340671": "@outputs('Get_a_Currency_row_by_ID')?['body/isocurrencycode']",
+                  "dynamicFileSchema/410579261": "@outputs('Get_a_managing_account_row_by_ID')?['body/name']",
+                  "dynamicFileSchema/447747060": "@variables('SelfBillDetailsArray')",
+                  "dynamicFileSchema/468557511": "@formatDateTime(parseDateTime(outputs('GetSelfBillRowbyID')?['body/new_remittancedate']), 'dd/MM/yyyy', 'en-GB')",
+                  "dynamicFileSchema/621269035": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_line3']",
+                  "dynamicFileSchema/726274806": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_stateorprovince']",
+                  "dynamicFileSchema/766961035": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_postalcode']",
+                  "dynamicFileSchema/842512736": "@outputs('Get_a_managing_account_row_by_ID')?['body/accountnumber']",
+                  "dynamicFileSchema/1102302114": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_line2']",
+                  "dynamicFileSchema/1146397765": "@outputs('GetSelfBillRowbyID')?['body/new_name']",
+                  "dynamicFileSchema/1414122894": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_line1']",
+                  "dynamicFileSchema/2030378344": "@outputs('Get_a_SupplierRow_by_ID')?['body/name']",
+                  "dynamicFileSchema/2145849349": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_line1']",
+                  "dynamicFileSchema/-2006577232": "@outputs('Compose_Logo')",
+                  "dynamicFileSchema/-89784366": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_line2']",
+                  "dynamicFileSchema/-1727292209": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_city']",
+                  "dynamicFileSchema/-1811703770": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_stateorprovince']",
+                  "dynamicFileSchema/-2053295385": "@outputs('Get_a_SupplierRow_by_ID')?['body/address1_postalcode']",
+                  "dynamicFileSchema/-1575503292": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_line3']",
+                  "dynamicFileSchema/-1098257854": "@outputs('Get_a_managing_account_row_by_ID')?['body/address1_city']",
+                  "dynamicFileSchema/-339855566": "@outputs('Get_a_managing_account_row_by_ID')?['body/_new_countryid_name']",
+                  "dynamicFileSchema/-1033026812": "@outputs('Get_a_managing_account_row_by_ID')?['body/new_taxnumber']",
+                  "dynamicFileSchema/-131637196": "@outputs('GetSelfBillRowbyID')?['body/new_name']",
+                  "dynamicFileSchema/-790438524": "@outputs('Get_a_SupplierRow_by_ID')?['body/new_taxnumber']",
+                  "dynamicFileSchema/-1295900532": "@outputs('Get_a_Currency_row_by_ID')?['body/isocurrencycode']",
+                  "dynamicFileSchema/-60883268": "@formatNumber(coalesce(outputs('GetSelfBillRowbyID')?['body/new_paytotal'], 0), '0.00')",
+                  "dynamicFileSchema/-1862887082": "@formatNumber(coalesce(outputs('GetSelfBillRowbyID')?['body/new_totaltax'], 0), '0.00')",
+                  "dynamicFileSchema/-1455781746": "@formatNumber(coalesce(outputs('GetSelfBillRowbyID')?['body/new_total'], 0), '0.00')"
+                },
+                "host": {
+                  "connectionName": "shared_wordonlinebusiness",
+                  "operationId": "CreateFileItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Create_file_1": {
+              "runAfter": {
+                "Populate_a_Microsoft_Word_template_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1076fab3-0f86-40fc-a040-3d123386420a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "CreateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "folderPath": "/Accounts",
+                  "name": "@{outputs('GetSelfBillRowbyID')?['body/new_name']}.docx",
+                  "body": "@body('Populate_a_Microsoft_Word_template_1')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Delay_1": {
+              "runAfter": {
+                "Create_file_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ab696166-4e77-4c6e-b3c7-b7644cfdfb82"
+              },
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 1,
+                  "unit": "Minute"
+                }
+              }
+            },
+            "Delay-copy_1": {
+              "runAfter": {
+                "Convert_file_using_path-1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "7c56e742-18c5-4307-a48d-1b7b50b3a513"
+              },
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 1,
+                  "unit": "Minute"
+                }
+              }
+            },
+            "Upload_pdf_toRecord_1": {
+              "runAfter": {
+                "Delay-copy_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ccf087b0-baa9-4fcb-8ff9-9f10f4284b5c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateEntityFileImageFieldContent",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_remittances",
+                  "recordId": "@outputs('GetSelfBillRowbyID')?['body/new_remittanceid']",
+                  "fileImageFieldName": "new_pdf",
+                  "item": "@body('Convert_file_using_path-1')",
+                  "x-ms-file-name": "@{outputs('GetSelfBillRowbyID')?['body/new_name']}.PDF"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Run_a_Child_Flow_Delete_onedrive_pdf_1": {
+              "runAfter": {
+                "Upload_pdf_toRecord_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "57bf2563-8597-41b8-8db6-3fac4966ca06"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "8036fe10-55bc-ef11-a72f-6045bd6b2802"
+                },
+                "body": {
+                  "text": "@outputs('Create_file')?['body/Id']"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              }
+            },
+            "Terminate-copy_1": {
+              "runAfter": {
+                "Run_a_Child_Flow_Delete_onedrive_pdf_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3945aaa9-ce5b-47bf-9924-81fc0549acac"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            },
+            "Convert_file_using_path-1": {
+              "runAfter": {
+                "Delay_1": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "393fe949-1d80-4bf9-a94f-762e2fb8a541"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "ConvertFileByPath",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+                },
+                "parameters": {
+                  "path": "/Accounts/@{outputs('GetSelfBillRowbyID')?['body/new_name']}.docx",
+                  "type": "PDF"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope": [
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e05c9cb7-118a-4132-98ac-e789809e160e"
+          },
+          "type": "Scope"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,281 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7d819"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "startTime": "2023-09-29T08:00:00Z"
+          },
+          "metadata": {
+            "operationMetadataId": "c279f759-5394-496f-92a5-1d542b9d7131"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "List_Rows_-_DBS_Candidates": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "e205e55f-8791-4cb7-9460-94b92a8b82b1"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_candidateregistrations",
+              "fetchXml": "<fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">\n  <entity name=\"new_candidateregistration\">\n    <attribute name=\"new_candidateregistrationid\" />\n    <attribute name=\"new_name\" />\n    <attribute name=\"new_lastname\" />\n    <attribute name=\"new_firstname\" />\n    <attribute name=\"new_dbsnumber\" />\n    <attribute name=\"new_dateofbirth\" />\n    <filter type=\"and\">\n      <condition attribute=\"new_dbsnumber\" operator=\"not-null\" />\n      <condition attribute=\"new_dbsupdateservice\" operator=\"eq\" value=\"1\" />\n      <condition attribute=\"new_dateofbirth\" operator=\"not-null\" />\n      <condition attribute=\"new_firstname\" operator=\"not-null\" />\n      <condition attribute=\"new_lastname\" operator=\"not-null\" />\n    </filter>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_-_First_Name": {
+          "runAfter": {
+            "List_Rows_-_DBS_Candidates": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89e31627-5c96-4e09-b752-31c4735311bc"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "FirstName",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_DBS_Number": {
+          "runAfter": {
+            "Initialize_variable_-_LastName": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f1b683fb-5413-4fa5-b499-bb98711b40b8"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DBSNumber",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_Date_of_Birth": {
+          "runAfter": {
+            "Initialize_variable_-_DBS_Number": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c028025e-bbb0-4e31-941b-56c7b3451a77"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DateofBirth",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_-_LastName": {
+          "runAfter": {
+            "Initialize_variable_-_First_Name": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1eb74776-84ac-4d3a-b8a0-c7a451f116a9"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "LastName",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_Rows_-_DBS_Candidates')?['body/value']",
+          "actions": {
+            "Set_variable_-_First_Name": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "3975e64a-2e8f-4362-9c9f-2bb4b33dce62"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "FirstName",
+                "value": "@items('Apply_to_each')?['new_firstname']"
+              }
+            },
+            "Set_variable_-_Last_Name": {
+              "runAfter": {
+                "Set_variable_-_First_Name": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "da5ae123-c1b2-497c-9ffe-8e61f062b146"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "LastName",
+                "value": "@items('Apply_to_each')?['new_lastname']"
+              }
+            },
+            "Set_variable_-_Date_of_Birth": {
+              "runAfter": {
+                "Set_variable_-_Last_Name": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5b880da8-f66d-4830-b47d-142dd0e2d1f9"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DateofBirth",
+                "value": "@items('Apply_to_each')?['new_dateofbirth']"
+              }
+            },
+            "Set_variable_-_DBS_Number": {
+              "runAfter": {
+                "Set_variable_-_Date_of_Birth": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b5ef55d8-fe9a-4abf-9902-a38e20b04d5b"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DBSNumber",
+                "value": "@items('Apply_to_each')?['new_dbsnumber']"
+              }
+            },
+            "HTTP": {
+              "runAfter": {
+                "Compose_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6ed21b0f-2847-4eee-b169-21c3c54260df"
+              },
+              "type": "Http",
+              "inputs": {
+                "method": "GET",
+                "uri": "@{outputs('Compose_2')}"
+              }
+            },
+            "Compose_2": {
+              "runAfter": {
+                "Set_variable_-_DBS_Number": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cea7befe-a951-4c8a-bc18-47085b518512"
+              },
+              "type": "Compose",
+              "inputs": "https://secure.crbonline.gov.uk/crsc/api/status/@{variables('DBSNumber')}?dateOfBirth=13/05/1966&surname=@{variables('LastName')}&hasAgreedTermsAndConditions=true&organisationName=ArcherResourcing&employeeSurname=Hendry&employeeForename=Molly "
+            },
+            "InputXML": {
+              "runAfter": {
+                "HTTP": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e4d92905-5ae1-4f82-ae7c-9a2401052f2a"
+              },
+              "type": "Compose",
+              "inputs": "@body('HTTP')"
+            },
+            "xpath": {
+              "runAfter": {
+                "InputXML": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "1750dadd-aa44-4527-acb4-f82fd7c13c4f"
+              },
+              "type": "Compose",
+              "inputs": "@xpath(xml(outputs('InputXML')), 'string(/statusCheckResult/status)')"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_-_Status": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5d0e42c0-8236-4151-bf04-81c0ae9f1225"
+          },
+          "type": "Foreach"
+        },
+        "Initialize_variable_-_Status": {
+          "runAfter": {
+            "Initialize_variable_-_Date_of_Birth": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d8e32716-66d2-4b5d-8dc5-e0e9721440bb"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Status",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

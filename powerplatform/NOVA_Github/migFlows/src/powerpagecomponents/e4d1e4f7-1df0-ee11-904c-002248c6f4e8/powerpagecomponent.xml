@@ -1,0 +1,25 @@
+<powerpagecomponent powerpagecomponentid="e4d1e4f7-1df0-ee11-904c-002248c6f4e8">
+  <content>{
+  "adddescription": false,
+  "attributelogicalname": "new_managingaccountid",
+  "descriptionposition": 100000000,
+  "entityform": "267aea08-a4ed-ee11-a1fe-6045bd0d54a8",
+  "entityformforcreate": "267aea08-a4ed-ee11-a1fe-6045bd0d54a8",
+  "fieldisrequired": false,
+  "ignoredefaultvalue": false,
+  "onsavefromattribute": "msa_managingpartnerid",
+  "onsavetype": 100000002,
+  "randomizeoptionsetvalues": false,
+  "setvalueonsave": true,
+  "type": 100000000,
+  "useattributedescriptionproperty": true
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Allocate Shift new_managingaccountid</name>
+  <powerpagecomponenttype>16</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

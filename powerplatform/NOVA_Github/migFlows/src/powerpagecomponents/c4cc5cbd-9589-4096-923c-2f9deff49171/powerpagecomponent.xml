@@ -1,0 +1,16 @@
+<powerpagecomponent powerpagecomponentid="c4cc5cbd-9589-4096-923c-2f9deff49171">
+  <content>{
+  "displayorder": 63,
+  "pageid": "82dcde39-ca7b-daba-2009-908a04bc7a18",
+  "publishingstateid": "7e7dc359-1e05-ee11-8f6e-6045bd0cfca3",
+  "weblinksetid": "ef10d995-561d-44c6-aa1e-0817fddf663f"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>Candidate Details for List</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>6494bc5f-1e05-ee11-8f6e-6045bd0cfca3</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</powerpagecomponent>

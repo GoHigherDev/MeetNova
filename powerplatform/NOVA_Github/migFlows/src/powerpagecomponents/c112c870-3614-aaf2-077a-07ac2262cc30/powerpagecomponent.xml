@@ -1,0 +1,20 @@
+<powerpagecomponent powerpagecomponentid="c112c870-3614-aaf2-077a-07ac2262cc30">
+  <content>{
+  "displayimageonly": false,
+  "displayorder": 35,
+  "displaypagechildlinks": false,
+  "openinnewwindow": false,
+  "pageid": "089a10c9-d041-46c3-d115-d3afbbf6eb88",
+  "publishingstateid": "7af2273a-bc64-47c4-af68-c8d8392ca2cc",
+  "robotsfollowlink": true,
+  "weblinksetid": "032cb2d0-30d0-4a9e-839b-8f2e1665c294"
+}</content>
+  <iscustomizable>1</iscustomizable>
+  <name>References</name>
+  <powerpagecomponenttype>5</powerpagecomponenttype>
+  <powerpagesiteid>
+    <powerpagesiteid>5e61d4f7-5ee8-4471-8fc2-68fd551895c1</powerpagesiteid>
+  </powerpagesiteid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</powerpagecomponent>
